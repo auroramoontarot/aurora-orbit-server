@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Aurora Moon Pomodoro</title>
+
+<style>
+body {
+  margin: 0;
+  background: transparent;
+  overflow: hidden;
+  font-family: 'Quicksand', sans-serif;
+  color: #cbecf5;
+}
+
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.timer {
+  font-size: 100px;
+  font-weight: 700;
+  text-shadow: 0 0 20px #00a9ba;
+  margin-bottom: 15px;
+}
+
+.status {
+  font-size: 33px;
+  margin-top: 10px;
+  letter-spacing: 1px;
+  opacity: 0.85;
+  font-weight: 500;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="timer" id="timer">--:--</div>
+  <div class="status" id="status">Sip☕</div>
+</div>
+
+<audio id="focusMusic" autoplay loop>
+  <source src="sounds/focus-music.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="chime">
+  <source src="sounds/moonbeam.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const FOCUS_DURATION = 25 * 60;
+const BREAK_DURATION = 5 * 60;
+
+const timerDisplay = document.getElementById("timer");
+const statusDisplay = document.getElementById("status");
+const focusMusic = document.getElementById("focusMusic");
+const chime = document.getElementById("chime");
+
+focusMusic.volume = 0.13;
+
+let isFocus = true;
+let timeLeft = 0;
+let interval;
+
+/* ---------- AUDIO SAFETY ---------- */
+
+function safePlay(audio) {
+  audio.play().catch(() => {
+    console.log("Audio blocked until user interaction");
+  });
+}
+
+function unlockAudio() {
+  focusMusic.play().then(() => {
+    focusMusic.pause();
+    focusMusic.currentTime = 0;
+  }).catch(() => {});
+}
+
+window.addEventListener("click", unlockAudio, { once: true });
+window.addEventListener("keydown", unlockAudio, { once: true });
+
+/* ---------- TIMER ---------- */
+
+function formatTime(seconds) {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+function secondsUntilNextStart() {
+  const now = new Date();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  let targetMinute = minutes < 30 ? 30 : 60;
+
+  const totalNow = minutes * 60 + seconds;
+  const totalTarget = targetMinute * 60;
+
+  return totalTarget - totalNow;
+}
+
+function startAlignmentCountdown() {
+  let alignSeconds = secondsUntilNextStart();
+
+  timerDisplay.textContent = formatTime(alignSeconds);
+  statusDisplay.textContent = "🚀 Focus Mode: Engage";
+
+  const alignInterval = setInterval(() => {
+    alignSeconds--;
+    timerDisplay.textContent = formatTime(alignSeconds);
+
+    if (alignSeconds <= 0) {
+      clearInterval(alignInterval);
+      isFocus = true;
+      startCycle(FOCUS_DURATION);
+    }
+  }, 1000);
+}
+
+function startCycle(duration) {
+  timeLeft = duration;
+  updateDisplay();
+
+  interval = setInterval(() => {
+    timeLeft--;
+    updateDisplay();
+
+    if (timeLeft <= 0) {
+      clearInterval(interval);
+      switchMode();
+    }
+  }, 1000);
+}
+
+function updateDisplay() {
+  timerDisplay.textContent = formatTime(timeLeft);
+  statusDisplay.textContent = isFocus ? "Focus Session" : "Moon Break";
+}
+
+function switchMode() {
+  chime.currentTime = 0;
+  safePlay(chime);
+
+  if (isFocus) {
+    // Leaving focus, entering break
+    isFocus = false;
+    focusMusic.volume = 0.07;
+    startCycle(BREAK_DURATION);
+
+    fetch("http://localhost:3000/coffee-break", { method: "POST" })
+      .catch(err => console.error("Coffee break trigger failed:", err));
+
+  } else {
+    // Leaving break, returning to focus
+    isFocus = true;
+    focusMusic.volume = 0.13;
+    startCycle(FOCUS_DURATION);
+
+    fetch("http://localhost:3000/focus-start", { method: "POST" })
+      .catch(err => console.error("Focus start trigger failed:", err));
+  }
+}
+
+/* ---------- INIT ---------- */
+
+safePlay(focusMusic);
+startAlignmentCountdown();
+</script>
+
+</body>
+</html>

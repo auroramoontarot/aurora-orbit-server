@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Quicksand',sans-serif;
+background:radial-gradient(circle at top,#1a2238,#0c0f1a);
+color:#cbecf5;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+/* PANEL */
+
+.panel{
+width:420px;
+padding:20px;
+
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,.15);
+border-radius:16px;
+
+box-shadow:
+0 0 20px rgba(0,169,186,.25),
+inset 0 0 10px rgba(255,255,255,.05);
+
+max-height:90vh;
+overflow:auto;
+}
+
+/* HOLOGRAPHIC AURORA SCROLLBAR */
+
+.panel{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(127,135,255,.7) rgba(255,255,255,.04);
+}
+
+.panel::-webkit-scrollbar{
+  width: 10px;
+}
+
+.panel::-webkit-scrollbar-track{
+  background: rgba(255,255,255,.04);
+  border-radius: 999px;
+  box-shadow: inset 0 0 8px rgba(255,255,255,.04);
+}
+
+.panel::-webkit-scrollbar-thumb{
+  border-radius: 999px;
+  border: 2px solid rgba(12,15,26,.35);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(198,199,248,.85) 0%,
+      rgba(127,135,255,.85) 35%,
+      rgba(0,169,186,.85) 70%,
+      rgba(203,236,245,.8) 100%
+    );
+  box-shadow:
+    0 0 10px rgba(127,135,255,.25),
+    0 0 18px rgba(0,169,186,.18);
+}
+
+.panel::-webkit-scrollbar-thumb:hover{
+  background:
+    linear-gradient(
+      180deg,
+      rgba(203,236,245,.95) 0%,
+      rgba(127,135,255,.95) 35%,
+      rgba(0,169,186,.95) 70%,
+      rgba(198,199,248,.95) 100%
+    );
+  box-shadow:
+    0 0 12px rgba(127,135,255,.35),
+    0 0 22px rgba(0,169,186,.28);
+}
+
+/* TITLE */
+
+.title{
+text-align:center;
+font-size:22px;
+letter-spacing:2px;
+margin-bottom:20px;
+}
+
+/* CURRENT QUEST */
+
+.current{
+padding:10px;
+margin-bottom:20px;
+
+background:rgba(0,169,186,.15);
+border-radius:10px;
+
+font-weight:700;
+text-align:center;
+}
+
+/* QUEUE */
+
+.queue{
+max-height:300px;
+overflow:auto;
+}
+
+/* QUEST ROW */
+
+.quest{
+display:flex;
+align-items:center;
+gap:10px;
+
+padding:8px;
+margin-bottom:6px;
+
+background:rgba(255,255,255,.04);
+border-radius:10px;
+
+cursor:grab;
+}
+
+.quest.dragging{
+opacity:.4;
+}
+
+.drag{
+opacity:.5;
+font-size:18px;
+cursor:grab;
+}
+
+.text{
+flex:1;
+}
+
+button{
+background:none;
+border:none;
+color:#cbecf5;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+color:#7fffd4;
+}
+
+/* ADD QUEST */
+
+.add{
+margin-top:15px;
+display:flex;
+gap:6px;
+}
+
+input{
+flex:1;
+padding:8px;
+border:none;
+border-radius:8px;
+background:rgba(255,255,255,.08);
+color:#fff;
+font-size:16px;
+}
+
+.add button{
+background:#00a9ba;
+padding:8px 12px;
+border-radius:8px;
+}
+
+.controls{
+margin-top:10px;
+display:flex;
+justify-content:space-between;
+}
+
+/* COSMIC CONTROLS */
+
+.cosmic-controls{
+margin-top:18px;
+padding-top:12px;
+border-top:1px solid rgba(255,255,255,.15);
+}
+
+.section-title{
+font-size:14px;
+letter-spacing:1px;
+margin-bottom:8px;
+opacity:.8;
+}
+
+.cosmic-buttons{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+}
+
+.cosmic-buttons button{
+background:rgba(0,169,186,.25);
+padding:6px 10px;
+border-radius:8px;
+font-size:13px;
+}
+
+.cosmic-buttons button:hover{
+background:rgba(0,169,186,.5);
+}
+
+.cosmic-buttons button.active{
+background:#00a9ba;
+box-shadow:
+0 0 10px #00ffd0,
+0 0 20px rgba(0,169,186,.6);
+color:#7fffd4;
+}
+
+/* WATCHING */
+
+.media-fields{
+display:flex;
+flex-direction:column;
+gap:8px;
+margin-top:8px;
+}
+
+.media-fields input{
+width:100%;
+box-sizing:border-box;
+}
+
+.media-row{
+display:flex;
+gap:6px;
+margin-top:8px;
+}
+
+.media-row button{
+background:rgba(0,169,186,.25);
+padding:8px 10px;
+border-radius:8px;
+font-size:13px;
+}
+
+.current-media{
+margin-top:10px;
+padding:10px;
+background:rgba(255,255,255,.04);
+border-radius:10px;
+font-size:14px;
+line-height:1.4;
+transition:
+opacity .6s ease,
+box-shadow .4s ease,
+transform .35s ease;
+}
+
+/* NATURE LOG */
+
+.log-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:6px;
+margin-top:8px;
+}
+
+.log-grid button{
+background:rgba(0,169,186,.25);
+padding:8px 10px;
+border-radius:8px;
+font-size:13px;
+}
+
+.log-inputs{
+display:flex;
+flex-direction:column;
+gap:8px;
+margin-top:10px;
+}
+
+.log-input-row{
+display:flex;
+gap:6px;
+}
+
+.log-input-row input{
+flex:1;
+box-sizing:border-box;
+}
+
+.log-input-row button{
+background:rgba(0,169,186,.25);
+padding:8px 10px;
+border-radius:8px;
+font-size:13px;
+}
+
+.log-summary{
+margin-top:10px;
+padding:10px;
+background:rgba(255,255,255,.04);
+border-radius:10px;
+font-size:13px;
+line-height:1.5;
+white-space:pre-line;
+}
+
+.small-note{
+margin-top:6px;
+font-size:12px;
+opacity:.75;
+}
+
+/* FIELD STATUS MAGIC */
+
+.status-glow{
+box-shadow:
+0 0 12px rgba(0,255,208,.35),
+0 0 24px rgba(0,169,186,.28);
+transform:translateY(-1px);
+}
+
+.status-fade{
+opacity:.82;
+}
+
+@media (max-width: 700px){
+  body{
+    display:block;
+    height:auto;
+    min-height:100vh;
+    padding:12px;
+  }
+
+  .panel{
+    width:auto;
+    max-width:100%;
+    max-height:none;
+    min-height:calc(100vh - 24px);
+    padding:16px;
+    border-radius:14px;
+  }
+
+  .title{
+    font-size:20px;
+    margin-bottom:16px;
+  }
+
+  .cosmic-buttons{
+    gap:8px;
+  }
+
+  .cosmic-buttons button,
+  .log-grid button,
+  .media-row button,
+  .add button,
+  .controls button,
+  .log-input-row button{
+    min-height:44px;
+    font-size:15px;
+  }
+
+  input{
+    min-height:44px;
+    font-size:16px;
+  }
+
+  .log-grid{
+    grid-template-columns:1fr;
+  }
+
+  .controls{
+    gap:8px;
+  }
+
+  .controls button{
+    flex:1;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="panel">
+
+<div class="title">
+🌙 Aurora Mission Control
+</div>
+
+<div class="current" id="currentQuest">
+Loading mission...
+</div>
+
+<div class="queue" id="queue"></div>
+
+<div class="add">
+<input id="newQuest" placeholder="Add new quest...">
+<button onclick="addQuest()">Add</button>
+</div>
+
+<div class="controls">
+<button onclick="completeQuest()">✅ Complete</button>
+<button onclick="skipQuest()">⏭ Skip</button>
+</div>
+
+<div class="cosmic-controls">
+
+  <div class="section-title">🌌 Cosmic Sky + Field Log</div>
+
+  <div class="cosmic-buttons">
+    <button onclick="setAura('ninetales')">❄️ Ninetales</button>
+    <button onclick="setAura('sylveon')">🎀 Sylveon</button>
+    <button onclick="setAura('rapidash')">🦄 Rapidash</button>
+    <button onclick="setAura('clear')">🌌 Clear</button>
+  </div>
+
+  <div class="section-title" style="margin-top:12px;">🎮 Pokémon Encounters</div>
+
+  <div class="cosmic-buttons">
+    <button onclick="logPokemonCatch()">🐾 Encounter</button>
+    <button onclick="logPokestopSpin()">🌀 PokéStop</button>
+    <button onclick="logRaidWin()">⚔️ Raid Victory</button>
+    <button onclick="logEggHatch()">🥚 Hatch</button>
+  </div>
+
+  <div class="section-title" style="margin-top:12px;">📦 TCG Pulls</div>
+
+  <div class="cosmic-buttons">
+    <button onclick="logPackOpen('normal')">📦 Standard</button>
+    <button onclick="logPackOpen('rare')">✨ Rare Pull</button>
+    <button onclick="logPackOpen('ex')">⭐ EX Pull</button>
+  </div>
+
+  <div class="current-media status-fade" id="pokemonStatus">
+    🌙 The field is quiet… awaiting your next discovery.
+  </div>
+
+</div>
+
+<div class="cosmic-controls">
+
+<div class="section-title">🌙 Daily Habits</div>
+
+<div class="cosmic-buttons">
+<button onclick="toggleHabit(this,'walk')">🐕 Walk Koda</button>
+<button onclick="toggleHabit(this,'yoga')">🧘 Zen Yoga</button>
+<button onclick="toggleHabit(this,'bird')">🐦 Bird Log</button>
+
+<button onclick="toggleHabit(this,'chores')">🧹 Chores</button>
+<button onclick="toggleHabit(this,'nature')">🌿 Nature Project</button>
+
+<button onclick="toggleHabit(this,'park')">🏞 Park Patrol</button>
+<button onclick="toggleHabit(this,'basin')">💧 Basin Patrol</button>
+<button onclick="toggleHabit(this,'pipe')">🍄 Warp Pipe Patrol</button>
+
+<button onclick="toggleHabit(this,'tarot')">🔮 Tarot Reading</button>
+<button onclick="toggleHabit(this,'write')">✍ Creative Writing</button>
+
+<button onclick="toggleHabit(this,'stitch')">🧶 Knits + Stitches</button>
+<button onclick="toggleHabit(this,'brain')">🧠 Brain Games</button>
+<button onclick="toggleHabit(this,'strength')">💪 Strength Training</button>
+</div>
+
+<div class="section-title">✨ Spoon Energy</div>
+
+<div class="cosmic-buttons">
+<button onclick="setEnergy(this,1)">1</button>
+<button onclick="setEnergy(this,2)">2</button>
+<button onclick="setEnergy(this,3)">3</button>
+<button onclick="setEnergy(this,4)">4</button>
+<button onclick="setEnergy(this,5)">5</button>
+</div>
+
+</div>
+
+<div class="cosmic-controls">
+
+<div class="section-title">📺 Now Watching</div>
+
+<div class="media-fields">
+<input id="watchTitle" placeholder="Show / stream / movie title...">
+<input id="watchDetail" placeholder="Episode / Live / detail...">
+</div>
+
+<div class="media-row">
+<button onclick="updateWatching()">Update Watching</button>
+<button onclick="clearWatching()">Clear</button>
+</div>
+
+<div class="current-media" id="currentWatching">
+Current watching: —
+</div>
+
+</div>
+
+<div class="cosmic-controls">
+
+<div class="section-title">🌿 Nature + Volunteer Log</div>
+
+<div class="log-grid">
+<button onclick="incrementMoonData('lifebirds',1)">🦉 +1 Lifebird</button>
+<button onclick="incrementMoonData('nature_projects',1)">🌿 +1 Nature Project</button>
+<button onclick="incrementMoonData('ava_adventures',1)">👧 +1 Ava Adventure</button>
+<button onclick="incrementMoonData('park_cleanups',1)">🏞 +1 Park Patrol</button>
+<button onclick="incrementMoonData('trash_bags',1)">🗑 +1 Trash Bag</button>
+<button onclick="incrementMoonData('hydrant_clear',1)">🚰 +1 Warp Clear</button>
+<button onclick="incrementMoonData('drain_clear',1)">💧 +1 Basin Clear</button>
+<button onclick="incrementMoonData('volunteer_sessions',1)">🤝 +1 Volunteer Session</button>
+</div>
+
+<div class="log-inputs">
+
+<div class="log-input-row">
+<input id="trashBagsInput" type="number" step="1" min="1" placeholder="Add trash bags...">
+<button onclick="addCount('trash_bags','trashBagsInput')">Add Bags</button>
+</div>
+
+<div class="log-input-row">
+<input id="basinClearInput" type="number" step="1" min="1" placeholder="Add basin clears...">
+<button onclick="addCount('drain_clear','basinClearInput')">Add Basin</button>
+</div>
+
+<div class="log-input-row">
+<input id="warpClearInput" type="number" step="1" min="1" placeholder="Add warp clears...">
+<button onclick="addCount('hydrant_clear','warpClearInput')">Add Warp</button>
+</div>
+
+<div class="log-input-row">
+<input id="ceHoursInput" type="number" step="0.25" min="0" placeholder="Add CE hours...">
+<button onclick="addHours('ce_hours','ceHoursInput')">Add CE</button>
+</div>
+
+<div class="log-input-row">
+<input id="volunteerHoursInput" type="number" step="0.25" min="0" placeholder="Add volunteer hours...">
+<button onclick="addHours('volunteer_hours','volunteerHoursInput')">Add Volunteer</button>
+</div>
+
+</div>
+
+<div class="small-note">
+Quick stream logging lives here. Chat commands can still be your fast public log.
+</div>
+
+<div class="log-summary" id="moonDataSummary">
+Loading nature totals...
+</div>
+
+</div>
+
+<div class="cosmic-controls">
+
+<div class="section-title">🪶 Nature Import Helper</div>
+
+<div class="log-inputs">
+
+<div class="log-input-row">
+<input id="ebirdImportInput" type="number" step="1" min="0" placeholder="Add eBird lifebirds...">
+<button onclick="importNatureCount('lifebirds','ebirdImportInput')">Import eBird</button>
+</div>
+
+<div class="log-input-row">
+<input id="inatImportInput" type="number" step="1" min="0" placeholder="Add iNaturalist finds...">
+<button onclick="importNatureCount('nature_projects','inatImportInput')">Import iNat</button>
+</div>
+
+<div class="log-input-row">
+<input id="merlinImportInput" type="number" step="1" min="0" placeholder="Add Merlin IDs...">
+<button onclick="importNatureCount('merlin_calls','merlinImportInput')">Import Merlin</button>
+</div>
+
+</div>
+
+<div class="small-note">
+Use this for quick manual sync from eBird or iNaturalist without changing your stream workflow.
+</div>
+
+</div>
+
+<div class="cosmic-controls">
+
+<div class="section-title">🔄 Daily Reset</div>
+
+<div class="cosmic-buttons">
+<button onclick="resetDay()">Reset Day</button>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const API_BASE = window.location.origin;
+
+let pokemonStatusTimer = null;
+
+/* LOAD QUEST DATA */
+
+async function load(){
+
+try{
+
+const res = await fetch(`${API_BASE}/quest`);
+const data = await res.json();
+
+document.getElementById("currentQuest").innerText =
+data.current || "✨ All missions complete ✨";
+
+renderQueue(data.queue || []);
+
+}catch(err){
+
+console.error("Quest load failed:",err);
+document.getElementById("currentQuest").innerText = "Mission control offline";
+renderQueue([]);
+
+}
+
+}
+
+/* RENDER QUEUE */
+
+function renderQueue(queue){
+
+const container = document.getElementById("queue");
+container.innerHTML = "";
+
+queue.forEach((task,index)=>{
+
+const row = document.createElement("div");
+row.className="quest";
+row.draggable=true;
+
+row.innerHTML=`
+<span class="drag">☰</span>
+<span class="text">${task}</span>
+<button onclick="editQuest(${index})">✏</button>
+`;
+
+container.appendChild(row);
+
+});
+
+enableDrag();
+
+}
+
+/* DRAG SYSTEM */
+
+function enableDrag(){
+
+const items=document.querySelectorAll(".quest");
+
+let dragged;
+
+items.forEach(item=>{
+
+item.addEventListener("dragstart",()=>{
+dragged=item;
+item.classList.add("dragging");
+});
+
+item.addEventListener("dragend",()=>{
+item.classList.remove("dragging");
+saveOrder();
+});
+
+item.addEventListener("dragover",(e)=>{
+e.preventDefault();
+
+const container=item.parentNode;
+
+const after=
+e.clientY >
+item.getBoundingClientRect().top +
+item.offsetHeight/2;
+
+if(after){
+container.insertBefore(dragged,item.nextSibling);
+}else{
+container.insertBefore(dragged,item);
+}
+
+});
+
+});
+
+}
+
+/* SAVE ORDER */
+
+async function saveOrder(){
+
+const items=document.querySelectorAll(".quest .text");
+
+const newQueue=[];
+
+items.forEach(el=>{
+newQueue.push(el.innerText);
+});
+
+await fetch(`${API_BASE}/reorderquests`,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({queue:newQueue})
+});
+
+}
+
+/* ADD QUEST */
+
+async function addQuest(){
+
+const input=document.getElementById("newQuest");
+const text=input.value.trim();
+
+if(!text) return;
+
+await fetch(`${API_BASE}/newtask?task=${encodeURIComponent(text)}`);
+
+input.value="";
+load();
+
+}
+
+/* COMPLETE */
+
+async function completeQuest(){
+
+await fetch(`${API_BASE}/donetask`);
+load();
+
+}
+
+/* SKIP */
+
+async function skipQuest(){
+
+await fetch(`${API_BASE}/nexttask`);
+load();
+
+}
+
+/* EDIT */
+
+async function editQuest(i){
+
+const text=prompt("Edit quest:");
+
+if(!text) return;
+
+await fetch(`${API_BASE}/editquest?index=${i}&text=${encodeURIComponent(text)}`);
+
+load();
+
+}
+
+/* INITIAL LOAD */
+
+load();
+loadHabitState();
+loadWatchingState();
+loadMoonDataState();
+
+/* AURA */
+
+async function setAura(name){
+
+await fetch(`${API_BASE}/aura?name=${name}`);
+
+}
+
+/* ENTER KEY FOR QUEST INPUT */
+
+document
+.getElementById("newQuest")
+.addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+
+addQuest();
+
+}
+
+});
+
+/* HABIT SYSTEM */
+
+async function toggleHabit(btn,name){
+
+console.log("Sending habit toggle:",name);
+
+try{
+
+let res = await fetch(`${API_BASE}/habit?name=${name}`);
+
+console.log("Server response:",res.status);
+
+btn.classList.toggle("active");
+
+}catch(err){
+
+console.error("Habit request failed:",err);
+
+}
+
+}
+
+async function setEnergy(btn,val){
+
+await fetch(`${API_BASE}/energy?value=${val}`);
+
+document
+.querySelectorAll(".cosmic-buttons button")
+.forEach(b=>{
+  const onclick = b.getAttribute("onclick") || "";
+  if(onclick.includes("setEnergy(")){
+    b.classList.remove("active");
+  }
+});
+
+btn.classList.add("active");
+
+}
+
+async function resetDay(){
+
+if(!confirm("Reset all habits and energy for the day?")) return;
+
+await fetch(`${API_BASE}/resetday`);
+
+location.reload();
+
+}
+
+/* POKEMON / FIELD STATUS */
+
+function updatePokemonStatus(message){
+  const el = document.getElementById("pokemonStatus");
+  if(!el) return;
+
+  clearTimeout(pokemonStatusTimer);
+
+  el.classList.remove("status-glow","status-fade");
+  void el.offsetWidth;
+
+  el.innerText = message;
+  el.classList.add("status-glow");
+  el.classList.remove("status-fade");
+
+  pokemonStatusTimer = setTimeout(()=>{
+    el.classList.remove("status-glow");
+    el.classList.add("status-fade");
+  }, 6500);
+}
+
+async function logPokemonCatch(){
+  try{
+    await fetch(`${API_BASE}/pokemonCatch`);
+    updatePokemonStatus("🐾 A wild encounter has been recorded in the Haven!");
+  }catch(err){
+    console.error("Pokemon catch failed:", err);
+    updatePokemonStatus("🌫 The encounter slipped through the signal...");
+  }
+}
+
+async function logPokestopSpin(){
+  try{
+    await fetch(`${API_BASE}/pokestopSpin`);
+    updatePokemonStatus("🌀 The PokéStop shimmered and shared its gifts.");
+  }catch(err){
+    console.error("Pokestop spin failed:", err);
+    updatePokemonStatus("🌫 The stop faded before it could respond.");
+  }
+}
+
+async function logRaidWin(){
+  try{
+    await fetch(`${API_BASE}/raidWin`);
+    updatePokemonStatus("⚔️ Raid complete! The energy settles across the sky.");
+  }catch(err){
+    console.error("Raid win failed:", err);
+    updatePokemonStatus("🌫 The raid echoes… but no signal returned.");
+  }
+}
+
+async function logEggHatch(){
+  try{
+    await fetch(`${API_BASE}/eggHatch`);
+    updatePokemonStatus("🥚 A new life has emerged into the Haven!");
+  }catch(err){
+    console.error("Egg hatch failed:", err);
+    updatePokemonStatus("🌫 The egg stirs… but remains unseen.");
+  }
+}
+
+async function logPackOpen(rarity){
+  try{
+    await fetch(`${API_BASE}/packOpen?rarity=${encodeURIComponent(rarity)}`);
+
+    if(rarity === "normal"){
+      updatePokemonStatus("📦 A pack opened… the cards whisper softly.");
+    }else if(rarity === "rare"){
+      updatePokemonStatus("✨ A rare pull! Stardust shimmers through the deck.");
+    }else if(rarity === "ex"){
+      updatePokemonStatus("⭐ EX energy surges! A powerful card revealed!");
+    }
+  }catch(err){
+    console.error("Pack open failed:", err);
+    updatePokemonStatus("🌫 The pack dissolved into stardust before opening...");
+  }
+}
+
+/* LOAD HABIT + ENERGY STATE */
+
+async function loadHabitState(){
+
+try{
+
+const res = await fetch(`${API_BASE}/data/aurora-habits`);
+const data = await res.json();
+
+document.querySelectorAll(".cosmic-buttons button").forEach(btn=>{
+  btn.classList.remove("active");
+});
+
+document.querySelectorAll(".cosmic-buttons button").forEach(btn=>{
+  const onclick = btn.getAttribute("onclick") || "";
+
+  if(onclick.includes("toggleHabit")){
+    const match = onclick.match(/toggleHabit\(this,'([^']+)'\)/);
+    if(match){
+      const habitName = match[1];
+      if(data[habitName]){
+        btn.classList.add("active");
+      }
+    }
+  }
+});
+
+document.querySelectorAll(".cosmic-buttons button").forEach(btn=>{
+  const onclick = btn.getAttribute("onclick") || "";
+
+  if(onclick.includes("setEnergy")){
+    const match = onclick.match(/setEnergy\(this,(\d+)\)/);
+    if(match){
+      const val = Number(match[1]);
+      if(Number(data.energy) === val){
+        btn.classList.add("active");
+      }
+    }
+  }
+});
+
+}catch(err){
+
+console.error("Habit state load failed:",err);
+
+}
+
+}
+
+/* WATCHING */
+
+async function updateWatching(){
+
+const title = document.getElementById("watchTitle").value.trim();
+const detail = document.getElementById("watchDetail").value.trim();
+
+try{
+
+await fetch(`${API_BASE}/watching?title=${encodeURIComponent(title)}&detail=${encodeURIComponent(detail)}`);
+loadWatchingState();
+
+}catch(err){
+
+console.error("Watching update failed:",err);
+
+}
+
+}
+
+async function clearWatching(){
+
+document.getElementById("watchTitle").value = "";
+document.getElementById("watchDetail").value = "";
+
+try{
+
+await fetch(`${API_BASE}/watching?title=&detail=`);
+loadWatchingState();
+
+}catch(err){
+
+console.error("Watching clear failed:",err);
+
+}
+
+}
+
+async function loadWatchingState(){
+
+try{
+
+const res = await fetch(`${API_BASE}/media-status?nocache=${Date.now()}`);
+const data = await res.json();
+
+const current = document.getElementById("currentWatching");
+
+if(data.watching && data.watching.title){
+
+document.getElementById("watchTitle").value = data.watching.title || "";
+document.getElementById("watchDetail").value = data.watching.detail || "";
+
+current.innerText =
+data.watching.detail
+? `Current watching: ${data.watching.title} — ${data.watching.detail}`
+: `Current watching: ${data.watching.title}`;
+
+}else{
+
+document.getElementById("watchTitle").value = "";
+document.getElementById("watchDetail").value = "";
+current.innerText = "Current watching: —";
+
+}
+
+}catch(err){
+
+console.error("Watching state load failed:",err);
+document.getElementById("currentWatching").innerText = "Current watching: —";
+
+}
+
+}
+
+document.getElementById("watchTitle").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+updateWatching();
+}
+});
+
+document.getElementById("watchDetail").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+updateWatching();
+}
+});
+
+/* NATURE + VOLUNTEER LOG */
+
+async function getMoonData(){
+
+const res = await fetch(`${API_BASE}/data/aurora-moon-data?nocache=${Date.now()}`);
+if(!res.ok) throw new Error("Failed to load aurora moon data");
+return await res.json();
+
+}
+
+async function saveMoonData(updated){
+
+const res = await fetch(`${API_BASE}/save/aurora-moon-data`,{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(updated)
+});
+
+if(!res.ok) throw new Error("Failed to save aurora moon data");
+return await res.json();
+
+}
+
+async function incrementMoonData(field,amount=1){
+
+try{
+
+const data = await getMoonData();
+data[field] = Number(data[field] || 0) + amount;
+
+await saveMoonData(data);
+loadMoonDataState();
+
+}catch(err){
+
+console.error("Moon data increment failed:",err);
+
+}
+
+}
+
+async function addCount(field,inputId){
+
+const input = document.getElementById(inputId);
+const value = Number(input.value);
+
+if(!Number.isFinite(value) || value <= 0) return;
+
+try{
+
+const data = await getMoonData();
+data[field] = Number(data[field] || 0) + value;
+
+await saveMoonData(data);
+
+input.value = "";
+loadMoonDataState();
+
+}catch(err){
+
+console.error("Count add failed:",err);
+
+}
+
+}
+
+async function addHours(field,inputId){
+
+const input = document.getElementById(inputId);
+const value = Number(input.value);
+
+if(!Number.isFinite(value) || value <= 0) return;
+
+try{
+
+const data = await getMoonData();
+data[field] = Number(data[field] || 0) + value;
+
+await saveMoonData(data);
+
+input.value = "";
+loadMoonDataState();
+
+}catch(err){
+
+console.error("Hour add failed:",err);
+
+}
+
+}
+
+async function loadMoonDataState(){
+
+try{
+
+const data = await getMoonData();
+
+const summary = document.getElementById("moonDataSummary");
+
+summary.innerText =
+`🦉 Lifebirds: ${Number(data.lifebirds || 0)}
+🪶 Merlin IDs: ${Number(data.merlin_calls || 0)}
+🌿 Nature Projects: ${Number(data.nature_projects || 0)}
+👧 Ava Adventures: ${Number(data.ava_adventures || 0)}
+🏞 Park Patrols: ${Number(data.park_cleanups || 0)}
+🗑 Trash Bags: ${Number(data.trash_bags || 0)}
+🚰 Warp Clears: ${Number(data.hydrant_clear || 0)}
+💧 Basin Clears: ${Number(data.drain_clear || 0)}
+📚 CE Hours: ${Number(data.ce_hours || 0)}
+🤝 Volunteer Hours: ${Number(data.volunteer_hours || 0)}
+✨ Volunteer Sessions: ${Number(data.volunteer_sessions || 0)}`;
+
+}catch(err){
+
+console.error("Moon data state load failed:",err);
+document.getElementById("moonDataSummary").innerText = "Nature totals offline";
+
+}
+
+}
+
+document.getElementById("trashBagsInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+addCount("trash_bags","trashBagsInput");
+}
+});
+
+document.getElementById("basinClearInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+addCount("drain_clear","basinClearInput");
+}
+});
+
+document.getElementById("warpClearInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+addCount("hydrant_clear","warpClearInput");
+}
+});
+
+document.getElementById("ceHoursInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+addHours("ce_hours","ceHoursInput");
+}
+});
+
+document.getElementById("volunteerHoursInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+addHours("volunteer_hours","volunteerHoursInput");
+}
+});
+
+async function importNatureCount(field,inputId){
+
+const input = document.getElementById(inputId);
+const value = Number(input.value);
+
+if(!Number.isFinite(value) || value <= 0) return;
+
+try{
+
+const data = await getMoonData();
+data[field] = Number(data[field] || 0) + value;
+
+await saveMoonData(data);
+
+input.value = "";
+loadMoonDataState();
+
+}catch(err){
+
+console.error("Nature import failed:",err);
+
+}
+
+}
+
+document.getElementById("ebirdImportInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+importNatureCount("lifebirds","ebirdImportInput");
+}
+});
+
+document.getElementById("inatImportInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+importNatureCount("nature_projects","inatImportInput");
+}
+});
+
+document.getElementById("merlinImportInput").addEventListener("keypress",function(e){
+if(e.key==="Enter"){
+importNatureCount("merlin_calls","merlinImportInput");
+}
+});
+
+</script>
+
+</body>
+
+</html>

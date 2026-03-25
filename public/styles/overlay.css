@@ -1,0 +1,297 @@
+/* NIGHT SKY BACKGROUND */
+body {
+  background: transparent;
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Quicksand', sans-serif;
+  color: white;
+}
+
+/* STARS */
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background:
+    radial-gradient(2px 2px at 20% 30%, #ffffff66, transparent),
+    radial-gradient(2px 2px at 70% 80%, #ffffff66, transparent),
+    radial-gradient(1px 1px at 40% 60%, #ffffff88, transparent),
+    radial-gradient(2px 2px at 80% 20%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 10% 70%, #ffffff99, transparent),
+    radial-gradient(1px 1px at 50% 50%, #ffffff55, transparent),
+    radial-gradient(2px 2px at 30% 75%, #ffffff44, transparent);
+
+  animation: starDrift 160s linear infinite;
+}
+
+@keyframes starDrift {
+  100% { transform: translate(-120px, -260px); }
+}
+
+/* REMOVE PANEL AURORA BLEED */
+.aurora {
+  display: none;
+}
+
+/* OVERLAY */
+.overlay {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+
+  width: 420px;
+  max-width: calc(100vw - 40px);
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  z-index: 2;
+
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
+
+  padding: 4px 10px 8px 2px;
+  box-sizing: border-box;
+
+  filter:
+    drop-shadow(0 0 12px rgba(127,135,255,.25))
+    drop-shadow(0 0 24px rgba(0,169,186,.15));
+}
+
+/* PANELS (GLASS FIXED) */
+.panel {
+  position: relative;
+
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 14px;
+
+  padding: 10px 14px;
+
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.18),
+    0 0 10px rgba(127,135,255,.12);
+
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* GLASS SHINE */
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,.22),
+    rgba(255,255,255,.05) 35%,
+    transparent 65%
+  );
+}
+
+/* GLASS EDGE LIGHT */
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+
+  background: linear-gradient(
+    120deg,
+    rgba(255,255,255,.14),
+    rgba(255,255,255,.04),
+    transparent
+  );
+
+  opacity: .45;
+}
+
+/* TITLE */
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #c6c7f8;
+
+  text-shadow:
+    0 0 6px rgba(127,135,255,.45),
+    0 0 12px rgba(0,169,186,.18);
+}
+
+/* CLOCK */
+#clock {
+  font-size: 32px;
+  font-weight: 600;
+  color: #7f87ff;
+
+  text-shadow:
+    0 0 10px rgba(127,135,255,.6),
+    0 0 20px rgba(0,169,186,.4);
+}
+
+/* WEATHER */
+.weather-layout {
+  display: flex;
+  align-items: left;
+  gap: 12px;
+}
+
+.weather-temp {
+  font-size: 44px;
+  font-weight: 700;
+  color: #7f87ff;
+
+  text-shadow:
+    0 0 12px rgba(127,135,255,.6),
+    0 0 24px rgba(0,169,186,.4);
+}
+
+.weather-details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* TAROT */
+.tarot-layout {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+#tarotCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 64px;
+  width: 64px;
+  min-width: 64px;
+
+  font-size: 13px;
+  font-weight: 600;
+  color: #c6c7f8;
+  text-align: center;
+  text-shadow:
+    0 0 8px rgba(127, 135, 255, .8),
+    0 0 16px rgba(0, 169, 186, .5);
+}
+
+#tarotCard img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 8px;
+  margin-bottom: 4px;
+
+  filter:
+    drop-shadow(0 0 8px rgba(127, 135, 255, .6))
+    drop-shadow(0 0 14px rgba(0, 169, 186, .5));
+}
+
+.tarot-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+#kodaReaction,
+#tarotMeaning {
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+#kodaReaction {
+  opacity: 0.85;
+  font-style: italic;
+}
+
+#kodaReaction img,
+.koda-image {
+  width: 33px;
+  height: 33px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+/* COSMIC */
+.cosmic-row {
+  display: flex;
+  gap: 14px;
+}
+
+.moon-column,
+.hebrewSky {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* CALENDAR */
+#calendarPanel .calendar-event {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* MEDIA */
+.media-line {
+  display: flex;
+  gap: 8px;
+}
+
+/* RSS */
+#rss-ticker {
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+}
+
+#rss-content {
+  display: inline-block;
+  white-space: nowrap;
+  padding-left: 100%;
+  animation: tickerScroll 180s linear infinite;
+  will-change: transform;
+}
+
+#rss-content span {
+  display: inline-block;
+  margin-right: 42px;
+}
+
+@keyframes tickerScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* STARDUST */
+.stardust {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: white;
+  animation: stardustFloat 20s linear forwards;
+}
+
+@keyframes stardustFloat {
+  100% { transform: translateY(-400px); opacity: 0; }
+}

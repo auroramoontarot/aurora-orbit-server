@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* AURORA PARTICLES */
+
+.aurora-particle{
+position:fixed;
+width:4px;
+height:4px;
+background:#cbecf5;
+border-radius:50%;
+pointer-events:none;
+opacity:.8;
+animation:particleFloat 8s linear forwards;
+}
+
+@keyframes particleFloat{
+0%{
+transform:translateY(0) scale(1);
+opacity:0;
+}
+10%{
+opacity:1;
+}
+100%{
+transform:translateY(-100vh) scale(.4);
+opacity:0;
+}
+}
+
+/* AURORA RIBBON */
+
+body.aurora-active::before{
+content:"";
+position:fixed;
+top:-50%;
+left:-50%;
+width:200%;
+height:200%;
+
+background:
+radial-gradient(circle at 20% 40%, rgba(0,255,170,.15), transparent 40%),
+radial-gradient(circle at 70% 60%, rgba(140,0,255,.12), transparent 45%),
+radial-gradient(circle at 40% 80%, rgba(0,180,255,.12), transparent 45%);
+
+animation:auroraDrift 40s linear infinite;
+
+pointer-events:none;
+z-index:-1;
+}
+
+@keyframes auroraDrift{
+0%{transform:translateX(0) translateY(0)}
+50%{transform:translateX(-10%) translateY(-5%)}
+100%{transform:translateX(0) translateY(0)}
+}
+
+body::after{
+content:"";
+position:fixed;
+inset:0;
+
+background:
+radial-gradient(white 1px, transparent 1px),
+radial-gradient(#cbecf5 1px, transparent 1px);
+
+background-size:90px 90px,140px 140px;
+
+opacity:.06;
+
+animation:starDrift 180s linear infinite;
+
+pointer-events:none;
+z-index:-2;
+}
+
+@keyframes starDrift{
+0%{
+transform:translateY(0);
+}
+100%{
+transform:translateY(-800px);
+}
+}
+
+body{
+margin:0;
+font-family:'Quicksand',sans-serif;
+background:radial-gradient(circle at top,#1a2238,#0c0f1a);
+color:#cbecf5;
+}
+
+/* HEADER */
+
+.header{
+text-align:center;
+padding:20px;
+font-size:28px;
+font-weight:700;
+letter-spacing:2px;
+
+background:linear-gradient(90deg,#7f87ff,#00a9ba,#cbecf5);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+animation:aurora 10s linear infinite;
+background-size:300% 100%;
+}
+
+@keyframes aurora{
+0%{background-position:0%}
+100%{background-position:400%}
+}
+
+.aurora-active .panel{
+box-shadow:
+0 0 30px rgba(0,255,180,.35),
+0 0 50px rgba(120,0,255,.25),
+inset 0 0 10px rgba(255,255,255,.08);
+
+border-color:rgba(0,255,180,.45);
+
+animation:auroraGlow 6s ease-in-out infinite;
+}
+
+@keyframes auroraGlow{
+0%{filter:hue-rotate(0deg)}
+50%{filter:hue-rotate(30deg)}
+100%{filter:hue-rotate(0deg)}
+}
+
+/* GRID */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+padding:20px;
+max-width:1400px;
+margin:auto;
+}
+
+/* PANELS */
+
+.panel{
+position:relative;
+
+background:rgba(255,255,255,.05);
+backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,.15);
+border-radius:16px;
+
+padding:16px;
+
+box-shadow:
+0 0 20px rgba(0,169,186,.25),
+inset 0 0 10px rgba(255,255,255,.05);
+
+min-height:160px;
+display:flex;
+flex-direction:column;
+justify-content:flex-start;
+align-items:flex-start;
+transition:all .6s ease;
+overflow:hidden;
+}
+
+.panel::before{
+content:"";
+position:absolute;
+inset:-1px;
+
+border-radius:16px;
+
+background:linear-gradient(
+120deg,
+#7f87ff,
+#00a9ba,
+#cbecf5,
+#7f87ff
+);
+
+background-size:300% 300%;
+
+opacity:.25;
+
+filter:blur(8px);
+
+animation:holoShift 12s linear infinite;
+
+z-index:-1;
+}
+
+@keyframes holoShift{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+.panel-title{
+font-size:16px;
+font-weight:700;
+margin-bottom:10px;
+opacity:.9;
+width:100%;
+text-align:center;
+
+letter-spacing:1px;
+
+text-shadow:
+0 0 6px rgba(0,169,186,.6),
+0 0 10px rgba(127,135,255,.4);
+}
+
+.panel::after{
+content:"";
+position:absolute;
+inset:0;
+
+background:linear-gradient(
+120deg,
+transparent 30%,
+rgba(203,236,245,.15),
+transparent 70%
+);
+
+background-size:200% 100%;
+
+pointer-events:none;
+opacity:.2;
+
+animation:panelShimmer 12s linear infinite;
+}
+
+@keyframes panelShimmer{
+0%{
+background-position:-200% 0;
+}
+100%{
+background-position:200% 0;
+}
+}
+
+/* OBSERVATORY */
+
+.weather{
+font-size:18px;
+line-height:1.5;
+}
+
+/* MOON */
+
+.moon{
+font-size:42px;
+margin-top:10px;
+align-self:center;
+text-align:center;
+
+text-shadow:
+0 0 10px rgba(203,236,245,.8),
+0 0 18px rgba(127,135,255,.6);
+}
+
+#moonName{
+align-self:center;
+text-align:center;
+margin-top:4px;
+}
+
+/* QUEST */
+
+.quest{
+font-weight:700;
+}
+
+/* HABITS */
+
+.habits{
+display:flex;
+flex-direction:column;
+gap:6px;
+font-size:14px;
+align-items:flex-start;
+text-align:left;
+}
+
+.habit-row{
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+/* KODA */
+
+.koda{
+font-size:14px;
+line-height:1.6;
+}
+
+#koda{
+position:fixed;
+bottom:20px;
+left:20px;
+width:96px;
+image-rendering:pixelated;
+image-rendering:crisp-edges;
+transition:all 6s linear;
+pointer-events:none;
+filter:drop-shadow(0 0 6px rgba(0,169,186,.6));
+}
+
+#kodaReaction{
+margin-top:8px;
+font-style:italic;
+opacity:0.9;
+}
+
+.pawprint{
+position:fixed;
+font-size:14px;
+opacity:.7;
+pointer-events:none;
+animation:pawFade 6s forwards;
+filter:drop-shadow(0 0 6px rgba(0,169,186,.7));
+}
+
+@keyframes pawFade{
+0%{
+opacity:.8;
+transform:scale(.8);
+}
+100%{
+opacity:0;
+transform:scale(1.4);
+}
+}
+
+#tarot-current img{
+display:block;
+margin:6px auto;
+border-radius:10px;
+box-shadow:
+0 0 10px rgba(0,169,186,.5),
+0 0 20px rgba(127,135,255,.35);
+}
+
+#tarot-current{
+width:100%;
+text-align:center;
+}
+
+.moonbeam{
+position:fixed;
+font-size:14px;
+pointer-events:none;
+animation:moonbeamBurst 2s ease-out forwards;
+}
+
+@keyframes moonbeamBurst{
+0%{
+transform:scale(.4);
+opacity:1;
+}
+100%{
+transform:translateY(-120px) scale(1.6);
+opacity:0;
+}
+}
+
+/* WORLD FOOTER */
+
+.world-footer{
+max-width:1400px;
+margin:0 auto 20px auto;
+min-height:auto;
+}
+
+.world-stats{
+font-size:14px;
+line-height:1.65;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:12px 20px;
+width:100%;
+}
+
+.world-stat-group{
+background:rgba(255,255,255,.04);
+border-radius:12px;
+padding:10px 12px;
+}
+
+.world-stat-group b{
+display:block;
+margin-bottom:6px;
+color:#c6c7f8;
+}
+
+/* NAV BAR */
+.nav {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin: 10px 0 20px 0;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7f87ff, #00a9ba);
+  border: none;
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .35);
+  transition: .25s;
+}
+
+.nav-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 16px rgba(127, 135, 255, .45), 0 0 24px rgba(0, 169, 186, .35);
+}
+
+@media (max-width: 1000px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .world-stats{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media (max-width: 700px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .world-stats{
+    grid-template-columns:1fr;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+🌙 Aurora Orbit Dashboard
+</div>
+
+<div class="nav">
+  <button class="nav-btn" onclick="openPanel('/daily-orbit.html')">📝 Daily Orbit</button>
+  <button class="nav-btn" onclick="openPanel('/control.html')">⚙ Control Panel</button>
+  <button class="nav-btn" onclick="openPanel('/aurora-moon-map.html')">🗺 Aurora Map</button>
+  <button class="nav-btn" onclick="openPanel('/')">🎥 Stream Overlay</button>
+</div>
+
+<div class="grid">
+
+<div class="panel">
+
+<div class="panel-title">🔭 Observatory</div>
+
+<div id="weather" class="weather">
+Observatory online...
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">🌙 Moon Phase</div>
+
+<div id="moon" class="moon"></div>
+<div id="moonName" style="text-align:center;font-size:13px;opacity:.7"></div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">🌌 Aurora Watch</div>
+
+<div id="aurora">
+Scanning solar winds...
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">🔮 Today's Tarot</div>
+
+<div id="tarot-current">Drawing card...</div>
+
+<div id="kodaReaction"></div>
+
+<div style="margin-top:8px;font-size:13px;opacity:.8">
+Recent Draws
+</div>
+
+<div id="tarot-log" style="font-size:13px"></div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">✨ Energy Forecast</div>
+
+<div id="energyForecast">
+Calculating cosmic vibes...
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">🌠 Moonbeam Alerts</div>
+
+<div id="alerts">
+Scanning the cosmos...
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">🧭 Current Quest</div>
+
+<div id="quest" class="quest">Loading...</div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">🥄 Spoonie Status</div>
+
+<div id="habits" class="habits"></div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">🪵 Koda Log</div>
+
+<div class="koda">
+☐ Walk<br>
+☐ Swim<br>
+☐ Training<br>
+☐ Stick Collected
+</div>
+
+</div>
+
+</div>
+
+<div class="world-footer panel">
+
+<div class="panel-title">🌍 Aurora World</div>
+
+<div id="worldStats" class="world-stats">
+Loading world telemetry...
+</div>
+
+</div>
+
+<script>
+let latestWeather = {};
+let tarotHistory = [];
+let currentMoon = "";
+let currentAurora = 0;
+
+const moonbeamSound = new Audio("/media/moonbeam.mp3");
+moonbeamSound.volume = 0.4;
+
+let savedTarot = localStorage.getItem("tarotHistory");
+
+if(savedTarot){
+  tarotHistory = JSON.parse(savedTarot);
+  updateTarotLog();
+}
+
+/* WEATHER */
+
+async function loadWeather(){
+
+try{
+
+const res = await fetch("/weather");
+if(!res.ok) throw new Error("Weather fetch failed");
+
+const data = await res.json();
+
+if(!data.observations || !data.observations.length){
+
+document.getElementById("weather").innerText =
+"Observatory offline";
+
+updateEnergyForecast();
+updateAlerts();
+
+return;
+
+}
+
+const obs = data.observations[0];
+
+const temp = Math.round(obs.imperial?.temp ?? 0);
+const feels = Math.round(obs.imperial?.heatIndex || obs.imperial?.windChill || temp);
+const humidity = obs.humidity ?? "?";
+
+const wind = Math.round(obs.imperial?.windSpeed ?? 0);
+const gust = Math.round(obs.imperial?.windGust || 0);
+
+const pressure = obs.imperial?.pressure ?? "?";
+const rain = obs.imperial?.precipTotal ?? 0;
+
+latestWeather = {
+temp,
+humidity,
+wind,
+pressure,
+rain
+};
+
+document.getElementById("weather").innerHTML =
+
+`Temp: ${temp}°F (Feels ${feels}°)<br>
+Humidity: ${humidity}%<br>
+Wind: ${wind} mph (Gust ${gust})<br>
+Pressure: ${pressure} in<br>
+Rain Today: ${rain} in`;
+
+updateEnergyForecast();
+updateAlerts();
+
+}catch(err){
+
+console.log("Weather failed:", err);
+document.getElementById("weather").innerText =
+"Observatory offline";
+
+}
+
+}
+
+/* TAROT */
+
+async function loadTarot(){
+
+try{
+
+let res = await fetch("/tarot-current?nocache=" + Date.now());
+if(!res.ok) throw new Error("Tarot route failed");
+
+let data = await res.json();
+
+if(data.card){
+
+const card = data.card;
+
+const file = card
+.toLowerCase()
+.replace(/ /g,"-")
+.replace(/[’']/g,"");
+
+document.getElementById("tarot-current").innerHTML =
+`<img src="/media/tarot/${file}.png" style="width:90px;margin-top:6px;"><br>${card}`;
+
+reactToTarot(card);
+
+/* STORE HISTORY */
+
+if(tarotHistory[0] !== card){
+
+tarotHistory.unshift(card);
+
+if(tarotHistory.length > 10){
+tarotHistory.pop();
+}
+
+updateTarotLog();
+localStorage.setItem("tarotHistory", JSON.stringify(tarotHistory));
+
+}
+
+}else{
+
+document.getElementById("tarot-current").innerText = "No current card";
+
+}
+
+}catch(err){
+
+console.log("Tarot failed:", err);
+document.getElementById("tarot-current").innerText = "Tarot offline";
+
+}
+
+}
+
+/* QUEST */
+
+async function loadQuest(){
+
+try{
+
+let res = await fetch("/quest");
+if(!res.ok) throw new Error("Quest route failed");
+
+let data = await res.json();
+
+document.getElementById("quest").innerText =
+data.current || "✨ All Missions Complete ✨";
+
+}catch(err){
+
+console.log("Quest failed:", err);
+document.getElementById("quest").innerText = "Quest log offline";
+
+}
+
+}
+
+/* MOON PHASE */
+
+function updateMoon(){
+
+const lp = 2551443;
+const now = new Date();
+const newMoon = new Date(1970,0,7,20,35,0);
+const phase = ((now - newMoon)/1000) % lp;
+const index = Math.floor((phase/lp)*8);
+
+const phases = [
+{icon:"🌑",name:"New Moon"},
+{icon:"🌒",name:"Waxing Crescent"},
+{icon:"🌓",name:"First Quarter"},
+{icon:"🌔",name:"Waxing Gibbous"},
+{icon:"🌕",name:"Full Moon"},
+{icon:"🌖",name:"Waning Gibbous"},
+{icon:"🌗",name:"Last Quarter"},
+{icon:"🌘",name:"Waning Crescent"}
+];
+
+const moonEl = document.getElementById("moon");
+
+moonEl.innerText = phases[index].icon;
+currentMoon = phases[index].name;
+
+document.getElementById("moonName").innerText = currentMoon;
+
+moonEl.classList.remove("fullmoon");
+
+if(currentMoon === "Full Moon"){
+moonEl.classList.add("fullmoon");
+}
+}
+
+/* AURORA */
+
+async function loadAurora(){
+
+try{
+
+const res = await fetch("/aurastream");
+if(!res.ok) throw new Error("Aurora route failed");
+
+const data = await res.json();
+
+let kp = Number(data.kp || 0);
+currentAurora = kp;
+
+document.getElementById("aurora").innerText =
+"KP Index: " + kp;
+
+updateEnergyForecast();
+
+if(kp >= 5){
+
+document.body.classList.add("aurora-active");
+
+document.body.style.boxShadow =
+"inset 0 0 120px rgba(0,255,150,.25), inset 0 0 200px rgba(120,0,255,.25)";
+
+const koda = document.getElementById("koda");
+
+if(koda){
+koda.style.filter =
+"drop-shadow(0 0 8px #00ffa6) drop-shadow(0 0 14px #8b5cf6)";
+}
+
+}else{
+
+document.body.classList.remove("aurora-active");
+
+document.body.style.boxShadow = "none";
+
+const koda = document.getElementById("koda");
+
+if(koda){
+koda.style.filter =
+"drop-shadow(0 0 6px rgba(0,169,186,.6))";
+}
+
+}
+
+}catch(err){
+
+console.log("Aurora failed:", err);
+document.getElementById("aurora").innerText =
+"Aurora data unavailable";
+
+}
+}
+
+/* HABITS */
+
+async function loadHabits(){
+
+try{
+
+let res = await fetch("/data/aurora-habits.json?nocache=" + Date.now());
+if(!res.ok) throw new Error("Habits file failed");
+
+let data = await res.json();
+
+let html="";
+
+for(let key in data){
+
+if(typeof data[key] === "boolean"){
+html += `<div class="habit-row">${data[key] ? "✓":"☐"} ${key}</div>`;
+}
+
+}
+
+if(typeof data.energy !== "undefined"){
+html += `<div style="margin-top:8px;"><b>Energy:</b> ${data.energy}</div>`;
+}
+
+document.getElementById("habits").innerHTML = html || "No habits logged";
+
+}catch(err){
+
+console.log("Habits failed:", err);
+document.getElementById("habits").innerText =
+"Habits offline";
+
+}
+
+}
+
+/* WORLD STATS */
+
+async function loadWorldStats(){
+
+try{
+
+let res = await fetch("/data/aurora-moon-data.json?nocache=" + Date.now());
+if(!res.ok) throw new Error("World data failed");
+
+let data = await res.json();
+
+document.getElementById("worldStats").innerHTML =
+`<div class="world-stat-group">
+  <b>Pokémon GO</b>
+  🐾 Pokémon caught: ${data.pokemon_caught || 0}<br>
+  🌀 PokéStops spun: ${data.pokestops_spun || 0}<br>
+  ⚔️ Raids won: ${data.raids_won || 0}<br>
+  🥚 Eggs hatched: ${data.eggs_hatched || 0}
+</div>
+
+<div class="world-stat-group">
+  <b>TCG Pocket</b>
+  📦 Packs opened: ${data.packs_opened || 0}<br>
+  ✨ Rare cards: ${data.rare_cards || 0}<br>
+  ⭐ EX cards: ${data.ex_cards || 0}
+</div>
+
+<div class="world-stat-group">
+  <b>Stewardship</b>
+  🌿 Park cleanups: ${data.park_cleanups || 0}<br>
+  🚰 Hydrants cleared: ${data.hydrant_clear || 0}<br>
+  🌀 Drains cleared: ${data.drain_clear || 0}<br>
+  🗑 Trash bags collected: ${data.trash_bags || 0}
+</div>
+
+<div class="world-stat-group">
+  <b>Nature + Moonbeams</b>
+  🕊 Lifebirds seen: ${data.lifebirds || 0}<br>
+  🧭 Ava adventures: ${data.ava_adventures || 0}<br>
+  🍃 Nature projects: ${data.nature_projects || 0}<br>
+  📚 CE hours: ${data.ce_hours || 0}
+</div>`;
+
+}catch(err){
+
+console.log("World stats failed:", err);
+document.getElementById("worldStats").innerText = "World telemetry offline";
+
+}
+
+}
+
+/* KODA */
+
+function wanderKoda(){
+
+const koda = document.getElementById("koda");
+if(!koda) return;
+
+const w = window.innerWidth;
+const h = window.innerHeight;
+
+let x;
+let y;
+
+/* WEATHER BEHAVIOR */
+
+if(latestWeather.temp && latestWeather.temp > 85){
+
+x = Math.random()*(w-120);
+y = h-120;
+
+}
+
+else if(latestWeather.wind && latestWeather.wind > 20){
+
+x = 40;
+y = 40;
+
+}
+
+else{
+
+x = Math.random()*(w-200)+100;
+y = Math.random()*(h-200)+100;
+
+}
+
+koda.style.left = x + "px";
+koda.style.top = y + "px";
+dropPawprint(x,y);
+
+/* MOON BEHAVIOR */
+
+if(currentMoon.includes("Full")){
+koda.style.transform = "scale(1.1)";
+}else{
+koda.style.transform = "scale(1)";
+}
+
+}
+
+/* ENERGY */
+
+function updateEnergyForecast(){
+
+let vibe = "Balanced day";
+
+if(currentMoon.includes("Full")){
+vibe = "High intuition & tarot power";
+}
+
+else if(currentMoon.includes("New")){
+vibe = "Rest, reset, and plant intentions";
+}
+
+if(currentAurora >= 5){
+vibe = "Cosmic energy surge ⚡ Great for readings";
+}
+
+if(latestWeather.wind && latestWeather.wind > 20){
+vibe = "Grounding day — cozy vibes recommended";
+}
+
+if(latestWeather.temp && latestWeather.temp > 85){
+vibe = "Low spoon day — hydrate & slow magic";
+}
+
+document.getElementById("energyForecast").innerHTML =
+
+`Moon: ${currentMoon}<br>
+Aurora KP: ${currentAurora}<br>
+Weather Temp: ${latestWeather.temp ?? "?"}°F<br><br>
+<b>${vibe}</b>`;
+
+}
+
+/* ALERTS */
+
+function updateAlerts(){
+
+let alerts = [];
+
+if(currentAurora >= 5){
+alerts.push("🌌 Aurora energy rising — intuition boosted");
+moonbeamSound.play().catch(()=>{});
+spawnMoonbeam();
+}
+
+if(currentMoon.includes("Full")){
+alerts.push("🌕 Full Moon magic active");
+}
+
+if(currentMoon.includes("New")){
+alerts.push("🌑 New Moon reset energy");
+}
+
+if(latestWeather.wind && latestWeather.wind > 25){
+alerts.push("💨 Strong winds outside");
+}
+
+if(latestWeather.temp && latestWeather.temp > 90){
+alerts.push("🔥 Heat warning — hydrate!");
+}
+
+if(alerts.length === 0){
+alerts.push("✨ Cosmic balance is calm");
+}
+
+document.getElementById("alerts").innerHTML =
+alerts.join("<br>");
+
+}
+
+/* TAROT REACTION */
+
+function reactToTarot(card){
+
+if(card.includes("Sun")){
+document.body.style.background =
+"radial-gradient(circle at top,#2b2b00,#0c0f1a)";
+}
+
+else if(card.includes("Moon")){
+document.body.style.background =
+"radial-gradient(circle at top,#1a2238,#05070f)";
+}
+
+else if(card.includes("Tower")){
+document.body.style.boxShadow =
+"inset 0 0 200px rgba(255,0,0,.25)";
+}
+
+else if(card.includes("Star")){
+document.body.style.boxShadow =
+"inset 0 0 200px rgba(120,200,255,.25)";
+}
+
+const koda = document.getElementById("koda");
+if(!koda) return;
+
+if(card.includes("Sun")){
+koda.style.transform = "scale(1.2)";
+}
+
+else if(card.includes("Moon")){
+koda.style.transform = "scale(1.15)";
+}
+
+else if(card.includes("Tower")){
+koda.style.transform = "scale(.8) rotate(-6deg)";
+}
+
+else if(card.includes("Star")){
+koda.style.filter =
+"drop-shadow(0 0 10px #8ecfff)";
+}
+
+}
+
+function dropPawprint(x,y){
+
+const paw = document.createElement("div");
+
+paw.className = "pawprint";
+paw.innerText = "🐾";
+
+paw.style.left = x + "px";
+paw.style.top = y + "px";
+
+document.body.appendChild(paw);
+
+setTimeout(()=>paw.remove(),6000);
+
+}
+
+function updateTarotLog(){
+
+let html = "";
+
+if(tarotHistory.length <= 1){
+document.getElementById("tarot-log").innerHTML = "No previous draws";
+return;
+}
+
+for(let card of tarotHistory.slice(1)){
+html += "• " + card + "<br>";
+}
+
+document.getElementById("tarot-log").innerHTML = html;
+
+}
+
+function spawnAuroraParticle(){
+
+if(currentAurora < 5) return;
+
+const p = document.createElement("div");
+p.className = "aurora-particle";
+
+p.style.left = Math.random()*window.innerWidth + "px";
+p.style.bottom = "0px";
+
+document.body.appendChild(p);
+
+setTimeout(()=>{
+p.remove();
+},8000);
+
+}
+
+function spawnMoonbeam(){
+
+for(let i=0;i<6;i++){
+
+const spark = document.createElement("div");
+
+spark.className="moonbeam";
+spark.innerText="✨";
+
+spark.style.left =
+(window.innerWidth/2 + (Math.random()*120-60))+"px";
+
+spark.style.top =
+(window.innerHeight/2 + (Math.random()*60-30))+"px";
+
+document.body.appendChild(spark);
+
+setTimeout(()=>spark.remove(),2000);
+
+}
+
+}
+
+/* INIT */
+
+loadWeather();
+loadTarot();
+loadQuest();
+loadHabits();
+loadWorldStats();
+updateMoon();
+loadAurora();
+wanderKoda();
+updateEnergyForecast();
+updateAlerts();
+spawnAuroraParticle();
+
+/* REFRESH */
+
+setInterval(loadWeather,60000);
+setInterval(loadTarot,60000);
+setInterval(loadQuest,15000);
+setInterval(loadHabits,15000);
+setInterval(loadWorldStats,60000);
+setInterval(updateMoon,3600000);
+setInterval(loadAurora,300000);
+setInterval(wanderKoda,8000);
+setInterval(updateEnergyForecast,15000);
+setInterval(updateAlerts,15000);
+setInterval(spawnAuroraParticle,1200);
+
+function openPanel(url){
+window.open(url,"_blank","width=1400,height=900");
+}
+
+</script>
+<img id="koda" src="/images/koda-pixel.png">
+</body>
+</html>

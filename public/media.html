@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="overlay.css">
+</head>
+
+<body>
+
+<!-- TAROT + MEDIA ROW -->
+
+<div class="row">
+
+<div class="panel tarot-panel">
+<div class="aurora"></div>
+<div class="title">DAILY TAROT</div>
+
+<div id="tarotCard">Pulling the cards...</div>
+<div id="tarotMeaning"></div>
+
+</div>
+
+<div class="panel">
+<div class="aurora"></div>
+<div class="title">MOONBEAM MEDIA</div>
+
+<div id="reading">📚 —</div>
+<div id="watching">📺 —</div>
+<div id="movie">🎬 —</div>
+
+</div>
+
+</div>
+
+<script>
+
+async function loadMedia(){
+
+try{
+
+const res = await fetch("/media");
+const data = await res.json();
+
+/* BOOK */
+
+document.getElementById("reading").innerText =
+data.book ? `📚 ${data.book.title} — ${data.book.author}` : "📚 —";
+
+/* TV */
+
+document.getElementById("watching").innerText =
+data.tv ? `📺 ${data.tv.title} ${data.tv.episode}` : "📺 —";
+
+/* MOVIE */
+
+document.getElementById("movie").innerText =
+data.movie ? `🎬 ${data.movie.title}` : "🎬 —";
+
+/* TAROT */
+
+if(data.tarot){
+
+document.getElementById("tarotCard").innerText =
+`🔮 ${data.tarot.card}`;
+
+document.getElementById("tarotMeaning").innerText =
+data.tarot.meaning;
+
+}else{
+
+document.getElementById("tarotCard").innerText = "🔮 —";
+document.getElementById("tarotMeaning").innerText = "";
+
+}
+
+}catch(err){
+
+console.log("Media widget error:",err);
+
+}
+
+}
+
+loadMedia();
+setInterval(loadMedia,30000);
+
+</script>
+
+</body>
+</html>

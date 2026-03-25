@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:transparent;
+font-family:'Quicksand', sans-serif;
+color:#cbecf5;
+}
+
+.map-wrapper{
+position:relative;
+width:1350px;
+height:1080px;
+margin:0 auto;
+overflow:hidden;
+}
+
+.map{
+position:relative;
+width:1350px;
+height:1080px;
+background-image:url("images/auroramoonmap.png");
+background-size:contain;
+background-repeat:no-repeat;
+background-position:center;
+}
+
+#auroraLayer{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+overflow:hidden;
+z-index:1;
+}
+
+.auroraRibbon{
+position:absolute;
+width:160%;
+height:220px;
+
+background:linear-gradient(
+90deg,
+rgba(127,135,255,0.15),
+rgba(0,169,186,0.25),
+rgba(198,199,248,0.18),
+rgba(0,169,186,0.25),
+rgba(127,135,255,0.15)
+);
+
+filter:blur(30px);
+opacity:.6;
+
+animation:auroraDrift 120s linear infinite;
+}
+
+@keyframes auroraDrift{
+0%{transform:translateX(-20%) skewX(-10deg);}
+100%{transform:translateX(20%) skewX(-10deg);}
+}
+
+.sky{
+color:#7f87ff;
+font-size:35px;
+font-weight:700;
+transition:text-shadow 2s ease;
+}
+
+.aurora1{
+text-shadow:0 0 8px #7f87ff;
+}
+
+.aurora2{
+text-shadow:
+0 0 10px #7f87ff,
+0 0 20px #00a9ba;
+}
+
+.aurora3{
+text-shadow:
+0 0 10px #7f87ff,
+0 0 20px #00a9ba,
+0 0 30px #c7ecff;
+}
+
+.auroraGlow{
+animation:auroraBreath 12s ease-in-out infinite;
+}
+
+@keyframes auroraBreath{
+
+0%{
+text-shadow:
+0 0 8px rgba(127,135,255,.7),
+0 0 18px rgba(0,169,186,.5),
+0 0 28px rgba(198,199,248,.4);
+}
+
+50%{
+text-shadow:
+0 0 10px rgba(127,135,255,.8),
+0 0 22px rgba(0,169,186,.6),
+0 0 34px rgba(198,199,248,.45);
+}
+
+100%{
+text-shadow:
+0 0 8px rgba(127,135,255,.7),
+0 0 18px rgba(0,169,186,.5),
+0 0 28px rgba(198,199,248,.4);
+}
+
+}
+
+.creek{
+color:#00a9ba;
+}
+
+.location{
+position:absolute;
+background:rgba(43,39,114,.6);
+border:1px solid #7f87ff;
+padding:6px 12px;
+border-radius:10px;
+box-shadow:0 0 8px rgba(127,135,255,.4);
+font-size:14px;
+pointer-events:none;
+z-index:3;
+}
+
+#sky{
+position:absolute;
+top:345px;
+left:50%;
+transform:translateX(-50%);
+z-index:3;
+}
+
+#creek{
+top:750px;
+left:350px;
+}
+
+#park{
+top:600px;
+left:600px;
+}
+
+#warpPipeLoc{
+top:700px;
+left:800px;
+}
+
+#haven{
+top:775px;
+left:725px;
+}
+
+#recycling{
+top:675px;
+left:160px;
+}
+
+#basinLoc{
+top:850px;
+left:560px;
+}
+
+#birdGarden{
+top:900px;
+left:225px;
+}
+
+#family{
+top:815px;
+left:725px;
+}
+
+#koda{
+position:absolute;
+left:55%;
+top:65%;
+transform:translate(-50%, -50%);
+width:70px;
+pointer-events:none;
+z-index:6;
+animation:kodaIdle 4s ease-in-out infinite;
+transition:transform .25s ease;
+}
+
+@keyframes kodaIdle{
+0%{transform:translate(-50%, -50%)}
+50%{transform:translate(-50%, -52%)}
+100%{transform:translate(-50%, -50%)}
+}
+
+.pawprint{
+position:absolute;
+font-size:14px;
+opacity:.6;
+pointer-events:none;
+animation:pawFade 18s linear forwards;
+z-index:5;
+}
+
+@keyframes pawFade{
+0%{opacity:.7; transform:scale(.8);}
+100%{opacity:0; transform:scale(.5);}
+}
+
+.meteor{
+position:absolute;
+font-size:26px;
+pointer-events:none;
+animation:meteorFly 4s linear forwards;
+z-index:5;
+}
+
+@keyframes meteorFly{
+0%{
+transform:translate(-10vw,-10vh);
+opacity:1;
+}
+100%{
+transform:translate(110vw,80vh);
+opacity:0;
+}
+}
+
+#eventPopup{
+position:absolute;
+top:120px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(43,39,114,.85);
+border:1px solid #7f87ff;
+padding:10px 16px;
+border-radius:12px;
+box-shadow:0 0 15px rgba(127,135,255,.6);
+font-size:16px;
+opacity:0;
+transition:opacity 1s ease;
+pointer-events:none;
+z-index:10;
+}
+
+.showEvent{
+opacity:1;
+}
+
+#pokemonLayer{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:5;
+}
+
+.pokemon{
+position:absolute;
+font-size:28px;
+animation:fadePokemon 10s forwards;
+z-index:5;
+}
+
+@keyframes fadePokemon{
+0% {opacity:0; transform:scale(.5);}
+10% {opacity:1; transform:scale(1);}
+90% {opacity:1;}
+100% {opacity:0;}
+}
+
+.guardian{
+text-shadow:
+0 0 10px #7f87ff,
+0 0 20px #00a9ba,
+0 0 30px #c6c7f8;
+font-size:34px;
+}
+
+.sylveonSparkle{
+animation:sparklePulse 3s infinite alternate;
+}
+
+@keyframes sparklePulse{
+0%{filter:drop-shadow(0 0 6px #ffb6f9);}
+100%{filter:drop-shadow(0 0 14px #ffc6ff);}
+}
+
+.stardust{
+position:absolute;
+font-size:14px;
+opacity:.8;
+animation:driftDust 6s linear forwards;
+z-index:5;
+}
+
+@keyframes driftDust{
+0%{opacity:0; transform:translateY(0) scale(.5);}
+10%{opacity:1;}
+100%{opacity:0; transform:translateY(-80px) scale(1.2);}
+}
+
+.birdFly{
+position:absolute;
+font-size:26px;
+animation:flyBird 6s forwards;
+z-index:5;
+}
+
+@keyframes flyBird{
+0% {opacity:1; transform:translateY(0);}
+100% {opacity:0; transform:translateY(-120px);}
+}
+
+.wild-pokemon{
+position:absolute;
+font-size:28px;
+pointer-events:none;
+transition:transform 35s linear, opacity 5s;
+filter:drop-shadow(0 0 6px rgba(255,255,255,.6));
+animation:pokeFloat 6s ease-in-out infinite;
+z-index:5;
+}
+
+@keyframes pokeFloat{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-4px);}
+100%{transform:translateY(0px);}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="map-wrapper">
+  <div class="map" id="map">
+    <div id="auroraLayer"></div>
+
+    <div class="sky" id="sky">
+      🌙 AURORA MOON SKIES ✨
+    </div>
+
+    <div class="location creek" id="creek">
+      🌊 Minnehaha Creek
+    </div>
+
+    <div class="location" id="park">🌳 Meadowbrook Park</div>
+    <div class="location" id="warpPipeLoc">🚰 Aurora Warp Pipe</div>
+
+    <div class="location" id="haven">
+      🏡 Aurora Moon Haven
+    </div>
+
+    <div class="location" id="recycling">
+      ♻️ Recycling & Organics Drop
+    </div>
+
+    <div class="location" id="basinLoc">🌧 Aurora Moon Basin</div>
+    <div class="location" id="birdGarden">🐦 Bird Garden</div>
+
+    <div class="location" id="family">
+      👧 Ava & 🐕 Koda at the Haven
+    </div>
+
+    <img id="koda" src="images/koda-travel.png">
+
+    <div id="pokemonLayer"></div>
+
+    <div id="eventPopup">
+      ✨ A peaceful adventure at Minnehaha Creek
+    </div>
+  </div>
+</div>
+
+<script>
+
+let currentKP = 0;
+let lastBirdCount = 0;
+let nightPhase = "dusk";
+
+let latestMapWeather = null;
+let auraOverride = false;
+let auroraActive = false;
+let kodaMoveInterval = null;
+
+function spawnAurora(){
+  let layer = document.getElementById("auroraLayer");
+  if(!layer) return;
+
+  const existing = layer.querySelectorAll(".auroraRibbon");
+  if(existing.length >= 3) return;
+
+  let ribbon = document.createElement("div");
+  ribbon.className = "auroraRibbon";
+
+  let top = 90 + Math.random() * 140;
+  ribbon.style.top = top + "px";
+
+  if(currentKP >= 6){
+    ribbon.style.opacity = ".82";
+    ribbon.style.height = "260px";
+  } else if(currentKP >= 5){
+    ribbon.style.opacity = ".68";
+    ribbon.style.height = "230px";
+  } else {
+    ribbon.style.opacity = ".52";
+    ribbon.style.height = "210px";
+  }
+
+  layer.appendChild(ribbon);
+
+  setTimeout(()=>{
+    ribbon.remove();
+  }, 90000);
+}
+
+function updateSkyLabel(){
+  let sky = document.getElementById("sky");
+  if(!sky) return;
+
+  let label = "🌙 Aurora Moon Skies ✨";
+  let phaseClass1 = false;
+  let phaseClass2 = false;
+  let phaseClass3 = false;
+  let glow = false;
+
+  /* 🌙 BASE TIME-OF-DAY LAYER (THIS IS WHAT YOU LOST) */
+  if(nightPhase === "dawn"){
+    label = "🌅 Aurora Moon Dawn Skies";
+    phaseClass1 = true;
+  }
+  else if(nightPhase === "day"){
+    label = "☁️ Aurora Moon Day Skies";
+    phaseClass1 = true;
+  }
+  else if(nightPhase === "dusk"){
+    label = "🌙 Aurora Moon Evening Skies ✨";
+    phaseClass1 = true;
+  }
+  else if(nightPhase === "night"){
+    label = "🌌 Aurora Moon Night Skies";
+    phaseClass2 = true;
+  }
+  else if(nightPhase === "aurora"){
+    label = "✨ Aurora Moon Skies Awaken ✨";
+    phaseClass2 = true;
+    glow = true;
+  }
+
+  /* 🌦 WEATHER OVERRIDES (unchanged logic) */
+  if(latestMapWeather){
+
+    if(latestMapWeather.wind >= 25){
+      label = "💨 Windy Aurora Skies";
+      phaseClass1 = false;
+      phaseClass2 = true;
+      phaseClass3 = false;
+      glow = false;
+    }
+
+    if(latestMapWeather.rain > 0){
+      label = "🌧 Rain over Aurora Moon";
+      phaseClass1 = false;
+      phaseClass2 = true;
+      phaseClass3 = false;
+      glow = false;
+    }
+
+    if(latestMapWeather.temp >= 85 && nightPhase !== "day"){
+      label = "🔥 Warm Aurora Evening";
+      phaseClass1 = true;
+      phaseClass2 = false;
+      phaseClass3 = false;
+      glow = false;
+    }
+
+    if(latestMapWeather.humidity >= 85 && latestMapWeather.rain <= 0){
+      label = "☁️ Heavy Moon Air";
+      phaseClass1 = true;
+      phaseClass2 = false;
+      phaseClass3 = false;
+      glow = false;
+    }
+  }
+
+  /* 🌌 KP OVERRIDES (your original logic preserved) */
+  if(currentKP >= 4.5){
+    label = "🌌 Aurora Watch Active";
+    phaseClass1 = false;
+    phaseClass2 = true;
+    phaseClass3 = false;
+    glow = false;
+  }
+
+  if(currentKP >= 5.5){
+    label = "✨ Aurora Building ✨";
+    phaseClass1 = false;
+    phaseClass2 = true;
+    phaseClass3 = true;
+    glow = true;
+  }
+
+  if(currentKP >= 6.5){
+    label = "💫 Aurora Peak Over Aurora Moon 💫";
+    phaseClass1 = false;
+    phaseClass2 = false;
+    phaseClass3 = true;
+    glow = true;
+  }
+
+  sky.classList.remove("aurora1","aurora2","aurora3","auroraGlow");
+
+  if(phaseClass1) sky.classList.add("aurora1");
+  if(phaseClass2) sky.classList.add("aurora2");
+  if(phaseClass3) sky.classList.add("aurora3");
+  if(glow) sky.classList.add("auroraGlow");
+
+  sky.innerText = label;
+}
+
+function showMapEvent(message, duration = 7000){
+  const eventBox = document.getElementById("eventPopup");
+  if(!eventBox) return;
+
+  eventBox.innerText = message;
+  eventBox.classList.add("showEvent");
+
+  setTimeout(()=>{
+    eventBox.classList.remove("showEvent");
+  }, duration);
+}
+
+function reactKoda(kind){
+  const koda = document.getElementById("koda");
+  if(!koda) return;
+
+  koda.style.transition = "transform .25s ease";
+
+  if(kind === "excited"){
+    koda.style.transform = "translate(-50%, -50%) scale(1.12)";
+    setTimeout(()=>{
+      koda.style.transform = "translate(-50%, -50%)";
+    }, 500);
+  }
+
+  if(kind === "happy"){
+    koda.style.transform = "translate(-50%, -53%) scale(1.06)";
+    setTimeout(()=>{
+      koda.style.transform = "translate(-50%, -50%)";
+    }, 500);
+  }
+
+  if(kind === "alert"){
+    koda.style.transform = "translate(-50%, -50%) scale(1.1) rotate(-4deg)";
+    setTimeout(()=>{
+      koda.style.transform = "translate(-50%, -50%)";
+    }, 500);
+  }
+}
+
+function intensifyAuroraByKP(){
+  if(currentKP >= 6){
+    spawnAurora();
+    showMapEvent("✨ Aurora Peak overhead — the Moonbeams are glowing ✨", 8000);
+  } else if(currentKP >= 5){
+    spawnAurora();
+  }
+}
+
+async function updateAuroraKP(){
+  try{
+    let res = await fetch("https://services.swpc.noaa.gov/json/planetary_k_index_1m.json");
+    let data = await res.json();
+
+    if(!data.length) return;
+
+    let latest = data[data.length - 1];
+    currentKP = parseFloat(latest.kp_index || 0);
+
+    intensifyAuroraByKP();
+    updateSkyLabel();
+  }catch(e){
+    console.log("KP fetch failed");
+  }
+}
+
+async function loadMapWeather(){
+  try{
+    let res = await fetch("/weather");
+    if(!res.ok) throw new Error("Weather fetch failed");
+
+    let data = await res.json();
+    if(!data.observations || !data.observations.length) return;
+
+    let obs = data.observations[0];
+    let imperial = obs.imperial || {};
+
+    let temp = Math.round(imperial.temp || 0);
+    let wind = Math.round(imperial.windSpeed || 0);
+    let rain = Number(imperial.precipTotal || 0);
+    let humidity = Number(obs.humidity || 0);
+
+    latestMapWeather = {
+      temp,
+      wind,
+      rain,
+      humidity
+    };
+
+    updateSkyLabel();
+  }catch(e){
+    console.log("Map weather fetch failed");
+  }
+}
+
+async function initializeBirds(){
+  let response = await fetch("/data/aurora-moon-data.json?nocache=" + Date.now());
+  if(!response.ok) return;
+  let data = await response.json();
+  console.log("Lifebirds:", data.lifebirds);
+  lastBirdCount = data.lifebirds || 0;
+}
+
+async function updateMap(){
+  let response = await fetch("/data/aurora-moon-data.json?nocache=" + Date.now());
+  if(!response.ok) return;
+
+  let data = await response.json();
+
+  if(currentKP >= 6 && Math.random() < 0.4){
+    spawnAurora();
+  }
+
+  if(currentKP >= 5 && Math.random() < 0.25){
+    spawnPokemon("🦊❄️",50,40,30000);
+
+    let eventBox = document.getElementById("eventPopup");
+    eventBox.innerText = "❄️ Aurora Spirit Appears — Alolan Ninetales ❄️";
+    eventBox.classList.add("showEvent");
+
+    setTimeout(()=>{
+      eventBox.classList.remove("showEvent");
+    },8000);
+  }
+
+  if(data.nature_projects > 2 && Math.random() < 0.15){
+    spawnPokemon("🦄✨",60,60);
+  }
+
+  if(data.park_cleanups > 5 && Math.random() < 0.2){
+    spawnPokemon("🦄✨",62,58);
+  }
+
+  if(currentKP >= 5 && Math.random() < .15){
+    spawnWildPokemon("🦊❄️");
+  }
+
+  if(currentKP >= 6 && Math.random() < .10){
+    spawnWildPokemon("🎀🐱");
+  }
+
+  if(data.lifebirds > lastBirdCount){
+
+    spawnPokemon("🐦",20,88);
+    spawnPokemon("🐦",22,90);
+    spawnPokemon("🐦",18,87);
+
+    spawnFlyingBird();
+    spawnFlyingBird();
+
+    if(data.lifebirds % 25 === 0){
+
+      spawnGoldenBird();
+
+      let eventBox = document.getElementById("eventPopup");
+
+      eventBox.innerText = "✨ A RARE GOLDEN LIFEBIRD APPEARED! ✨";
+      eventBox.classList.add("showEvent");
+
+      setTimeout(()=>{
+        eventBox.classList.remove("showEvent");
+      },9000);
+    }
+
+    if(data.lifebirds % 50 === 0){
+
+      spawnPokemon("🦊❄️",48,35,30000);
+      spawnPokemon("🎀🐱",50,33,25000);
+      spawnPokemon("🦄✨",52,35,25000);
+
+      let eventBox = document.getElementById("eventPopup");
+
+      eventBox.innerText = "🌙 The Moonbeam Guardians appear! ✨";
+      eventBox.classList.add("showEvent");
+
+      setTimeout(()=>{
+        eventBox.classList.remove("showEvent");
+      },9000);
+    }
+
+    lastBirdCount = data.lifebirds;
+  }
+
+  let sky = document.getElementById("sky");
+  if(!auraOverride){
+    sky.classList.remove("auroraGlow");
+    sky.classList.remove("aurora1","aurora2","aurora3");
+  }
+
+  if(data.park_cleanups > 5){
+    sky.classList.add("aurora1");
+  }
+
+  if(data.park_cleanups > 15){
+    sky.classList.add("aurora2");
+  }
+
+  if(data.park_cleanups > 30){
+    sky.classList.add("aurora3");
+    sky.classList.add("auroraGlow");
+  }
+
+  if(data.park_cleanups > 10){
+    document.getElementById("park").innerText = "🌳 Flourishing Park";
+  }
+
+  if(data.drain_clear > 5){
+    document.getElementById("basinLoc").innerText = "🌧 Full Moon Basin";
+  }
+
+  if(data.lifebirds > 5){
+    document.getElementById("birdGarden").innerText = "🐦 Lifebird Garden";
+  }
+
+  if(data.lifebirds > 15){
+    document.getElementById("birdGarden").innerText = "🦉 Aurora Bird Sanctuary";
+  }
+
+  if(data.nature_projects > 3 && Math.random() < .35){
+    spawnGardenBird();
+  }
+
+  if(data.nature_projects > 10 && Math.random() < .45){
+    spawnGardenBird();
+    spawnGardenBird();
+  }
+
+  if(data.hydrant_clear > 3){
+    document.getElementById("warpPipeLoc").innerText = "🚰 Active Warp Pipe";
+  }
+
+  if(data.trash_bags > 10){
+    document.getElementById("recycling").innerText = "♻️ Community Recycling Station";
+  }
+
+  if(data.trash_bags > 30){
+    document.getElementById("recycling").innerText = "♻️ Aurora Moon Eco Center";
+  }
+
+  if(data.ce_hours > 2){
+    document.getElementById("creek").innerText = "🌊 Minnehaha Creek Meetup Spot";
+  }
+
+  if(data.ce_hours > 6){
+    document.getElementById("creek").innerText = "🌊 Pokémon GO Raid Meetup";
+  }
+
+  if(data.ce_hours > 12){
+    document.getElementById("creek").innerText = "🌊 Legendary Raid Gathering";
+  }
+
+  if(data.ava_adventures > 3){
+    document.getElementById("family").innerText = "👧 Ava exploring the Park with 🐕 Koda";
+  }
+
+  if(data.ava_adventures > 7){
+    document.getElementById("family").innerText = "👧 Ava and 🐕 Koda visiting the Bird Garden";
+  }
+
+  if(data.ava_adventures > 12){
+    document.getElementById("family").innerText = "👧 Ava and 🐕 Koda wandering along Minnehaha Creek";
+  }
+
+  if(!auraOverride){
+    updateSkyLabel();
+  }
+}
+
+function spawnPokemon(emoji,x,y,duration=10000){
+  let layer = document.getElementById("pokemonLayer");
+  let p = document.createElement("div");
+
+  p.className = "pokemon";
+  p.innerText = emoji;
+
+  if(duration > 20000){
+    p.classList.add("guardian");
+  }
+
+  if(emoji === "🎀🐱"){
+    p.classList.add("sylveonSparkle");
+  }
+
+  p.style.left = (x + (Math.random()*2-1)) + "%";
+  p.style.top = (y + (Math.random()*2-1)) + "%";
+
+  if(emoji === "🎀🐱" || emoji === "🦊❄️"){
+    scatterStardust(x,y);
+  }
+
+  layer.appendChild(p);
+
+  setTimeout(()=>{
+    p.remove();
+  },duration);
+}
+
+function spawnLegendaryBird(emoji){
+  let layer = document.getElementById("pokemonLayer");
+  let bird = document.createElement("div");
+
+  bird.className = "pokemon";
+  bird.innerText = emoji;
+
+  bird.style.left = "50%";
+  bird.style.top = "20%";
+
+  layer.appendChild(bird);
+
+  setTimeout(()=>{
+    bird.remove();
+  },15000);
+}
+
+function scatterStardust(x,y){
+  let layer = document.getElementById("pokemonLayer");
+
+  for(let i=0;i<8;i++){
+    let dust = document.createElement("div");
+
+    dust.className = "stardust";
+    dust.innerText = "✨";
+
+    dust.style.left = (x + (Math.random()*8 - 4)) + "%";
+    dust.style.top = (y + (Math.random()*8 - 4)) + "%";
+
+    layer.appendChild(dust);
+
+    setTimeout(()=>{
+      dust.remove();
+    },6000);
+  }
+}
+
+function spawnWildPokemon(emoji){
+  const map = document.getElementById("map");
+
+  const poke = document.createElement("div");
+  poke.className = "wild-pokemon";
+  poke.innerText = emoji;
+
+  const startX = Math.random()*80;
+  const startY = Math.random()*80;
+
+  poke.style.left = startX + "%";
+  poke.style.top = startY + "%";
+
+  map.appendChild(poke);
+
+  const moveX = (Math.random()*40)-20;
+  const moveY = (Math.random()*40)-20;
+
+  setTimeout(()=>{
+    poke.style.transform = `translate(${moveX}px, ${moveY}px)`;
+  },200);
+
+  setTimeout(()=>{
+    poke.remove();
+  },45000);
+}
+
+function scatterMoonbeams(){
+  for(let i=0;i<40;i++){
+    let layer = document.getElementById("pokemonLayer");
+    let dust = document.createElement("div");
+    dust.className="stardust";
+    dust.innerText="✨";
+
+    dust.style.left = Math.random()*100 + "%";
+    dust.style.top = Math.random()*100 + "%";
+
+    layer.appendChild(dust);
+
+    setTimeout(()=>{
+      dust.remove();
+    },6000);
+  }
+}
+
+function spawnFlyingBird(){
+  let layer = document.getElementById("pokemonLayer");
+  let bird = document.createElement("div");
+
+  bird.className = "birdFly";
+  bird.innerText = "🐦";
+
+  bird.style.left = "22%";
+  bird.style.top = "92%";
+
+  layer.appendChild(bird);
+
+  setTimeout(()=>{
+    bird.remove();
+  },6000);
+}
+
+function spawnGardenBird(){
+  let layer = document.getElementById("pokemonLayer");
+  let bird = document.createElement("div");
+
+  bird.className = "pokemon";
+  bird.innerText = "🐦";
+
+  let x = 18 + Math.random()*8;
+  let y = 88 + Math.random()*6;
+
+  bird.style.left = x + "%";
+  bird.style.top = y + "%";
+
+  layer.appendChild(bird);
+
+  setTimeout(()=>{
+    bird.remove();
+  },12000);
+}
+
+function spawnGoldenBird(){
+  let layer = document.getElementById("pokemonLayer");
+  let bird = document.createElement("div");
+
+  bird.className = "pokemon";
+  bird.innerText = "✨🐦✨";
+
+  bird.style.left = "21%";
+  bird.style.top = "89%";
+
+  layer.appendChild(bird);
+
+  setTimeout(()=>{
+    bird.remove();
+  },15000);
+}
+
+function spawnRandomPokemon(emoji){
+  if(Math.random() < .02){
+    emoji = "✨" + emoji;
+  }
+
+  let koda = document.getElementById("koda");
+  let x = 50;
+  let y = 50;
+
+  if(koda){
+    x = parseFloat(koda.style.left) || 50;
+    y = parseFloat(koda.style.top) || 50;
+  }
+
+  x += (Math.random()*10 - 5);
+  y += (Math.random()*10 - 5);
+
+  x = Math.max(5, Math.min(95, x));
+  y = Math.max(5, Math.min(95, y));
+
+  spawnPokemon(emoji,x,y);
+}
+
+fetch("/data/aurora-moon-data.json?nocache=" + Date.now())
+.then(res=>res.json())
+.then(data=>{
+  let koda = document.getElementById("koda");
+
+  if(koda){
+    koda.style.left = (data.kodaX || 50) + "%";
+    koda.style.top = (data.kodaY || 50) + "%";
+  }
+});
+
+const worldStream = new EventSource("/worldstream");
+
+worldStream.onmessage = function(event){
+  let data = JSON.parse(event.data);
+
+  if(data.type === "kodaMove"){
+    let koda = document.getElementById("koda");
+
+    if(koda){
+      koda.style.left = data.x + "%";
+      koda.style.top = data.y + "%";
+    }
+
+    let x = data.x;
+    let y = data.y;
+
+    if(x < 30 && y > 80){
+      spawnPokemon("🐦",x,y);
+      spawnGardenBird();
+    }
+
+    if(x > 30 && x < 60 && y > 70){
+      spawnPokemon("🐟",x,y);
+      spawnPokemon("🦆",x,y);
+    }
+
+    if(x > 55 && x < 75 && y > 55 && y < 75){
+      spawnPokemon("🐿️",x,y);
+      spawnPokemon("🌱",x,y);
+    }
+
+    if(x > 40 && x < 70 && y > 80){
+      spawnPokemon("🐸",x,y);
+    }
+
+    if(x > 65 && y > 75){
+      spawnPokemon("✨",x,y);
+    }
+  }
+
+  if(data.type === "aura"){
+    let sky = document.getElementById("sky");
+    sky.classList.remove("aurora1","aurora2","aurora3","auroraGlow");
+
+    if(data.name === "ninetales"){
+      auraOverride = true;
+      spawnPokemon("🦊❄️",50,35,30000);
+      scatterStardust(50,35);
+      scatterMoonbeams();
+      reactKoda("excited");
+      sky.classList.add("aurora3","auroraGlow");
+      sky.innerText = "❄️ Ninetales Aura";
+    }
+
+    if(data.name === "sylveon"){
+      auraOverride = true;
+      spawnPokemon("🎀🐱",50,35,25000);
+      scatterStardust(50,35);
+      reactKoda("happy");
+      sky.classList.add("aurora2");
+      sky.innerText = "🎀 Sylveon Aura";
+    }
+
+    if(data.name === "rapidash"){
+      auraOverride = true;
+      spawnPokemon("🦄✨",50,35,25000);
+      reactKoda("happy");
+      sky.classList.add("aurora1");
+      sky.innerText = "🦄 Rapidash Aura";
+    }
+
+    if(data.name === "clear"){
+      auraOverride = false;
+      updateSkyLabel();
+    }
+  }
+
+  if(data.type === "wildPokemon"){
+    spawnRandomPokemon(data.emoji);
+    reactKoda("alert");
+  }
+
+  if(data.type === "legendaryBird"){
+    spawnLegendaryBird(data.emoji);
+  }
+
+  if(data.type === "raidWin"){
+    spawnPokemon("🐉",50,50);
+    scatterMoonbeams();
+    reactKoda("excited");
+    showMapEvent("⚔️ Raid Victory! Koda is celebrating in the Haven!", 7000);
+  }
+
+  if(data.type === "packOpen"){
+    if(data.rarity === "rare"){
+      spawnPokemon("⭐",48,48);
+      scatterStardust(48,48);
+      reactKoda("happy");
+      showMapEvent("✨ Rare pull! Stardust glimmers across Aurora Moon ✨", 7000);
+    }
+
+    if(data.rarity === "ex"){
+      spawnPokemon("💎",48,48);
+      spawnPokemon("⭐",52,48);
+      scatterMoonbeams();
+      reactKoda("excited");
+      showMapEvent("⭐ EX pull revealed! The whole map lights up! ⭐", 8000);
+    }
+
+    if(data.rarity !== "rare" && data.rarity !== "ex"){
+      spawnPokemon("📦",50,50);
+      reactKoda("happy");
+      showMapEvent("📦 A fresh pack has been opened in the Haven.", 5000);
+    }
+  }
+
+  if(data.type === "watching"){
+    showMapEvent(`📺 Now watching: ${data.title || "something cozy"}${data.detail ? " — " + data.detail : ""}`, 6000);
+  }
+
+  if(data.type === "moonbeam"){
+    scatterMoonbeams();
+    reactKoda("happy");
+  }
+};
+
+function spawnWildNearKoda(emoji){
+  let koda = document.getElementById("koda");
+
+  let x = parseFloat(koda.style.left) || 50;
+  let y = parseFloat(koda.style.top) || 50;
+
+  x += (Math.random()*12 - 6);
+  y += (Math.random()*12 - 6);
+
+  x = Math.max(5, Math.min(95, x));
+  y = Math.max(5, Math.min(95, y));
+
+  spawnPokemon(emoji,x,y);
+}
+
+setInterval(()=>{
+  let roll = Math.random();
+
+  if(nightPhase === "dawn"){
+    spawnWildNearKoda("🐦");
+    return;
+  }
+
+  if(nightPhase === "day"){
+    if(roll < .6){
+      spawnWildNearKoda("🐦");
+    }else{
+      spawnWildNearKoda("🐿️");
+    }
+    return;
+  }
+
+  if(nightPhase === "dusk"){
+    if(roll < .4){
+      spawnWildNearKoda("🦆");
+    }else{
+      spawnWildNearKoda("🐿️");
+    }
+    return;
+  }
+
+  if(nightPhase === "night"){
+    if(roll < .4){
+      spawnWildNearKoda("🦆");
+    }
+    else if(roll < .8){
+      spawnWildNearKoda("🦄✨");
+    }
+    else{
+      spawnWildNearKoda("🎀🐱");
+    }
+    return;
+  }
+
+  if(nightPhase === "aurora"){
+    if(roll < .4){
+      spawnWildNearKoda("🦊❄️");
+    }
+    else if(roll < .7){
+      spawnWildNearKoda("🎀🐱");
+    }
+    else{
+      spawnWildNearKoda("🦄✨");
+    }
+  }
+
+},20000);
+
+function spawnSkyFlyer(){
+  let map = document.getElementById("map");
+  let bird = document.createElement("div");
+
+  bird.className = "wild-pokemon";
+  bird.innerText = "🕊️";
+
+  bird.style.left = "-5%";
+  bird.style.top = (Math.random()*25) + "%";
+
+  map.appendChild(bird);
+
+  setTimeout(()=>{
+    bird.style.transform = "translate(120vw,0)";
+  },200);
+
+  setTimeout(()=>{
+    bird.remove();
+  },30000);
+}
+
+setInterval(()=>{
+  if(Math.random() < .35){
+    spawnSkyFlyer();
+  }
+},25000);
+
+function updateNightCycle(){
+  let hour = new Date().getHours();
+  let newPhase = "dusk";
+
+  if(hour >= 6 && hour < 12){
+    newPhase = "dawn";
+  }
+  else if(hour >= 12 && hour < 18){
+    newPhase = "day";
+  }
+  else if(hour >= 18 && hour < 21){
+    newPhase = "dusk";
+  }
+  else if(hour >= 21 || hour < 3){
+    newPhase = "aurora";
+  }
+  else{
+    newPhase = "night";
+  }
+
+  if(newPhase === nightPhase) return;
+
+  nightPhase = newPhase;
+
+  updateSkyLabel();
+
+  let eventBox = document.getElementById("eventPopup");
+  if(!eventBox) return;
+
+  if(nightPhase === "dawn"){
+    showMapEvent("🌅 Dawn stretches over Aurora Moon", 5000);
+  }
+
+  if(nightPhase === "day"){
+    showMapEvent("☀️ Daylight settles over the Haven", 5000);
+  }
+
+  if(nightPhase === "dusk"){
+    showMapEvent("🌙 Evening gathers across Aurora Moon", 5000);
+  }
+
+  if(nightPhase === "night"){
+    showMapEvent("🌌 Night settles softly over the Haven", 5000);
+  }
+
+  if(nightPhase === "aurora"){
+    showMapEvent("✨ The Aurora is strongest tonight ✨", 7000);
+  }
+}
+const habitats = [
+  { x:22, y:90 },
+  { x:45, y:75 },
+  { x:65, y:60 },
+  { x:55, y:88 },
+  { x:72, y:80 }
+];
+
+const habitatPokemon = {
+  birdGarden:["🐦","🐤","🕊️","🦉"],
+  creek:["🐟","🦆","🐸","🦎"],
+  park:["🐿️","🐇","🦔","🌱"],
+  basin:["🐸","🐢","🦋"],
+  haven:["✨","🦊","🐕"]
+};
+
+function wanderKoda(){
+  let koda = document.getElementById("koda");
+  if(!koda) return;
+
+  if(kodaMoveInterval){
+    clearInterval(kodaMoveInterval);
+    kodaMoveInterval = null;
+  }
+
+  let currentX = parseFloat(koda.style.left) || 50;
+  let currentY = parseFloat(koda.style.top) || 50;
+
+  let target = habitats[Math.floor(Math.random()*habitats.length)];
+
+  let steps = 20;
+  let step = 0;
+
+  kodaMoveInterval = setInterval(()=>{
+    step++;
+
+    let newX = currentX + (target.x - currentX)*(step/steps);
+    let newY = currentY + (target.y - currentY)*(step/steps);
+
+    koda.style.left = newX + "%";
+    koda.style.top = newY + "%";
+
+    leavePawprint(newX,newY);
+
+    if(step >= steps){
+      clearInterval(kodaMoveInterval);
+      kodaMoveInterval = null;
+
+      spawnWildNearKoda("🐾");
+
+      if(Math.random() < .4){
+        spawnWildNearKoda("🐦");
+      }
+
+      if(Math.random() < .2){
+        spawnWildNearKoda("🦆");
+      }
+    }
+
+  },500);
+}
+
+function spawnLegendarySky(){
+  let map = document.getElementById("map");
+
+  let legends = ["❄️🕊️","🌊🕊️","⚡🕊️","🐉"];
+  let pick = legends[Math.floor(Math.random()*legends.length)];
+
+  let bird = document.createElement("div");
+
+  bird.className = "wild-pokemon guardian";
+  bird.innerText = pick;
+
+  bird.style.left = "-10%";
+  bird.style.top = (Math.random()*25) + "%";
+
+  map.appendChild(bird);
+
+  setTimeout(()=>{
+    bird.style.transform = "translate(140vw,0)";
+  },200);
+
+  setTimeout(()=>{
+    bird.remove();
+  },30000);
+
+  let eventBox = document.getElementById("eventPopup");
+
+  eventBox.innerText = "🌠 A legendary Pokémon crosses the sky!";
+  eventBox.classList.add("showEvent");
+
+  setTimeout(()=>{
+    eventBox.classList.remove("showEvent");
+  },7000);
+}
+
+setInterval(()=>{
+  if(Math.random() < .08){
+    spawnLegendarySky();
+  }
+},180000);
+
+function leavePawprint(x,y){
+  let map = document.getElementById("map");
+  let paw = document.createElement("div");
+
+  paw.className = "pawprint";
+  paw.innerText = "🐾";
+
+  paw.style.left = x + "%";
+  paw.style.top = y + "%";
+
+  map.appendChild(paw);
+
+  setTimeout(()=>{
+    paw.remove();
+  },18000);
+}
+
+function spawnHabitatPokemon(pool,x,y){
+  let options = habitatPokemon[pool];
+  if(!options) return;
+
+  let pick = options[Math.floor(Math.random()*options.length)];
+  spawnPokemon(pick,x,y);
+}
+
+function spawnMeteor(){
+  let map = document.getElementById("map");
+  let meteor = document.createElement("div");
+
+  meteor.className = "meteor";
+  meteor.innerText = "☄️";
+
+  meteor.style.left = Math.random()*100 + "%";
+  meteor.style.top = "-10%";
+
+  map.appendChild(meteor);
+
+  setTimeout(()=>{
+    meteor.remove();
+  },4000);
+}
+
+setInterval(()=>{
+  if(Math.random() < .25){
+    spawnMeteor();
+  }
+},30000);
+
+/* INIT */
+
+initializeBirds();
+updateAuroraKP();
+loadMapWeather();
+updateNightCycle();
+updateMap();
+
+wanderKoda();
+setInterval(wanderKoda, 45000);
+
+setTimeout(() => {
+  spawnGardenBird();
+  spawnWildNearKoda("🐦");
+}, 1500);
+
+setInterval(updateAuroraKP,600000);
+setInterval(loadMapWeather,600000);
+setInterval(updateNightCycle,60000);
+setInterval(updateMap,5000);
+
+</script>
+</body>
+</html>

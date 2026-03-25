@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="stylesheet" href="styles/overlay.css">
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+  <title>Aurora Moon Haven Overlay</title>
+</head>
+<body>
+
+  <div class="starfield"></div>
+  <div class="global-aurora"></div>
+
+  <div class="overlay">
+
+    <div class="panel">
+      <div class="aurora"></div>
+      <div class="title">
+        AURORA MOON HAVEN ✨ Mpls, MN
+      </div>
+      <div id="clock"></div>
+    </div>
+
+    <div class="panel">
+      <div class="aurora"></div>
+      <div class="title">CURRENT WEATHER</div>
+
+      <div class="weather-layout">
+        <div class="weather-temp" id="temp">--</div>
+
+        <div class="weather-details">
+          <div id="conditions"></div>
+          <div id="humidity"></div>
+          <div id="wind"></div>
+          <div id="pressure"></div>
+          <div id="rain"></div>
+          <div id="winddir"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="stormAlert" class="storm-alert"></div>
+
+    <div class="panel">
+      <div class="aurora"></div>
+      <div class="title">NIGHTSKY WATCH</div>
+
+      <div id="cosmic">
+        <div class="cosmic-row">
+          <div class="moon-column">
+            <div id="moon"></div>
+            <div id="aurora"></div>
+            <div id="issTimer"></div>
+          </div>
+
+          <div class="hebrewSky">
+            <div id="hebrewMonth"></div>
+            <div id="shabbatTimer"></div>
+            <div id="nextHoliday"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel tarot-panel">
+      <div class="aurora"></div>
+      <div class="title">DAILY TAROT</div>
+
+      <div class="tarot-layout">
+        <div id="tarotCard">Drawing card...</div>
+
+        <div class="tarot-text">
+          <div id="kodaReaction"></div>
+          <div id="tarotMeaning"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="aurora"></div>
+      <div class="title">SPOONIE METER</div>
+      <div id="spoons"></div>
+    </div>
+
+    <div class="panel">
+      <div class="aurora"></div>
+      <div class="title">MOONBEAM MISSIONS</div>
+      <div id="calendarPanel">Loading celestial calendar...</div>
+    </div>
+
+    <div class="panel">
+      <div class="aurora"></div>
+      <div class="title">MOONBEAM MEDIA</div>
+
+      <div class="media-line">
+        <span class="media-icon">📚</span>
+        <span id="reading">—</span>
+      </div>
+
+      <div class="media-line">
+        <span class="media-icon">📺</span>
+        <span id="watching">—</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="aurora"></div>
+      <div class="title">DAILY ORBIT</div>
+      <div id="rss-ticker">
+        <div id="rss-content">Loading cosmic transmissions...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="scripts/overlay.js"></script>
+  <script src="scripts/tarot.js"></script>
+  <script src="scripts/media.js"></script>
+
+</body>
+</html>

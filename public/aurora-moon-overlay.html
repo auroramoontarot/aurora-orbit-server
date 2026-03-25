@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+background:transparent;
+font-family:'Quicksand', sans-serif;
+}
+
+.bar{
+
+width:100%;
+height:70px;
+
+display:flex;
+align-items:center;
+justify-content:space-around;
+
+padding:10px;
+box-sizing:border-box;
+
+background:transparent;
+
+border-bottom:2px solid #7f87ff;
+
+box-shadow:
+0 0 15px rgba(127,135,255,.5),
+0 0 25px rgba(0,169,186,.3);
+
+color:#cbecf5;
+
+}
+
+.section{
+
+display:flex;
+gap:14px;
+font-size:15px;
+flex-wrap:wrap;
+
+}
+
+.title{
+
+font-weight:600;
+color:#c6c7f8;
+margin-right:10px;
+
+}
+
+.stat{
+white-space:nowrap;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="bar">
+
+<div class="title">AURORA MOON NATURE STATS</div>
+
+<div class="section">
+
+<div class="stat">🌳 Park <span id="parkCare">0</span></div>
+
+<div class="stat">🚰 Warp <span id="warpPipe">0</span></div>
+
+<div class="stat">🌧 Basin <span id="basin">0</span></div>
+
+<div class="stat">♻️ Bags <span id="trashBags">0</span></div>
+
+</div>
+
+<div class="section">
+
+<div class="stat">🐦 Ava <span id="avaAdventures">0</span></div>
+
+<div class="stat">✨ Lifebirds <span id="lifebirds">0</span></div>
+
+<div class="stat">📚 CE <span id="ceHours">0</span></div>
+
+</div>
+
+</div>
+
+<script>
+
+async function updateData(){
+
+try{
+
+let response = await fetch("/data/aurora-moon-data.json?nocache=" + Date.now());
+if(!response.ok) return;
+
+let data = await response.json();
+
+document.getElementById("parkCare").innerText = data.park_cleanups || 0;
+document.getElementById("warpPipe").innerText = data.hydrant_clear || 0;
+document.getElementById("basin").innerText = data.drain_clear || 0;
+document.getElementById("trashBags").innerText = data.trash_bags || 0;
+
+document.getElementById("avaAdventures").innerText = data.ava_adventures || 0;
+document.getElementById("lifebirds").innerText = data.lifebirds || 0;
+document.getElementById("ceHours").innerText = data.ce_hours || 0;
+
+}catch(e){
+console.log("Overlay waiting for data...");
+}
+
+}
+
+updateData();
+
+setInterval(updateData,5000);
+
+</script>
+
+</body>
+</html>

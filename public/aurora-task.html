@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+body {
+  margin: 0;
+  font-family: 'Quicksand', sans-serif;
+  color: #cbecf5;
+  background: transparent;
+  padding: 40px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  position: relative;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.title {
+  font-size: 18px;
+  margin-bottom: 1px;
+  color: #c6c7f8;
+  text-align: center;
+}
+
+.task {
+  font-size: 48px;
+  font-weight: 700;
+  max-width: 900px;
+  margin: 0 auto; /* 👈 ensures centering */
+  text-align: center; /* 👈 important */
+  word-wrap: break-word;
+  text-shadow: 0 0 10px #00a9ba, 0 0 20px rgba(0,169,186,.4);
+}
+
+.complete {
+  font-size: 48px;
+  color: #7fffd4;
+  opacity: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -40px;
+  text-shadow: 0 0 10px #00ffd0, 0 0 20px #00a9ba;
+  transition: opacity .5s ease;
+  pointer-events: none;
+}
+
+.showComplete {
+  opacity: 1;
+  animation: pop .9s ease;
+}
+
+@keyframes pop {
+  0% {
+    transform: translateX(-50%) scale(.6);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+#meteor {
+  position: absolute;
+  width: 300px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #7f87ff, #cbecf5, transparent);
+  top: -80px;
+  left: -200px;
+  opacity: 0;
+  transform: rotate(-20deg);
+  filter: blur(1px);
+  pointer-events: none;
+}
+
+.meteorActive {
+  animation: meteorFly 1s ease;
+}
+
+@keyframes meteorFly {
+  0% {
+    opacity: 0;
+    transform: translate(-200px, -100px) rotate(-20deg);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(800px, 300px) rotate(-20deg);
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <div id="meteor"></div>
+  <div class="title">📋 CURRENT MISSION</div>
+  <div class="task" id="taskText">Preparing Aurora Operations</div>
+  <div class="complete" id="completeText">✨ MISSION COMPLETE ✨</div>
+</div>
+
+<script>
+
+function adjustTaskSize(el) {
+  let size = 42;
+  el.style.fontSize = size + "px";
+
+  while (el.scrollWidth > window.innerWidth * 0.8 && size > 26) {
+    size--;
+    el.style.fontSize = size + "px";
+  }
+}
+
+async function fetchTaskData() {
+  try {
+    const res = await fetch("/data/aurora-task.json?nocache=" + Date.now());
+    if (!res.ok) throw new Error("Task file not found");
+
+    const data = await res.json();
+
+    const taskText = document.getElementById("taskText");
+    const completeText = document.getElementById("completeText");
+
+    const currentTask = data.task || "✨ No active mission";
+
+    taskText.textContent = currentTask;
+    adjustTaskSize(taskText);
+
+    if (currentTask === "✨ All missions complete ✨") {
+      completeText.classList.remove("showComplete");
+      void completeText.offsetWidth;
+      completeText.classList.add("showComplete");
+
+      setTimeout(() => {
+        completeText.classList.remove("showComplete");
+      }, 2000);
+
+      const meteor = document.getElementById("meteor");
+      meteor.classList.remove("meteorActive");
+      void meteor.offsetWidth;
+      meteor.classList.add("meteorActive");
+    }
+
+  } catch (err) {
+    console.error("Error fetching task data:", err);
+    document.getElementById("taskText").textContent = "Mission signal unavailable";
+  }
+}
+
+fetchTaskData();
+setInterval(fetchTaskData, 60000);
+
+</script>
+
+</body>
+</html>

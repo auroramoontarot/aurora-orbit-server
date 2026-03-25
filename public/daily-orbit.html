@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+margin:0;
+font-family:'Quicksand',sans-serif;
+color:#ffffff;
+
+/* aurora background */
+background:
+radial-gradient(circle at 20% 20%, rgba(127,135,255,.35), transparent 40%),
+radial-gradient(circle at 80% 30%, rgba(0,169,186,.35), transparent 40%),
+radial-gradient(circle at 50% 80%, rgba(198,199,248,.35), transparent 40%),
+#05070f;
+
+padding:40px;
+}
+
+/* container */
+
+.container{
+max-width:900px;
+margin:auto;
+position:relative;
+z-index:2;
+}
+
+/* title */
+
+h1{
+font-size:46px;
+margin-bottom:6px;
+color:#c6c7f8;
+}
+
+.subtitle{
+color:#cbecf5;
+margin-bottom:25px;
+}
+
+/* top bar */
+
+.topbar{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+font-weight:600;
+color:#cbecf5;
+gap:20px;
+flex-wrap:wrap;
+}
+
+/* glass cards */
+
+.section{
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(12px);
+
+border-radius:16px;
+
+padding:18px 20px;
+margin-bottom:18px;
+
+border:1px solid rgba(255,255,255,.15);
+
+box-shadow:
+0 6px 16px rgba(0,0,0,.3),
+0 0 8px rgba(127,135,255,.25);
+}
+
+/* headings */
+
+.section h2{
+margin-top:0;
+font-size:20px;
+color:#cbecf5;
+}
+
+/* inputs */
+
+input[type=text], input[type=number], textarea{
+width:100%;
+background:transparent;
+border:none;
+border-bottom:1px solid rgba(255,255,255,.3);
+
+font-family:'Quicksand',sans-serif;
+font-size:16px;
+padding:6px;
+color:white;
+
+outline:none;
+box-sizing:border-box;
+}
+
+textarea{
+height:80px;
+resize:none;
+}
+
+/* checkboxes */
+
+.checkbox-group{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.smallbox{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:18px;
+}
+
+/* koda card */
+
+.koda{
+background:rgba(0,169,186,.2);
+}
+
+/* footer */
+
+footer{
+text-align:center;
+margin-top:20px;
+color:#9fa4ff;
+font-size:12px;
+}
+
+.grimoireEntry{
+border-bottom:1px solid rgba(255,255,255,.2);
+padding:10px 0;
+}
+
+.grimoireDate{
+color:#c6c7f8;
+font-weight:600;
+}
+
+.grimoireMission{
+color:#cbecf5;
+font-size:14px;
+}
+
+/* little stars */
+
+.stars{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+background-image:radial-gradient(white 1px, transparent 1px);
+background-size:120px 120px;
+opacity:.2;
+z-index:0;
+}
+
+/* aurora drift layer */
+
+.aurora{
+position:fixed;
+top:-50%;
+left:-50%;
+
+width:200%;
+height:200%;
+
+pointer-events:none;
+
+background:
+radial-gradient(circle at 30% 40%, rgba(127,135,255,.25), transparent 40%),
+radial-gradient(circle at 70% 30%, rgba(0,169,186,.25), transparent 40%),
+radial-gradient(circle at 60% 70%, rgba(198,199,248,.2), transparent 40%);
+
+animation:auroraMove 90s linear infinite;
+
+opacity:.7;
+z-index:0;
+}
+
+@keyframes auroraMove{
+0%{
+transform:rotate(0deg) scale(1);
+}
+50%{
+transform:rotate(180deg) scale(1.15);
+}
+100%{
+transform:rotate(360deg) scale(1);
+}
+}
+
+button{
+background:linear-gradient(135deg,#7f87ff,#00a9ba);
+
+border:none;
+padding:10px 18px;
+
+border-radius:12px;
+
+font-family:'Quicksand',sans-serif;
+font-weight:600;
+color:white;
+
+cursor:pointer;
+
+box-shadow:0 4px 10px rgba(0,0,0,.35);
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.media-line{
+margin-bottom:8px;
+line-height:1.5;
+}
+
+.metricBlock{
+line-height:1.7;
+font-size:15px;
+}
+
+.questStatus{
+margin-top:10px;
+padding-top:10px;
+border-top:1px solid rgba(255,255,255,.15);
+color:#cbecf5;
+line-height:1.5;
+}
+
+.importRow{
+display:flex;
+gap:8px;
+margin-top:10px;
+}
+
+.importRow input{
+flex:1;
+}
+
+.small-note{
+font-size:13px;
+opacity:.8;
+margin-top:8px;
+line-height:1.5;
+}
+
+/* TIMELINE FIX */
+
+.timeline{
+display:flex;
+flex-direction:column;
+gap:8px;
+padding:10px 0;
+position:relative;
+}
+
+.timeline::before{
+content:"";
+position:absolute;
+left:0;
+top:0;
+width:100%;
+height:100%;
+
+background-image:
+linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+
+background-size:40px 40px;
+
+opacity:.4;
+pointer-events:none;
+}
+
+.timelineRow{
+display:grid;
+grid-template-columns:90px 1fr;
+gap:10px;
+align-items:center;
+position:relative;
+z-index:1;
+}
+
+.timeLabel{
+font-size:13px;
+color:#cbecf5;
+text-align:right;
+padding-right:6px;
+opacity:.85;
+line-height:1;
+white-space:nowrap;
+}
+
+.timeInput{
+width:100%;
+box-sizing:border-box;
+
+background:rgba(255,255,255,.04);
+border:none;
+border-bottom:1px solid rgba(255,255,255,.25);
+
+color:white;
+font-family:'Quicksand',sans-serif;
+font-size:15px;
+
+padding:8px 10px;
+border-radius:8px;
+
+transition:all .25s ease;
+min-height:38px;
+}
+
+.timeInput:focus{
+background:rgba(127,135,255,.15);
+border-bottom:1px solid rgba(127,135,255,.8);
+box-shadow:
+0 0 8px rgba(127,135,255,.4),
+0 0 16px rgba(0,169,186,.2);
+}
+
+.nowSlot{
+background:rgba(0,169,186,.18) !important;
+border-bottom:1px solid rgba(0,169,186,.9) !important;
+box-shadow:0 0 10px rgba(0,169,186,.5);
+}
+
+@media (max-width: 800px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .timelineRow{
+    grid-template-columns:75px 1fr;
+  }
+}
+
+.worldGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:8px;
+}
+
+.worldCard{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:12px;
+padding:10px 12px;
+box-sizing:border-box;
+}
+
+.worldLabel{
+font-size:13px;
+color:#c6c7f8;
+opacity:.9;
+margin-bottom:4px;
+}
+
+.worldValue{
+font-size:18px;
+font-weight:700;
+color:#ffffff;
+}
+
+.worldQuest{
+margin-top:14px;
+padding-top:12px;
+border-top:1px solid rgba(255,255,255,.12);
+font-size:14px;
+line-height:1.5;
+color:#cbecf5;
+}
+
+@media (max-width: 800px){
+  .worldGrid{
+    grid-template-columns:1fr;
+  }
+}
+
+.mediaGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:8px;
+}
+
+.mediaCard{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+border-radius:12px;
+padding:10px 12px;
+box-sizing:border-box;
+min-height:88px;
+}
+
+.mediaLabel{
+font-size:13px;
+color:#c6c7f8;
+opacity:.9;
+margin-bottom:6px;
+}
+
+.mediaValue{
+font-size:15px;
+font-weight:600;
+color:#ffffff;
+line-height:1.5;
+word-break:break-word;
+}
+
+@media (max-width: 800px){
+  .mediaGrid{
+    grid-template-columns:1fr;
+  }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="stars"></div>
+<div class="aurora"></div>
+
+<div class="container">
+
+<h1>🌙 Daily Orbit</h1>
+<div class="subtitle">Aurora Moon Captain's Log</div>
+
+<div style="margin-bottom:25px">
+<button id="newDayBtn">🌅 Begin New Orbit</button>
+<button id="exportLog">📜 Generate Captain's Log</button>
+<button id="openGrimoire">📜 Open Grimoire</button>
+</div>
+
+<div class="topbar">
+<div id="date"></div>
+
+<div id="cosmicWeather">
+Loading observatory data...
+</div>
+
+<div id="moon"></div>
+</div>
+
+<div class="section">
+
+<h2>📜 Cosmic Calendar</h2>
+
+<div id="cosmicCalendar">
+Loading celestial calendar...
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>Mission of the Day</h2>
+
+<input id="mission" type="text">
+
+<div class="questStatus" id="sharedQuestStatus">
+Loading quest channel...
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>🌍 Aurora World</h2>
+
+<div id="worldStats">
+Loading world telemetry...
+</div>
+
+<div class="small-note">
+This pulls from your shared aurora-moon-data.json and current quest signals.
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>⚡ Spoon Energy</h2>
+
+<div class="checkbox-group">
+<label><input type="radio" name="spoons" value="verylow"> Very Low</label>
+<label><input type="radio" name="spoons" value="low"> Low</label>
+<label><input type="radio" name="spoons" value="medium"> Medium</label>
+<label><input type="radio" name="spoons" value="good"> Good</label>
+<label><input type="radio" name="spoons" value="stardust"> Stardust</label>
+</div>
+
+<div class="small-note" id="spoonSyncStatus">
+Shared spoon status syncing...
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>🚀 Top 3 Missions</h2>
+
+<div class="smallbox">
+<input id="task1" type="text">
+<input id="task2" type="text">
+<input id="task3" type="text">
+</div>
+
+</div>
+
+<div class="grid">
+
+<div class="section">
+
+<h2>🌿 Nature Noticed</h2>
+
+<textarea id="nature"></textarea>
+
+<div class="importRow">
+<input id="ebirdImportInput" type="number" step="1" min="0" placeholder="Add eBird lifebirds">
+<button id="addEbirdBtn">Add</button>
+</div>
+
+<div class="importRow">
+<input id="inatImportInput" type="number" step="1" min="0" placeholder="Add iNaturalist finds">
+<button id="addINatBtn">Add</button>
+</div>
+
+<div class="importRow">
+<input id="merlinImportInput" type="number" step="1" min="0" placeholder="Add Merlin IDs">
+<button id="addMerlinBtn">Add</button>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>🎴 Tarot / Intuition</h2>
+
+<input id="card" type="text" placeholder="Card">
+
+<button id="drawTarot">🔮 Draw Card</button>
+
+<textarea id="tarot"></textarea>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>📚 Moonbeam Media</h2>
+
+<div id="mediaStatus">
+<div class="media-line">📚 Reading: —</div>
+<div class="media-line">📺 Watching: —</div>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>🌌 Orbit Timeline</h2>
+
+<div id="timeline" class="timeline"></div>
+
+</div>
+
+<div class="section koda">
+
+<h2>🐕 Koda Camp Report</h2>
+
+<label><input id="swim" type="checkbox"> Swim happened</label><br>
+<label><input id="stick" type="checkbox"> Legendary stick discovered</label><br>
+<label><input id="wildlife" type="checkbox"> Wildlife spotted</label><br>
+
+<input id="kodaNote" type="text" placeholder="Other Koda adventures">
+
+<br><br>
+
+<button id="kodaWalk">🐾 Walk with Koda</button>
+
+<div id="kodaStatus" style="margin-top:8px;font-size:14px;color:#cbecf5"></div>
+
+</div>
+
+<div class="section">
+
+<h2>✨ Notes & Stardust</h2>
+
+<textarea id="notes"></textarea>
+
+</div>
+
+<div class="section" id="grimoirePanel" style="display:none">
+
+<h2>📜 Orbit Grimoire</h2>
+
+<div id="grimoireEntries"></div>
+
+</div>
+
+<footer>
+Aurora Gorealis ✨ Scatter Stardust ✨ Aurora Moon Tarot
+</footer>
+
+</div>
+
+<script>
+
+/* DATE */
+
+let now = new Date();
+document.getElementById("date").innerText =
+now.toLocaleDateString(undefined,{weekday:'long',month:'long',day:'numeric'});
+
+/* HELPERS */
+
+function safeNum(value){
+  return Number(value || 0);
+}
+
+async function getMoonData(){
+  const res = await fetch("/data/aurora-moon-data?nocache=" + Date.now());
+  if(!res.ok) throw new Error("Failed to load aurora moon data");
+  return await res.json();
+}
+
+async function saveMoonData(updated){
+  const res = await fetch("/save/aurora-moon-data",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify(updated)
+  });
+
+  if(!res.ok) throw new Error("Failed to save aurora moon data");
+  return await res.json();
+}
+
+async function incrementMoonData(field,amount=1){
+  const data = await getMoonData();
+  data[field] = safeNum(data[field]) + amount;
+  await saveMoonData(data);
+  await loadWorldStats();
+}
+
+function spoonWordToNumber(value){
+  if(value === "verylow") return 1;
+  if(value === "low") return 2;
+  if(value === "medium") return 3;
+  if(value === "good") return 4;
+  if(value === "stardust") return 5;
+  return 3;
+}
+
+function spoonNumberToWord(value){
+  if(Number(value) === 1) return "verylow";
+  if(Number(value) === 2) return "low";
+  if(Number(value) === 3) return "medium";
+  if(Number(value) === 4) return "good";
+  if(Number(value) === 5) return "stardust";
+  return "medium";
+}
+
+async function syncSharedSpoonsFromPlanner(value){
+  try{
+    await fetch(`/energy?value=${encodeURIComponent(spoonWordToNumber(value))}`);
+    document.getElementById("spoonSyncStatus").innerText = "Shared spoon status synced.";
+  }catch(err){
+    console.log("Shared spoon sync failed:", err);
+    document.getElementById("spoonSyncStatus").innerText = "Shared spoon sync offline.";
+  }
+}
+
+async function loadSharedSpoonsIntoPlanner(){
+  try{
+    const res = await fetch("/data/aurora-habits?nocache=" + Date.now());
+    if(!res.ok) throw new Error("Habit fetch failed");
+
+    const data = await res.json();
+    const sharedValue = spoonNumberToWord(data.energy);
+
+    localStorage.setItem("spoons", sharedValue);
+
+    document.querySelectorAll("input[name='spoons']").forEach(r=>{
+      r.checked = r.value === sharedValue;
+    });
+
+    document.getElementById("spoonSyncStatus").innerText = "Shared spoon status loaded.";
+  }catch(err){
+    console.log("Shared spoon load failed:", err);
+    document.getElementById("spoonSyncStatus").innerText = "Using local spoon status.";
+  }
+}
+
+/* MOON PHASE */
+
+function moonPhase(){
+
+let lp=2551443;
+let new_moon=new Date(1970,0,7,20,35,0);
+let phase=((Date.now()-new_moon)/1000)%lp;
+let percent=phase/lp;
+
+if(percent<.03||percent>.97)return "🌑 New Moon";
+if(percent<.22)return "🌒 Waxing Crescent";
+if(percent<.28)return "🌓 First Quarter";
+if(percent<.47)return "🌔 Waxing Gibbous";
+if(percent<.53)return "🌕 Full Moon";
+if(percent<.72)return "🌖 Waning Gibbous";
+if(percent<.78)return "🌗 Last Quarter";
+
+return "🌘 Waning Crescent";
+
+}
+
+document.getElementById("moon").innerText=moonPhase();
+
+/* PWS WEATHER */
+
+async function loadWeather() {
+  try {
+    const res = await fetch("/weather");
+    if (!res.ok) throw new Error("Failed to fetch weather");
+
+    const data = await res.json();
+    if (!data.observations || !data.observations.length) {
+      document.getElementById("cosmicWeather").innerText = "Observatory data unavailable";
+      return;
+    }
+
+    const obs = data.observations[0];
+    const imperial = obs.imperial || {};
+
+    const temp = Math.round(imperial.temp || 0);
+    const feels = Math.round(imperial.heatIndex || imperial.windChill || temp);
+    const humidity = obs.humidity || 0;
+    const wind = Math.round(imperial.windSpeed || 0);
+    const gust = Math.round(imperial.windGust || 0);
+    const pressure = imperial.pressure || 0;
+
+    document.getElementById("cosmicWeather").innerHTML =
+      `🌡 ${temp}°F • Feels ${feels}°<br>
+       💧 ${humidity}% • 🌬 ${wind} mph (Gust ${gust})<br>
+       🌪 ${pressure} in`;
+  } catch (err) {
+    console.log("Weather fetch failed:", err);
+    document.getElementById("cosmicWeather").innerText = "Observatory data unavailable";
+  }
+}
+
+loadWeather();
+setInterval(loadWeather, 600000);
+
+/* LOAD WORLD STATS */
+
+async function loadWorldStats() {
+  try {
+    const [worldRes, questRes] = await Promise.all([
+      fetch("/data/aurora-moon-data?nocache=" + Date.now()),
+      fetch("/quest?nocache=" + Date.now())
+    ]);
+
+    if (!worldRes.ok) throw new Error("Failed to load world stats");
+
+    const data = await worldRes.json();
+
+    let quest = {};
+    if (questRes.ok) quest = await questRes.json();
+
+    document.getElementById("worldStats").innerHTML = `
+      <div class="worldGrid">
+
+        <div class="worldCard">
+          <div class="worldLabel">🐾 Pokémon Caught</div>
+          <div class="worldValue">${safeNum(data.pokemon_caught)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🌀 PokéStops Spun</div>
+          <div class="worldValue">${safeNum(data.pokestops_spun)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">⚔️ Raids Won</div>
+          <div class="worldValue">${safeNum(data.raids_won)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🥚 Eggs Hatched</div>
+          <div class="worldValue">${safeNum(data.eggs_hatched)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">📦 Packs Opened</div>
+          <div class="worldValue">${safeNum(data.packs_opened)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">✨ Rare Cards</div>
+          <div class="worldValue">${safeNum(data.rare_cards)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">⭐ EX Cards</div>
+          <div class="worldValue">${safeNum(data.ex_cards)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🌿 Park Cleanups</div>
+          <div class="worldValue">${safeNum(data.park_cleanups)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🚰 Hydrants Cleared</div>
+          <div class="worldValue">${safeNum(data.hydrant_clear)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🌀 Drains Cleared</div>
+          <div class="worldValue">${safeNum(data.drain_clear)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🗑 Trash Bags</div>
+          <div class="worldValue">${safeNum(data.trash_bags)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🤝 Volunteer Hours</div>
+          <div class="worldValue">${safeNum(data.volunteer_hours)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">📚 CE Hours</div>
+          <div class="worldValue">${safeNum(data.ce_hours)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">👧 Ava Adventures</div>
+          <div class="worldValue">${safeNum(data.ava_adventures)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🌱 Nature Projects</div>
+          <div class="worldValue">${safeNum(data.nature_projects)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🕊 Lifebirds Seen</div>
+          <div class="worldValue">${safeNum(data.lifebirds)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">🎧 Merlin IDs</div>
+          <div class="worldValue">${safeNum(data.merlin_calls)}</div>
+        </div>
+
+        <div class="worldCard">
+          <div class="worldLabel">✨ Volunteer Sessions</div>
+          <div class="worldValue">${safeNum(data.volunteer_sessions)}</div>
+        </div>
+
+      </div>
+
+      <div class="worldQuest">
+        <b>🧭 Shared Current Quest:</b> ${quest.current || "—"}
+      </div>
+    `;
+  } catch (err) {
+    console.log("World stats failed:", err);
+    document.getElementById("worldStats").innerText = "World telemetry offline";
+  }
+}
+
+loadWorldStats();
+setInterval(loadWorldStats, 180000);
+
+/* COSMIC CALENDAR */
+
+async function loadCosmicCalendar(){
+
+let today = new Date();
+
+/* Hebrew date */
+
+let hebrewDate = today.toLocaleDateString(
+"en-u-ca-hebrew",
+{ day:"numeric", month:"long", year:"numeric" }
+);
+
+/* US holiday check */
+
+let usHoliday = "";
+
+let m = today.getMonth()+1;
+let d = today.getDate();
+
+if(m===1 && d===1) usHoliday="🇺🇸 New Year's Day";
+if(m===7 && d===4) usHoliday="🇺🇸 Independence Day";
+if(m===10 && d===31) usHoliday="🎃 Halloween";
+if(m===12 && d===25) usHoliday="🎄 Christmas";
+
+/* jewish seasonal indicator */
+
+let jewishSeason="";
+
+if(hebrewDate.includes("Adar")) jewishSeason="🎭 Purim Season";
+if(hebrewDate.includes("Nisan")) jewishSeason="🕊 Passover Season";
+if(hebrewDate.includes("Tishri")) jewishSeason="🍎 High Holy Days Season";
+if(hebrewDate.includes("Kislev")) jewishSeason="🕎 Hanukkah Season";
+
+/* shared calendar */
+
+let upcoming = "";
+
+try{
+  const res = await fetch("/calendar?nocache=" + Date.now());
+  if(res.ok){
+    const events = await res.json();
+    if(Array.isArray(events) && events.length){
+      upcoming = "<br><br><b>Upcoming:</b><br>" + events.map(ev=>{
+        const date = new Date(ev.start);
+        return `✨ ${ev.title} — ${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'})}`;
+      }).slice(0,3).join("<br>");
+    }
+  }
+}catch(err){
+  console.log("Calendar fetch failed:", err);
+}
+
+document.getElementById("cosmicCalendar").innerHTML =
+`Hebrew Date: ${hebrewDate}<br>
+${jewishSeason || "✨ Quiet sacred skies"}<br>
+${usHoliday || "🌌 No major U.S. holiday today"}${upcoming}`;
+
+}
+
+loadCosmicCalendar();
+setInterval(loadCosmicCalendar, 600000);
+
+/* SAVE */
+
+let fields=["mission","task1","task2","task3","nature","card","tarot","kodaNote","notes"];
+
+fields.forEach(id=>{
+
+let el=document.getElementById(id);
+
+el.value=localStorage.getItem(id)||"";
+
+el.addEventListener("input",()=>{
+localStorage.setItem(id,el.value);
+});
+
+});
+
+["swim","stick","wildlife"].forEach(id=>{
+
+let el=document.getElementById(id);
+
+el.checked=localStorage.getItem(id)==="true";
+
+el.addEventListener("change",()=>{
+localStorage.setItem(id,el.checked);
+});
+
+});
+
+document.querySelectorAll("input[name='spoons']").forEach(r=>{
+
+if(localStorage.getItem("spoons")==r.value) r.checked=true;
+
+r.addEventListener("change",async ()=>{
+
+localStorage.setItem("spoons",r.value);
+await syncSharedSpoonsFromPlanner(r.value);
+
+});
+
+});
+
+/* LOAD SHARED TAROT IF AVAILABLE */
+
+async function loadSharedTarot() {
+  try {
+    const res = await fetch("/tarot-current?nocache=" + Date.now());
+    if (!res.ok) return;
+
+    const data = await res.json();
+    if (!data.card) return;
+
+    const cardField = document.getElementById("card");
+
+    if (!cardField.value) {
+      cardField.value = data.card;
+      localStorage.setItem("card", data.card);
+    }
+  } catch (err) {
+    console.log("Shared tarot load failed:", err);
+  }
+}
+
+loadSharedTarot();
+
+/* LOAD SHARED QUEST */
+
+async function loadSharedQuestStatus(){
+  try{
+    const res = await fetch("/quest?nocache=" + Date.now());
+    if(!res.ok) throw new Error("Quest fetch failed");
+
+    const data = await res.json();
+    const queue = Array.isArray(data.queue) ? data.queue : [];
+
+    document.getElementById("sharedQuestStatus").innerHTML =
+      `<b>Current shared quest:</b> ${data.current || "✨ All missions complete ✨"}<br>
+       <b>Queue:</b> ${queue.length ? queue.slice(0,3).join(" • ") : "Quiet for now"}`;
+  }catch(err){
+    console.log("Shared quest load failed:", err);
+    document.getElementById("sharedQuestStatus").innerText = "Quest channel offline";
+  }
+}
+
+loadSharedQuestStatus();
+setInterval(loadSharedQuestStatus, 60000);
+
+/* LOAD MEDIA */
+
+async function loadMediaStatus(){
+  try{
+    const res = await fetch("/media-status?nocache=" + Date.now());
+    if(!res.ok) throw new Error("Media fetch failed");
+
+    const data = await res.json();
+
+    const reading =
+      data.book && data.book.title
+        ? `${data.book.title}${data.book.author ? " — " + data.book.author : ""}`
+        : "—";
+
+    const watching =
+      data.watching && data.watching.title
+        ? `${data.watching.title}${data.watching.detail ? " — " + data.watching.detail : ""}`
+        : "—";
+
+    document.getElementById("mediaStatus").innerHTML = `
+      <div class="mediaGrid">
+        <div class="mediaCard">
+          <div class="mediaLabel">📚 Reading</div>
+          <div class="mediaValue">${reading}</div>
+        </div>
+
+        <div class="mediaCard">
+          <div class="mediaLabel">📺 Watching</div>
+          <div class="mediaValue">${watching}</div>
+        </div>
+      </div>
+    `;
+  }catch(err){
+    console.log("Media status failed:", err);
+    document.getElementById("mediaStatus").innerHTML = `
+      <div class="mediaGrid">
+        <div class="mediaCard">
+          <div class="mediaLabel">📚 Reading</div>
+          <div class="mediaValue">—</div>
+        </div>
+
+        <div class="mediaCard">
+          <div class="mediaLabel">📺 Watching</div>
+          <div class="mediaValue">—</div>
+        </div>
+      </div>
+    `;
+  }
+}
+loadMediaStatus();
+setInterval(loadMediaStatus, 60000);
+
+/* BEGIN NEW DAY */
+
+document.getElementById("newDayBtn").addEventListener("click",()=>{
+
+let orbit = {
+
+date:new Date().toLocaleDateString(),
+
+mission:localStorage.getItem("mission"),
+task1:localStorage.getItem("task1"),
+task2:localStorage.getItem("task2"),
+task3:localStorage.getItem("task3"),
+
+nature:localStorage.getItem("nature"),
+card:localStorage.getItem("card"),
+tarot:localStorage.getItem("tarot"),
+
+timeline: Object.keys(localStorage)
+.filter(k => k.startsWith("t_"))
+.reduce((obj,key)=>{
+obj[key] = localStorage.getItem(key);
+return obj;
+},{}),
+
+notes:localStorage.getItem("notes"),
+
+spoons:localStorage.getItem("spoons")
+
+};
+
+let archive = JSON.parse(localStorage.getItem("orbitArchive") || "[]");
+
+archive.push(orbit);
+
+localStorage.setItem("orbitArchive", JSON.stringify(archive));
+
+if(confirm("Orbit saved to the Grimoire. Begin a new day?")){
+
+Object.keys(localStorage)
+.filter(k => !k.startsWith("orbitArchive"))
+.forEach(k => localStorage.removeItem(k));
+
+location.reload();
+
+}
+
+});
+
+/* KODA WALK */
+
+document.getElementById("kodaWalk").addEventListener("click", async ()=>{
+
+document.getElementById("kodaStatus").innerText = "Koda exploring the wilds...";
+
+try{
+
+await fetch("/pokemonCatch");
+await loadWorldStats();
+
+document.getElementById("kodaStatus").innerText =
+"🐕 Koda explored the map and stirred up wildlife!";
+
+}catch{
+
+document.getElementById("kodaStatus").innerText =
+"Koda went exploring but the radio signal faded.";
+
+}
+
+});
+
+/* BUILD DAILY TIMELINE */
+
+function buildTimeline(){
+
+const timeline = document.getElementById("timeline");
+timeline.innerHTML = "";
+
+let start = 8;
+let end = 22;
+
+for(let h=start; h<=end; h++){
+
+  for(let m=0; m<60; m+=30){
+
+    if(h===22 && m>0) break;
+
+    let hour = h > 12 ? h - 12 : h;
+    if(hour === 0) hour = 12;
+
+    let ampm = h >= 12 ? "PM" : "AM";
+    let label = `${hour}:${m===0 ? "00" : "30"} ${ampm}`;
+    let id = `t_${h}_${m}`;
+    let saved = localStorage.getItem(id) || "";
+
+    let row = document.createElement("div");
+    row.className = "timelineRow";
+
+    let timeLabel = document.createElement("div");
+    timeLabel.className = "timeLabel";
+    timeLabel.innerText = label;
+
+    let input = document.createElement("input");
+    input.className = "timeInput";
+    input.id = id;
+    input.value = saved;
+    input.type = "text";
+
+    input.addEventListener("input",()=>{
+      localStorage.setItem(id,input.value);
+    });
+
+    row.appendChild(timeLabel);
+    row.appendChild(input);
+    timeline.appendChild(row);
+
+  }
+
+}
+
+}
+
+buildTimeline();
+
+/* HIGHLIGHT CURRENT TIME */
+
+function highlightCurrentSlot(){
+
+document.querySelectorAll(".timeInput").forEach(el=>{
+  el.classList.remove("nowSlot");
+});
+
+let now = new Date();
+let h = now.getHours();
+let m = now.getMinutes() < 30 ? 0 : 30;
+
+let id = `t_${h}_${m}`;
+let el = document.getElementById(id);
+
+if(el){
+  el.classList.add("nowSlot");
+}
+
+}
+
+setTimeout(highlightCurrentSlot,300);
+setInterval(highlightCurrentSlot,60000);
+
+/* FIND NEXT EMPTY SLOT */
+
+function focusNextEmpty(){
+
+let inputs = document.querySelectorAll(".timeInput");
+
+for(let input of inputs){
+if(!input.value){
+input.focus();
+break;
+}
+}
+
+}
+
+setTimeout(focusNextEmpty,500);
+
+/* SCROLL TO CURRENT TIME */
+
+function scrollToNow(){
+
+let now = new Date();
+
+let h = now.getHours();
+let m = now.getMinutes() < 30 ? 0 : 30;
+
+let id = `t_${h}_${m}`;
+
+let el = document.getElementById(id);
+
+if(el){
+el.scrollIntoView({behavior:"smooth",block:"center"});
+}
+
+}
+
+setTimeout(scrollToNow,400);
+
+/* OPEN GRIMOIRE */
+
+document.getElementById("openGrimoire").addEventListener("click",()=>{
+
+let panel = document.getElementById("grimoirePanel");
+
+panel.style.display = panel.style.display==="none" ? "block" : "none";
+
+loadGrimoire();
+
+});
+
+function loadGrimoire(){
+
+let archive = JSON.parse(localStorage.getItem("orbitArchive") || "[]");
+
+let container = document.getElementById("grimoireEntries");
+
+container.innerHTML="";
+
+archive.slice().reverse().forEach(day=>{
+
+let div=document.createElement("div");
+
+div.className="grimoireEntry";
+
+div.innerHTML=`
+<div class="grimoireDate">${day.date}</div>
+<div class="grimoireMission">Mission: ${day.mission || "—"}</div>
+<div>Spoons: ${day.spoons || "unknown"}</div>
+`;
+
+container.appendChild(div);
+
+});
+
+}
+
+/* EXPORT CAPTAIN LOG */
+
+document.getElementById("exportLog").addEventListener("click", ()=>{
+
+let date = document.getElementById("date").innerText;
+
+let mission = localStorage.getItem("mission") || "";
+let spoons = localStorage.getItem("spoons") || "";
+let nature = localStorage.getItem("nature") || "";
+let card = localStorage.getItem("card") || "";
+let tarot = localStorage.getItem("tarot") || "";
+let notes = localStorage.getItem("notes") || "";
+
+let timelineEntries = Object.keys(localStorage)
+.filter(k => k.startsWith("t_") && localStorage.getItem(k))
+.map(k => {
+
+let parts = k.split("_");
+let h = parts[1];
+let m = parts[2];
+
+return `${h}:${m} — ${localStorage.getItem(k)}`;
+
+}).join("<br>");
+
+let win = window.open("","","width=700,height=900");
+
+win.document.write(`
+
+<html>
+<head>
+
+<title>Aurora Captain Log</title>
+
+<style>
+
+body{
+font-family:'Quicksand',sans-serif;
+background:#05070f;
+color:white;
+padding:40px;
+}
+
+h1{
+color:#c6c7f8;
+}
+
+.section{
+margin-bottom:25px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🌙 Aurora Captain's Log</h1>
+
+<div class="section"><b>Date:</b> ${date}</div>
+
+<div class="section"><b>Mission:</b><br>${mission}</div>
+
+<div class="section"><b>Spoon Energy:</b> ${spoons}</div>
+
+<div class="section"><b>Nature Observed:</b><br>${nature}</div>
+
+<div class="section"><b>Tarot:</b> ${card}<br>${tarot}</div>
+
+<div class="section"><b>Timeline:</b><br>${timelineEntries}</div>
+
+<div class="section"><b>Notes & Stardust:</b><br>${notes}</div>
+
+</body>
+
+</html>
+
+`);
+
+win.document.close();
+
+});
+
+/* MAJOR ARCANA */
+
+const majorArcana = [
+"The Fool",
+"The Magician",
+"The High Priestess",
+"The Empress",
+"The Emperor",
+"The Hierophant",
+"The Lovers",
+"The Chariot",
+"Strength",
+"The Hermit",
+"Wheel of Fortune",
+"Justice",
+"The Hanged Man",
+"Death",
+"Temperance",
+"The Devil",
+"The Tower",
+"The Star",
+"The Moon",
+"The Sun",
+"Judgement",
+"The World"
+];
+
+document.getElementById("drawTarot").addEventListener("click", async () => {
+
+let card = majorArcana[Math.floor(Math.random()*majorArcana.length)];
+
+let cardField = document.getElementById("card");
+
+cardField.value = card;
+
+localStorage.setItem("card",card);
+
+try {
+  await fetch(`/set-tarot?card=${encodeURIComponent(card)}`);
+} catch (err) {
+  console.log("Shared tarot update failed:", err);
+}
+
+});
+
+/* NATURE IMPORTS */
+
+document.getElementById("addEbirdBtn").addEventListener("click", async ()=>{
+  const input = document.getElementById("ebirdImportInput");
+  const value = Number(input.value);
+  if(!Number.isFinite(value) || value <= 0) return;
+
+  try{
+    await incrementMoonData("lifebirds", value);
+    input.value = "";
+  }catch(err){
+    console.log("eBird import failed:", err);
+  }
+});
+
+document.getElementById("addINatBtn").addEventListener("click", async ()=>{
+  const input = document.getElementById("inatImportInput");
+  const value = Number(input.value);
+  if(!Number.isFinite(value) || value <= 0) return;
+
+  try{
+    await incrementMoonData("nature_projects", value);
+    input.value = "";
+  }catch(err){
+    console.log("iNaturalist import failed:", err);
+  }
+});
+
+document.getElementById("addMerlinBtn").addEventListener("click", async ()=>{
+  const input = document.getElementById("merlinImportInput");
+  const value = Number(input.value);
+  if(!Number.isFinite(value) || value <= 0) return;
+
+  try{
+    await incrementMoonData("merlin_calls", value);
+    input.value = "";
+  }catch(err){
+    console.log("Merlin import failed:", err);
+  }
+});
+
+document.getElementById("ebirdImportInput").addEventListener("keypress",function(e){
+  if(e.key==="Enter"){
+    document.getElementById("addEbirdBtn").click();
+  }
+});
+
+document.getElementById("inatImportInput").addEventListener("keypress",function(e){
+  if(e.key==="Enter"){
+    document.getElementById("addINatBtn").click();
+  }
+});
+
+document.getElementById("merlinImportInput").addEventListener("keypress",function(e){
+  if(e.key==="Enter"){
+    document.getElementById("addMerlinBtn").click();
+  }
+});
+
+/* INIT SHARED SPOONS */
+
+loadSharedSpoonsIntoPlanner();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "name": "aurora-orbit",
+  "version": "1.0.0",
+  "description": "Aurora Orbit Dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^4.22.1",
+    "node-fetch": "^2.7.0",
+    "node-ical": "^0.25.6",
+    "tmi.js": "^1.8.5",
+    "xml2js": "^0.6.2"
+  }
+}
