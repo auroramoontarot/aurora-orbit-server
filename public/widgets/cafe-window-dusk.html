@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Moon Cafe Window Dusk</title>
+
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+.window-dusk{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg,
+      rgba(255,214,170,.22) 0%,
+      rgba(214,170,220,.18) 30%,
+      rgba(116,130,190,.20) 58%,
+      rgba(46,58,102,.28) 100%);
+}
+
+/* soft evening color wash */
+.dusk-glow{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 24% 22%, rgba(255,210,145,.22), transparent 24%),
+    radial-gradient(circle at 68% 18%, rgba(255,190,210,.14), transparent 28%),
+    linear-gradient(180deg,
+      rgba(255,220,185,.08) 0%,
+      rgba(190,170,220,.08) 44%,
+      rgba(90,110,170,.10) 100%);
+  pointer-events:none;
+}
+
+/* faint remaining daylight beam */
+.evening-shimmer{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(115deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,235,205,.06) 45%,
+      rgba(255,255,255,0) 100%);
+  opacity:.22;
+  animation: shimmerMove 18s linear infinite;
+}
+
+/* first stars appearing */
+.starfield{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(2px 2px at 18% 26%, rgba(255,255,255,.55), transparent),
+    radial-gradient(2px 2px at 72% 20%, rgba(255,255,255,.42), transparent),
+    radial-gradient(1px 1px at 54% 30%, rgba(255,255,255,.48), transparent),
+    radial-gradient(2px 2px at 84% 36%, rgba(255,255,255,.38), transparent),
+    radial-gradient(1px 1px at 30% 18%, rgba(255,255,255,.30), transparent);
+  opacity:.45;
+  animation: starDrift 180s linear infinite;
+}
+
+/* very light early aurora haze */
+.aurora-haze{
+  position:absolute;
+  inset:-8% -10%;
+  pointer-events:none;
+  filter: blur(38px);
+  mix-blend-mode: screen;
+  opacity:.22;
+  background:
+    radial-gradient(ellipse at 26% 20%, rgba(0,169,186,.20), transparent 36%),
+    radial-gradient(ellipse at 58% 14%, rgba(127,135,255,.18), transparent 34%),
+    radial-gradient(ellipse at 82% 22%, rgba(198,199,248,.12), transparent 28%);
+  animation: auroraDrift 24s ease-in-out infinite alternate;
+}
+
+/* optional tiny drifting firefly / sparkle feel */
+.sparkle{
+  position:absolute;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background: rgba(255,245,220,.85);
+  box-shadow: 0 0 8px rgba(255,220,160,.35);
+  opacity:0;
+  animation: sparklePulse 7s infinite;
+}
+
+.sA { left: 22%; top: 62%; animation-delay: 1s; }
+.sB { left: 61%; top: 54%; animation-delay: 4s; }
+
+/* subtle lower fade */
+.horizon-fade{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:32%;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(135,150,185,.08) 45%,
+    rgba(56,70,110,.16) 100%
+  );
+}
+
+/* subtle glass sheen */
+.window-veil{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 24%),
+    linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,0) 18%, rgba(255,255,255,.015) 84%, rgba(255,255,255,.03) 100%);
+  pointer-events:none;
+}
+
+@keyframes shimmerMove{
+  0% { transform: translateX(-30%); }
+  100% { transform: translateX(30%); }
+}
+
+@keyframes starDrift{
+  100% { transform: translate(-80px, -140px); }
+}
+
+@keyframes auroraDrift{
+  0%   { transform: translateX(-2%) translateY(0%) scale(1.01); }
+  50%  { transform: translateX(2%) translateY(-1%) scale(1.04); }
+  100% { transform: translateX(4%) translateY(1%) scale(1.02); }
+}
+
+@keyframes sparklePulse{
+  0%,100% { opacity:0; transform: scale(.6); }
+  50% { opacity:.7; transform: scale(1.15); }
+}
+</style>
+</head>
+<body>
+  <div class="window-dusk">
+    <div class="dusk-glow"></div>
+    <div class="evening-shimmer"></div>
+    <div class="starfield"></div>
+    <div class="aurora-haze"></div>
+
+    <div class="sparkle sA"></div>
+    <div class="sparkle sB"></div>
+
+    <div class="horizon-fade"></div>
+    <div class="window-veil"></div>
+  </div>
+</body>
+</html>

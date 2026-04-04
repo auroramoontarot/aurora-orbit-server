@@ -1,0 +1,89 @@
+let clientsList = [];
+let selectedClientDisplayName = null;
+
+const avatarEl = document.querySelector('.avatar-img');
+const avatar = document.querySelector('.avatar');
+
+avatar.addEventListener('click', () => {
+    openSheet('clients');
+    gtag('event', 'avatar_sheet_open', {
+        category: 'UI',
+        interaction_type: 'click'
+    });
+});
+async function loadClients(headers) {
+    try {
+        const res = await fetch(`${URLS.BASE}/clients`, { headers });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const data = await res.json();
+        clientsList = data.clients || [];
+        updateAvatarDisplay();
+    } catch (err) {
+        console.error('Failed to load clients from server:', err);
+    }
+}
+
+function updateAvatarDisplay() {
+    const hide = savedConfig?.hideClients;
+    if (avatar) avatar.style.display = hide ? 'none' : 'flex';
+    if (!hide && avatarEl) {
+        const mergedClients = mergeWithOverrides(clientsList, savedConfig?.clients || []);
+       const displayedClients = mergedClients
+    .filter(c => c.isDisplayed !== false);
+        if (displayedClients.length === 0) return;
+        let clientToShow = displayedClients[0];
+        // use persisted selection if available
+        if (selectedClientDisplayName) {
+            const found = displayedClients.find(c => c.displayName === selectedClientDisplayName);
+            if (found) clientToShow = found;
+        }
+       // avatarEl.src = clientToShow.image;
+        const resolvedImage = resolveAssetUrl(clientToShow.image);
+avatarEl.src = resolvedImage;
+        avatarEl.alt = clientToShow.name;
+    }
+
+}
+
+
+
+//Show clients avatar in bottom sheet
+function renderClientsInSheet() {
+    if (!grid) return;
+    grid.innerHTML = "";
+    const mergedClients = mergeWithOverrides(clientsList, savedConfig?.clients || []);
+        const displayedClients = mergedClients
+        .filter(c => c.isDisplayed !== false)
+    displayedClients.forEach(client => {
+        const card = document.createElement('div');
+        card.className = "card main";
+
+        const imgHolder = document.createElement('div');
+        imgHolder.className = 'img-holder img-holder-mobile pet';
+
+        const img = document.createElement('img');
+        img.className = 'drink';
+      //  img.src = client.image;
+        const resolvedImage = resolveAssetUrl(client.image);
+img.src = resolvedImage;
+        img.alt = client.name;
+
+        imgHolder.appendChild(img);
+        card.appendChild(imgHolder);
+        card.addEventListener('click', () => {
+            if (avatarEl) {
+               // avatarEl.setAttribute('src', client.image);
+                const resolvedImage = resolveAssetUrl(client.image);
+avatarEl.setAttribute('src', resolvedImage);
+                avatarEl.setAttribute('alt', client.name);
+            }
+            gtag('event', 'client_selected', {
+                category: 'UI',
+                client: client.displayName
+            });
+            selectedClientDisplayName = client.displayName;
+            closeSheet();
+        });
+        grid.appendChild(card);
+    });
+}

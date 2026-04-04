@@ -1,0 +1,205 @@
+
+const leaderboardBtn = document.getElementById('leaderboard');
+let leaderboard = [];
+
+let leaderboardPeriods = {
+    all_time: [],
+    monthly: [],
+    weekly: [],
+    daily: []
+};
+let leaderboardCache = {
+    periods: {},
+    lastUpdated: null,
+    stale: true
+};
+
+leaderboardBtn.addEventListener('click', async () => {
+    if (!currentAuth) return;
+    gtag('event', 'avatar_sheet_open', {
+        category: 'UI',
+        interaction_type: 'click'
+    });
+    openSheet('leaderboard');
+    const ranksContainer = document.querySelector('.leaderboard .stretch');
+    // If cache exists and is not stale, use it
+    if (leaderboardCache.periods.all_time && !leaderboardCache.stale) {
+        leaderboardPeriods = leaderboardCache.periods;
+        leaderboard = leaderboardPeriods.all_time;
+        renderLeaderboardEntries(leaderboard, currentAuth.userId);
+        injectLeaderboardTab();
+        return;
+    }
+    showLoader("loader-leaderboard");
+    try {
+        const headers = {
+            'Authorization': `Bearer ${currentAuth.token}`,
+            'Content-Type': 'application/json'
+        };
+        const res = await fetch(`${URLS.BASE}/leaderboard/${currentAuth.channelId}`, { headers });
+        if (!res.ok) {
+            ranksContainer.textContent = "Failed to load leaderboard.";
+            return;
+        }
+        const { leaderboards } = await res.json();
+        leaderboardPeriods = leaderboards;
+        leaderboardCache.periods = leaderboards;
+        leaderboardCache.stale = false;
+        leaderboardCache.lastUpdated = Date.now();
+        leaderboard = leaderboardPeriods.all_time;
+        renderLeaderboardEntries(leaderboard, currentAuth.userId);
+    } catch (err) {
+        ranksContainer.textContent = "Error loading leaderboard.";
+        console.error(err);
+    } finally {
+        hideLoader("loader-leaderboard");
+    }
+});
+
+async function renderLeaderboardEntries(leaderboard = [], currentUserId = null) {
+    const ranksContainer = document.querySelector('.leaderboard-space-between > div');
+    const entriesContainer = document.querySelector('.leaderboard .stretch');
+    const ranksContainerParent = document.querySelector('.leaderboard-space-between');
+    ranksContainerParent.innerHTML = '';
+    ranksContainerParent.appendChild(ranksContainer);
+
+    ranksContainer.innerHTML = '';
+    entriesContainer.innerHTML = '';
+    leaderboard = Array.isArray(leaderboard) ? leaderboard : [];
+    leaderboard.sort((a, b) => a.rank - b.rank);
+    const topToShow = 3;
+    let topEntries = leaderboard.slice(0, topToShow);
+
+    while (topEntries.length < topToShow) {
+        topEntries.push(createEmptyEntry(topEntries.length));
+    }
+    const myEntry = leaderboard.find(u => u.isMe);
+    const showEllipsis = myEntry && myEntry.rank > topToShow;
+    // Populate ranks
+    topEntries.forEach((user, index) => {
+        const rankDiv = document.createElement('div');
+        rankDiv.className = 'leaderboard-rank';
+        if (index > 0) rankDiv.classList.add('spacing-32');
+        rankDiv.textContent = user.rank;
+        ranksContainer.appendChild(rankDiv);
+    });
+
+    if (showEllipsis && myEntry) {
+        const myRankContainer = document.createElement('div');
+        myRankContainer.className = 'leaderboard-rank-row';
+        const myRankDiv = document.createElement('div');
+        myRankDiv.className = 'leaderboard-rank';
+        myRankDiv.textContent = myEntry.rank;
+        myRankContainer.appendChild(myRankDiv);
+        ranksContainer.parentNode.appendChild(myRankContainer);
+    }
+
+
+
+    // Populate entries (avatars + names + badge)
+    function createEntryDiv(user, isFirstEntry) {
+        const entry = document.createElement('div');
+        entry.className = 'leaderboard-entry';
+        if (!isFirstEntry) entry.classList.add('spacing-8');
+        if (user.isEmpty) {
+            entry.classList.add('empty-entry');
+            const img = document.createElement('span');
+            img.className = 'material-symbols-rounded leaderboard-avatar trophy';
+            img.textContent = 'trophy';
+            entry.appendChild(img);
+
+            const usernameDiv = document.createElement('div');
+            usernameDiv.className = 'leaderboard-username muted';
+            usernameDiv.textContent = 'Redeem an item to claim';
+            entry.appendChild(usernameDiv);
+
+            return entry;
+        }
+
+        if (user.isMe) entry.classList.add('my-entry');
+
+        // Avatar
+        const img = document.createElement('img');
+        img.className = 'leaderboard-avatar';
+        img.src = user.avatar;
+        entry.appendChild(img);
+
+        // Username
+        const usernameDiv = document.createElement('div');
+        usernameDiv.className = 'leaderboard-username';
+        usernameDiv.textContent = user.username;
+        entry.appendChild(usernameDiv);
+
+        // Badge / total
+        const badgeDiv = document.createElement('div');
+        badgeDiv.className = 'text badge';
+
+        // SVG icon for Bits
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNS, 'svg');
+        svg.setAttribute('width', '7');
+        svg.setAttribute('height', '9');
+        svg.setAttribute('viewBox', '0 0 7 9');
+        svg.setAttribute('fill', 'none');
+
+        const path = document.createElementNS(svgNS, 'path');
+        path.setAttribute('d', 'M6.64839 4.90298L3.78729 0.238752C3.59217 -0.0793295 3.13 -0.0793303 2.93488 0.238751L0.0737783 4.90298C-0.050108 5.10494 -0.015237 5.36613 0.157294 5.52851L3.0184 8.22141C3.21092 8.40261 3.51125 8.40261 3.70377 8.2214L6.56487 5.52851C6.73741 5.36613 6.77228 5.10494 6.64839 4.90298Z');
+        path.setAttribute('fill', 'var(--brown-6)');
+        svg.appendChild(path);
+
+        badgeDiv.textContent = user.total_amount;
+        badgeDiv.prepend(svg);
+        entry.appendChild(badgeDiv);
+
+        return entry;
+    }
+
+    topEntries.forEach((user, index) => {
+        const isFirstEntry = index === 0;
+        entriesContainer.appendChild(createEntryDiv(user, isFirstEntry));
+    });
+    if (showEllipsis && myEntry) {
+        const ellipsisEntry = document.createElement('div');
+        ellipsisEntry.className = 'h1 brown spacing-8';
+        ellipsisEntry.textContent = '•••';
+        entriesContainer.appendChild(ellipsisEntry);
+        entriesContainer.appendChild(createEntryDiv(myEntry));
+    }
+}
+
+function injectLeaderboardTab() {
+    const tabContainer = document.getElementById("leaderboard-tabs");
+    if (!tabContainer) return;
+
+    tabContainer.innerHTML = '';
+
+    const periods = ['all_time', 'monthly', 'weekly', 'daily'];
+
+    periods.forEach(period => {
+        const btn = document.createElement('button');
+        btn.textContent = period
+            .split('_')
+            .map(word => word[0].toUpperCase() + word.slice(1))
+            .join(' ');
+        btn.className = 'tablinks';
+        btn.dataset.category = period;
+
+        btn.addEventListener('click', () => {
+            leaderboard = leaderboardPeriods[period] || [];
+            renderLeaderboardEntries(leaderboard, currentAuth.userId);
+            tabContainer.querySelectorAll('.tablinks').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+
+        tabContainer.appendChild(btn);
+    });
+
+    tabContainer.querySelector('.tablinks').classList.add('active');
+}
+
+function createEmptyEntry(index) {
+    return {
+        isEmpty: true,
+        rank: index + 1
+    };
+}

@@ -392,6 +392,85 @@ opacity:.82;
   }
 }
 
+.spotify-card{
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(25, 30, 48, 0.92);
+  border: 1px solid rgba(203,236,245,0.14);
+  box-shadow: 0 0 14px rgba(127,135,255,0.12);
+}
+
+.spotify-card h3{
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: #c6c7f8;
+}
+
+.spotify-row{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.spotify-row label{
+  font-size: 13px;
+  color: #cbecf5;
+}
+
+.spotify-row select{
+  min-width: 220px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(203,236,245,0.18);
+  background: rgba(12,16,30,0.88);
+  color: #cbecf5;
+}
+
+.spotify-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+
+.spotify-grid button,
+.spotify-row button{
+  padding: 10px 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(127,135,255,0.95), rgba(0,169,186,0.88));
+  color: white;
+  font-family: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(127,135,255,0.18);
+}
+
+.spotify-grid button:hover,
+.spotify-row button:hover{
+  filter: brightness(1.06);
+}
+
+.spotify-now,
+.spotify-status{
+  font-size: 13px;
+  line-height: 1.35;
+  color: #cbecf5;
+}
+
+.spotify-status{
+  margin-top: 8px;
+  color: #c6c7f8;
+  opacity: 0.9;
+}
+
+.spotify-grid button:last-child{
+  grid-column: 1 / -1;
+}
+
 </style>
 
 </head>
@@ -418,6 +497,57 @@ Loading mission...
 <div class="controls">
 <button onclick="completeQuest()">✅ Complete</button>
 <button onclick="skipQuest()">⏭ Skip</button>
+</div>
+
+<div class="control-card spotify-card">
+  <h3>Spotify Vibes</h3>
+
+  <div class="spotify-row">
+    <button onclick="spotifyLogin()">Connect Spotify</button>
+    <button onclick="loadSpotifyDevices()">Refresh Devices</button>
+  </div>
+
+  <div class="spotify-row">
+    <label for="spotifyDevice">Device</label>
+    <select id="spotifyDevice">
+      <option value="">Active device</option>
+    </select>
+  </div>
+
+<div class="spotify-grid">
+  <button onclick="playSpotifyMode('cottage')">🌿 Cottage</button>
+  <button onclick="playSpotifyMode('reiki')">🔮 Reiki</button>
+  <button onclick="playSpotifyMode('stardust')">✨ Stardust</button>
+  <button onclick="playSpotifyMode('night')">🌙 Night</button>
+  <button onclick="toggleSpotifyAuto()" id="spotifyAutoBtn">🤖 Auto</button>
+</div>
+
+  <div class="spotify-now">
+    <strong>Now Playing:</strong>
+    <span id="spotifyNowPlaying">Checking Spotify…</span>
+  </div>
+
+  <div class="spotify-status" id="spotifyStatus">Ready to brew a vibe.</div>
+</div>
+
+<div class="cosmic-controls">
+
+<div class="section-title">📺 Now Watching</div>
+
+<div class="media-fields">
+<input id="watchTitle" placeholder="Show / stream / movie title...">
+<input id="watchDetail" placeholder="Episode / Live / detail...">
+</div>
+
+<div class="media-row">
+<button onclick="updateWatching()">Update Watching</button>
+<button onclick="clearWatching()">Clear</button>
+</div>
+
+<div class="current-media" id="currentWatching">
+Current watching: —
+</div>
+
 </div>
 
 <div class="cosmic-controls">
@@ -486,26 +616,6 @@ Loading mission...
 <button onclick="setEnergy(this,3)">3</button>
 <button onclick="setEnergy(this,4)">4</button>
 <button onclick="setEnergy(this,5)">5</button>
-</div>
-
-</div>
-
-<div class="cosmic-controls">
-
-<div class="section-title">📺 Now Watching</div>
-
-<div class="media-fields">
-<input id="watchTitle" placeholder="Show / stream / movie title...">
-<input id="watchDetail" placeholder="Episode / Live / detail...">
-</div>
-
-<div class="media-row">
-<button onclick="updateWatching()">Update Watching</button>
-<button onclick="clearWatching()">Clear</button>
-</div>
-
-<div class="current-media" id="currentWatching">
-Current watching: —
 </div>
 
 </div>
@@ -606,6 +716,108 @@ Use this for quick manual sync from eBird or iNaturalist without changing your s
 </div>
 
 <script>
+
+function setSpotifyStatus(text) {
+  const el = document.getElementById("spotifyStatus");
+  if (el) el.textContent = text;
+}
+
+function spotifyLogin() {
+  window.open(`${API_BASE}/spotify/login`, "_blank", "width=700,height=800");
+  setSpotifyStatus("Spotify login opened.");
+}
+
+async function loadSpotifyDevices() {
+  try {
+    setSpotifyStatus("Loading Spotify devices...");
+
+    const res = await fetch(`${API_BASE}/spotify/devices`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to load devices");
+    }
+
+    const select = document.getElementById("spotifyDevice");
+    select.innerHTML = `<option value="">Active device</option>`;
+
+    const devices = Array.isArray(data.devices) ? data.devices : [];
+
+    devices.forEach(device => {
+      const opt = document.createElement("option");
+      opt.value = device.id;
+      opt.textContent = `${device.name}${device.is_active ? " (active)" : ""}`;
+      select.appendChild(opt);
+    });
+
+    setSpotifyStatus(
+      devices.length
+        ? `Loaded ${devices.length} Spotify device${devices.length === 1 ? "" : "s"}.`
+        : "No Spotify devices found. Open Spotify on your phone/tablet/computer first."
+    );
+  } catch (err) {
+    console.error(err);
+    setSpotifyStatus(`Device load failed: ${err.message}`);
+  }
+}
+
+async function playSpotifyMode(mode) {
+  try {
+    const deviceId = document.getElementById("spotifyDevice")?.value || "";
+    setSpotifyStatus(`Switching vibe to ${mode}...`);
+
+    const url = deviceId
+      ? `${API_BASE}/spotify/play/${mode}?device_id=${encodeURIComponent(deviceId)}`
+      : `${API_BASE}/spotify/play/${mode}`;
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Spotify switch failed");
+    }
+
+    setSpotifyStatus(`Now brewing: ${mode}.`);
+    setTimeout(loadSpotifyNowPlaying, 1200);
+  } catch (err) {
+    console.error(err);
+    setSpotifyStatus(`Switch failed: ${err.message}`);
+  }
+}
+
+async function loadSpotifyNowPlaying() {
+  try {
+    const res = await fetch(`${API_BASE}/spotify/current`);
+    const data = await res.json();
+
+    const target = document.getElementById("spotifyNowPlaying");
+    if (!target) return;
+
+    if (!data || data.is_playing === false || !data.item) {
+      target.textContent = "No active track right now.";
+      return;
+    }
+
+    const track = data.item?.name || "Unknown track";
+    const artists = Array.isArray(data.item?.artists)
+      ? data.item.artists.map(a => a.name).join(", ")
+      : "Unknown artist";
+
+    target.textContent = `${track} — ${artists}`;
+  } catch (err) {
+    console.error(err);
+    const target = document.getElementById("spotifyNowPlaying");
+    if (target) target.textContent = "Unable to read current track.";
+  }
+}
+
+loadSpotifyDevices();
+loadSpotifyNowPlaying();
+setInterval(loadSpotifyNowPlaying, 15000);
 
 const API_BASE = window.location.origin;
 

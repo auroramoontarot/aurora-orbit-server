@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  background:black;
+  overflow:hidden;
+  font-family:'Quicksand',sans-serif;
+  color:#cbecf5;
+}
+
+/* BACKGROUND */
+
+.bg{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(127,135,255,.25), transparent 50%),
+    radial-gradient(circle at 70% 10%, rgba(0,169,186,.25), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(127,135,255,.15), transparent 60%);
+  filter:blur(80px);
+  opacity:.4;
+  animation:auroraMove 18s ease-in-out infinite alternate;
+}
+
+@keyframes auroraMove{
+  0%{transform:translateX(-10%)}
+  100%{transform:translateX(10%)}
+}
+
+/* CENTER CONTENT */
+
+.container{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+  opacity:0;
+  animation:fadeIn 2.5s ease forwards;
+}
+
+@keyframes fadeIn{
+  to{opacity:1}
+}
+
+/* LOGO */
+
+.logo{
+  width:320px;
+  opacity:0;
+  transform:scale(.9);
+  animation:logoIn 2.2s ease forwards;
+  animation-delay:1s;
+  filter:
+    drop-shadow(0 0 18px rgba(127,135,255,.5))
+    drop-shadow(0 0 24px rgba(0,169,186,.4));
+}
+
+@keyframes logoIn{
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+/* TITLE */
+
+.title{
+  margin-top:18px;
+  font-size:36px;
+  letter-spacing:4px;
+  font-weight:700;
+  opacity:0;
+  animation:titleIn 2s ease forwards;
+  animation-delay:2.2s;
+  text-shadow:
+    0 0 14px rgba(127,135,255,.6),
+    0 0 24px rgba(0,169,186,.4);
+}
+
+@keyframes titleIn{
+  to{opacity:1}
+}
+
+/* SUBTEXT */
+
+.sub{
+  margin-top:8px;
+  font-size:14px;
+  letter-spacing:2px;
+  opacity:0;
+  animation:subIn 2s ease forwards;
+  animation-delay:3s;
+  color:#c6c7f8;
+}
+
+@keyframes subIn{
+  to{opacity:.9}
+}
+
+/* STARDUST */
+
+.stars{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+}
+
+.star{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  opacity:.6;
+  animation:twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle{
+  0%,100%{opacity:.3}
+  50%{opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+  <img src="/images/lunaticslogo.gif" class="logo">
+  <div class="title">LUNA-TICS</div>
+  <div class="sub">guided conversation through chaos</div>
+</div>
+
+<audio id="chime" src="widgets/sounds/moonbeam.mp3"></audio>
+
+<script>
+// generate stars
+const stars = document.getElementById("stars");
+for(let i=0;i<80;i++){
+  const s = document.createElement("div");
+  s.className="star";
+  s.style.left = Math.random()*100+"%";
+  s.style.top = Math.random()*100+"%";
+  s.style.animationDelay = Math.random()*3+"s";
+  stars.appendChild(s);
+}
+
+// play chime + astrea
+setTimeout(()=>{
+  const chime = document.getElementById("chime");
+  chime.volume = .3;
+  chime.play();
+
+  setTimeout(()=>{
+    fetch("/tts",{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        text:"Welcome to Luna Tics. Guided conversation through chaos.",
+        mode:"astrea"
+      })
+    });
+  },500);
+
+},2000);
+</script>
+
+</body>
+</html>

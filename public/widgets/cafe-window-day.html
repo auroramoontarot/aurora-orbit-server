@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Moon Cafe Window Day</title>
+
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* whole window area */
+.window-day{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* very soft daylight tint */
+.sky-glow{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 22% 20%, rgba(255,245,200,.22), transparent 26%),
+    radial-gradient(circle at 72% 14%, rgba(255,255,255,.12), transparent 30%),
+    linear-gradient(180deg,
+      rgba(210,240,255,.10) 0%,
+      rgba(210,240,255,.04) 40%,
+      rgba(255,255,255,0) 100%);
+  pointer-events:none;
+}
+
+/* tiny daytime dust motes */
+.sun-dust{
+  position:absolute;
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  background: rgba(255,255,255,.65);
+  box-shadow: 0 0 6px rgba(255,255,255,.28);
+  animation: dustFloat linear infinite;
+  opacity:.35;
+}
+
+.d1 { left: 16%; bottom: 12%; animation-duration: 16s; animation-delay: -2s; }
+.d2 { left: 34%; bottom: 18%; animation-duration: 20s; animation-delay: -8s; }
+.d3 { left: 58%; bottom: 14%; animation-duration: 18s; animation-delay: -5s; }
+.d4 { left: 74%; bottom: 20%; animation-duration: 22s; animation-delay: -11s; }
+.d5 { left: 88%; bottom: 10%; animation-duration: 17s; animation-delay: -6s; }
+
+/* butterflies */
+.butterfly{
+  position:absolute;
+  width:18px;
+  height:14px;
+  pointer-events:none;
+  opacity:.70;
+  animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
+}
+
+.butterfly::before,
+.butterfly::after{
+  content:"";
+  position:absolute;
+  width:10px;
+  height:14px;
+  border-radius: 80% 20% 75% 25%;
+  top:0;
+  background: linear-gradient(180deg, rgba(127,135,255,.82), rgba(203,236,245,.82));
+  box-shadow: 0 0 4px rgba(127,135,255,.12);
+}
+
+.butterfly::before{
+  left:1px;
+  transform-origin:100% 50%;
+  transform: rotate(-18deg);
+  animation: flapL .9s ease-in-out infinite;
+}
+
+.butterfly::after{
+  right:1px;
+  transform-origin:0% 50%;
+  transform: scaleX(-1) rotate(-18deg);
+  animation: flapR .9s ease-in-out infinite;
+}
+
+.butterfly .body{
+  position:absolute;
+  left:8px;
+  top:2px;
+  width:2px;
+  height:10px;
+  border-radius:999px;
+  background: rgba(70,80,120,.50);
+}
+
+.b1{
+  left:10%;
+  top:58%;
+  animation: butterflyPath1 18s infinite;
+}
+.b2{
+  left:62%;
+  top:44%;
+  transform: scale(.85);
+  animation: butterflyPath2 22s infinite;
+}
+
+/* keep only one bee at first */
+.bee{
+  position:absolute;
+  width:14px;
+  height:10px;
+  pointer-events:none;
+  opacity:.65;
+  animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
+}
+
+.bee::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  background:
+    linear-gradient(90deg,
+      #2f2a1f 0 18%,
+      #ffd54d 18% 38%,
+      #2f2a1f 38% 56%,
+      #ffd54d 56% 76%,
+      #2f2a1f 76% 100%);
+  box-shadow: 0 0 4px rgba(255,213,77,.18);
+}
+
+.bee::after{
+  content:"";
+  position:absolute;
+  left:3px;
+  top:-4px;
+  width:8px;
+  height:6px;
+  border-radius:999px;
+  background: rgba(255,255,255,.38);
+  box-shadow: 6px 0 0 rgba(255,255,255,.30);
+}
+
+.be1{
+  left:22%;
+  top:72%;
+  animation: beePath1 14s infinite;
+}
+
+/* lower soft atmospheric fade */
+.horizon-fade{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:30%;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(190,228,235,.05) 45%,
+    rgba(165,208,220,.10) 100%
+  );
+}
+
+/* subtle glass sheen */
+.window-veil{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 24%),
+    linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,0) 18%, rgba(255,255,255,.015) 84%, rgba(255,255,255,.03) 100%);
+  pointer-events:none;
+}
+
+@keyframes dustFloat{
+  0%{
+    transform: translateY(0) scale(1);
+    opacity:0;
+  }
+  10%{
+    opacity:.35;
+  }
+  100%{
+    transform: translateY(-140px) scale(1.2);
+    opacity:0;
+  }
+}
+
+@keyframes flapL{
+  0%,100%{ transform: rotate(-22deg) scaleY(1); }
+  50%{ transform: rotate(8deg) scaleY(.92); }
+}
+@keyframes flapR{
+  0%,100%{ transform: scaleX(-1) rotate(-22deg) scaleY(1); }
+  50%{ transform: scaleX(-1) rotate(8deg) scaleY(.92); }
+}
+
+@keyframes butterflyPath1{
+  0%   { transform: translate(0,0) scale(.95); opacity:0; }
+  8%   { opacity:.7; }
+  25%  { transform: translate(90px,-24px) scale(1); }
+  50%  { transform: translate(180px,-66px) scale(.96); }
+  75%  { transform: translate(250px,-38px) scale(1.02); }
+  100% { transform: translate(340px,-92px) scale(.92); opacity:0; }
+}
+
+@keyframes butterflyPath2{
+  0%   { transform: translate(0,0) scale(.85); opacity:0; }
+  8%   { opacity:.65; }
+  35%  { transform: translate(-70px,-22px) scale(.9); }
+  65%  { transform: translate(-150px,14px) scale(.82); }
+  100% { transform: translate(-230px,-30px) scale(.78); opacity:0; }
+}
+
+@keyframes beePath1{
+  0%   { transform: translate(0,0); opacity:0; }
+  10%  { opacity:.65; }
+  30%  { transform: translate(26px,-10px); }
+  55%  { transform: translate(8px,12px); }
+  78%  { transform: translate(44px,-2px); }
+  100% { transform: translate(64px,-18px); opacity:0; }
+}
+</style>
+</head>
+<body>
+  <div class="window-day">
+    <div class="sky-glow"></div>
+
+    <div class="sun-dust d1"></div>
+    <div class="sun-dust d2"></div>
+    <div class="sun-dust d3"></div>
+    <div class="sun-dust d4"></div>
+    <div class="sun-dust d5"></div>
+
+    <div class="butterfly b1"><span class="body"></span></div>
+    <div class="butterfly b2"><span class="body"></span></div>
+
+    <div class="bee be1"></div>
+
+    <div class="horizon-fade"></div>
+    <div class="window-veil"></div>
+  </div>
+</body>
+</html>

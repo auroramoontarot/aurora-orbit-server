@@ -1,0 +1,206 @@
+
+let currentAuth = null;
+let socket = null;
+let reconnectTimeout = null;
+let latestProducts = [];
+let catalog = [];
+let savedConfig = {};
+let activeTab = 'All';
+let productsRes, catalogRes, serverConfig;
+let UIReady = false;
+const bottomSheet = document.querySelector('.bottom-sheet');
+const grid = document.querySelector('.client-grid');
+const backdrop = document.querySelector('.backdrop');
+const closeBtn = document.querySelector('.bottom-sheet .material-symbols-rounded');
+
+gtag('event', 'widget_loaded', {
+    category: 'Widget',
+    label: 'cozycafe_widget_loaded'
+});
+
+Twitch.ext.onAuthorized(async function (auth) {
+    if (!UIReady) {
+        showLoader();
+    }
+    UIReady = false;
+    disableAllUI();
+    currentAuth = auth;
+    const headers = {
+        'Authorization': `Bearer ${auth.token}`,
+        'Content-Type': 'application/json'
+    };
+    //Check if Bits-in-Extensions are enabled
+    if (!Twitch.ext.features.isBitsEnabled) {
+        console.warn('Bits-in-Extensions not enabled for this channel');
+        // Hide the product grid or any relevant sections
+        document.getElementById('product-grid')?.classList.add('hidden');
+        document.getElementById('header')?.classList.add('hidden');
+        document.getElementById('category-tabs')?.classList.add('hidden');
+        // Show "not eligible" section
+        const notEligibleSection = document.getElementById('not-elligible');
+        if (notEligibleSection) notEligibleSection.classList.remove('hidden');
+        hideLoader();
+
+        return;
+    }
+    await ensureBaseUrl();
+    try {
+        [productsRes, catalogRes, serverConfig] = await Promise.all([
+            Twitch.ext.bits.getProducts(),
+            fetch(`${URLS.BASE}/catalog?channelId=${auth.channelId}`, { headers }),
+            fetchServerConfig(auth.channelId, auth.token)
+        ]);
+    } catch (err) {
+        console.error("Failed to load products or catalog", err);
+        showError("Failed to load products. Please try again later.", err);
+        return;
+    }
+    if (serverConfig) savedConfig = serverConfig;
+    if (savedConfig?.palette) applyPalette(savedConfig.palette);
+    latestProducts = productsRes;
+    catalogData = await catalogRes.json();
+    catalog = catalogData.catalog || [];
+    //Merge catalog with overrides
+    catalog = mergeWithOverrides(catalog, savedConfig?.catalog || [], latestProducts);
+    hideLoader();
+    renderTabs(catalog);
+    loadClients(headers).catch(err => console.warn("Failed to load clients", err));
+    UIReady = true;
+});
+
+
+// Listen for broadcaster updates in real time
+Twitch.ext.listen('broadcast', async (target, contentType, message) => {
+    try {
+        let msgObj;
+        try {
+            msgObj = JSON.parse(message);
+        } catch (e) {
+            console.warn('Failed to parse broadcast message', e);
+            return;
+        }
+
+        if (msgObj.type === 'reload') {
+            const serverConfig = await fetchServerConfig(currentAuth.channelId, currentAuth.token);
+            if (serverConfig) {
+                savedConfig = serverConfig;
+                catalog = mergeWithOverrides(catalogData?.catalog, savedConfig?.catalog || [], latestProducts);
+                renderTabs(catalog, activeTab);
+                applyPalette(serverConfig.palette);
+                updateAvatarDisplay();
+            }
+        }
+    } catch (err) {
+        console.error('Failed to handle broadcast message', err);
+    }
+});
+
+Twitch.ext.bits.onTransactionCancelled(() => {
+    enableAllUI();
+    pendingItem = null;
+});
+
+// Relay Bits transactions to server
+Twitch.ext.bits.onTransactionComplete(async function (tx) {
+    leaderboardCache.stale = true;
+    if (!currentAuth || tx.initiator !== 'current_user') return;
+    gtag('event', 'purchase_complete', {
+        category: 'Store',
+        sku: pendingItem.sku,
+        item_name: pendingItem.displayName,
+        value: tx.product.cost.amount
+    });
+    let avatarImgSrc = '';
+    if (!savedConfig?.hideClients) {
+        avatarImgSrc = avatarEl.src;
+    }
+
+    const eventData = {
+        transactionId: tx.transactionId,
+        userId: tx.userId,
+        displayName: tx.displayName,
+        channelId: currentAuth.channelId,
+        product: pendingItem.displayName,
+        sku: tx.product.sku,
+        cost: tx.product.cost.amount,
+        initiator: tx.initiator,
+        wall: savedConfig?.decor?.wall ?? null,
+        counter: savedConfig?.decor?.counter ?? null,
+        avatarImg: avatarImgSrc,
+        volume: savedConfig.volume ?? 50
+    };
+    pendingItem = null;
+    showToast("Order recorded – It’ll display soon on stream.", 'success');
+    for (let i = 0; i < 3; i++) {
+        try {
+            const res = await fetch(`${URLS.BASE}/purchase-event`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${currentAuth.token}`
+                },
+                body: JSON.stringify(eventData)
+            });
+            if (res.status === 409) {
+                console.warn('Purchase already recorded (409), stopping retries');
+                return; // stop retrying
+            }
+            if (!res.ok) throw new Error(`Server responded ${res.status}`);
+            const data = await res.json();
+            return;
+        } catch (err) {
+            console.warn(`Purchase send failed, retrying (${i + 1}/${maxRetries})`, err);
+            await new Promise(r => setTimeout(r, 2000));
+        }
+    }
+    console.warn('Purchase failed after maximum retries');
+});
+
+
+
+function enableAllUI() {
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => card.classList.remove('disabled'));
+    const allTabs = document.querySelectorAll('.tablinks');
+    allTabs.forEach(tab => tab.classList.remove('disabled'));
+}
+
+function disableAllUI() {
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => card.classList.add('disabled'));
+    const allTabs = document.querySelectorAll('.tablinks');
+    allTabs.forEach(tab => tab.classList.add('disabled'));
+}
+
+function closeSheet() {
+    bottomSheet.classList.remove('show');
+    backdrop.classList.remove('show');
+}
+
+function openSheet(view = 'clients') {
+    const clientsContainer = document.querySelector('.client-grid');
+    const leaderboardContainer = document.querySelector('.leaderboard');
+    const sheetTitle = document.getElementById('sheet-title');
+    const sheetDescription = document.getElementById('sheet-description');
+    bottomSheet.classList.remove('clients', 'leaderboard');
+    if (view === 'clients') {
+        bottomSheet.classList.add('clients');
+        clientsContainer.style.display = 'grid';
+        leaderboardContainer.style.display = 'none';
+        sheetTitle.textContent = "Edit your avatar";
+        sheetDescription.textContent = "This’ll be who you look like when ordering your coffee on stream.";
+        renderClientsInSheet();
+    } else if (view === 'leaderboard') {
+        clientsContainer.style.display = 'none';
+        leaderboardContainer.style.display = 'flex';
+        injectLeaderboardTab();
+        renderLeaderboardEntries(leaderboard, currentAuth.userId);
+        sheetTitle.textContent = "Leaderboard";
+        sheetDescription.textContent = "See who’s topping the leaderboard and how you rank!";
+    }
+
+    backdrop.classList.add('show');
+    bottomSheet.classList.add('show');
+}
+
+[backdrop, closeBtn].forEach(el => el.addEventListener('click', closeSheet));

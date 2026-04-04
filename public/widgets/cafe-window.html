@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Moon Cafe Window</title>
+
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+body {
+  --time-transition: 1.8s ease;
+}
+
+.window-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* shared layers */
+.layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--time-transition), filter var(--time-transition), transform var(--time-transition);
+}
+
+/* =========================
+   TIME OF DAY BASE LAYERS
+========================= */
+
+/* DAWN */
+.layer-dawn {
+  background:
+    linear-gradient(180deg,
+      rgba(188,210,255,.18) 0%,
+      rgba(205,225,255,.14) 28%,
+      rgba(235,223,210,.10) 62%,
+      rgba(255,240,210,.12) 100%);
+}
+
+.layer-dawn .dawn-glow{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 24% 20%, rgba(210,230,255,.20), transparent 24%),
+    radial-gradient(circle at 70% 16%, rgba(255,225,200,.12), transparent 28%),
+    linear-gradient(180deg,
+      rgba(200,220,255,.08) 0%,
+      rgba(215,225,245,.06) 44%,
+      rgba(255,235,205,.08) 100%);
+}
+
+.layer-dawn .morning-shimmer{
+  position:absolute; inset:0;
+  background: linear-gradient(115deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,245,220,.06) 45%,
+      rgba(255,255,255,0) 100%);
+  opacity:.18;
+  animation: shimmerMove 20s linear infinite;
+}
+
+.layer-dawn .starfield{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(2px 2px at 18% 26%, rgba(255,255,255,.28), transparent),
+    radial-gradient(2px 2px at 72% 20%, rgba(255,255,255,.22), transparent),
+    radial-gradient(1px 1px at 54% 30%, rgba(255,255,255,.24), transparent),
+    radial-gradient(2px 2px at 84% 36%, rgba(255,255,255,.18), transparent),
+    radial-gradient(1px 1px at 30% 18%, rgba(255,255,255,.14), transparent);
+  opacity:.22;
+  animation: starDriftDawn 200s linear infinite;
+}
+
+.layer-dawn .aurora-memory{
+  position:absolute; inset:-8% -10%;
+  filter: blur(42px);
+  mix-blend-mode: screen;
+  opacity:.12;
+  background:
+    radial-gradient(ellipse at 26% 20%, rgba(0,169,186,.12), transparent 36%),
+    radial-gradient(ellipse at 58% 14%, rgba(127,135,255,.10), transparent 34%),
+    radial-gradient(ellipse at 82% 22%, rgba(198,199,248,.08), transparent 28%);
+  animation: auroraDriftSoft 28s ease-in-out infinite alternate;
+}
+
+/* DAY */
+.layer-day {
+  background: transparent;
+}
+
+.layer-day .sky-glow{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 22% 20%, rgba(255,245,200,.18), transparent 26%),
+    radial-gradient(circle at 72% 14%, rgba(255,255,255,.12), transparent 30%),
+    linear-gradient(180deg,
+      rgba(210,240,255,.10) 0%,
+      rgba(210,240,255,.04) 40%,
+      rgba(255,255,255,0) 100%);
+}
+
+.layer-day .sun-shimmer{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(120deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,.08) 50%,
+      rgba(255,255,255,0) 100%);
+  opacity:.18;
+  animation: shimmerMove 18s linear infinite;
+}
+
+/* DUSK */
+.layer-dusk {
+  background:
+    linear-gradient(180deg,
+      rgba(255,214,170,.22) 0%,
+      rgba(214,170,220,.18) 30%,
+      rgba(116,130,190,.20) 58%,
+      rgba(46,58,102,.28) 100%);
+}
+
+.layer-dusk .dusk-glow{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 24% 22%, rgba(255,210,145,.22), transparent 24%),
+    radial-gradient(circle at 68% 18%, rgba(255,190,210,.14), transparent 28%),
+    linear-gradient(180deg,
+      rgba(255,220,185,.08) 0%,
+      rgba(190,170,220,.08) 44%,
+      rgba(90,110,170,.10) 100%);
+}
+
+.layer-dusk .evening-shimmer{
+  position:absolute; inset:0;
+  background:
+    linear-gradient(115deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,235,205,.06) 45%,
+      rgba(255,255,255,0) 100%);
+  opacity:.22;
+  animation: shimmerMove 18s linear infinite;
+}
+
+.layer-dusk .starfield{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(2px 2px at 18% 26%, rgba(255,255,255,.55), transparent),
+    radial-gradient(2px 2px at 72% 20%, rgba(255,255,255,.42), transparent),
+    radial-gradient(1px 1px at 54% 30%, rgba(255,255,255,.48), transparent),
+    radial-gradient(2px 2px at 84% 36%, rgba(255,255,255,.38), transparent),
+    radial-gradient(1px 1px at 30% 18%, rgba(255,255,255,.30), transparent);
+  opacity:.45;
+  animation: starDrift 180s linear infinite;
+}
+
+.layer-dusk .aurora-haze{
+  position:absolute; inset:-8% -10%;
+  filter: blur(38px);
+  mix-blend-mode: screen;
+  opacity:.22;
+  background:
+    radial-gradient(ellipse at 26% 20%, rgba(0,169,186,.20), transparent 36%),
+    radial-gradient(ellipse at 58% 14%, rgba(127,135,255,.18), transparent 34%),
+    radial-gradient(ellipse at 82% 22%, rgba(198,199,248,.12), transparent 28%);
+  animation: auroraDrift 24s ease-in-out infinite alternate;
+}
+
+/* NIGHT */
+.layer-night {
+  background:
+    linear-gradient(180deg,
+      rgba(8,12,28,.92) 0%,
+      rgba(12,18,40,.90) 38%,
+      rgba(14,22,46,.84) 70%,
+      rgba(18,28,52,.78) 100%);
+}
+
+.layer-night .starfield{
+  position:absolute; inset:0;
+  background:
+    radial-gradient(2px 2px at 20% 30%, #ffffff66, transparent),
+    radial-gradient(2px 2px at 70% 80%, #ffffff66, transparent),
+    radial-gradient(1px 1px at 40% 60%, #ffffff88, transparent),
+    radial-gradient(2px 2px at 80% 20%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 10% 70%, #ffffff99, transparent),
+    radial-gradient(1px 1px at 50% 50%, #ffffff55, transparent),
+    radial-gradient(2px 2px at 30% 75%, #ffffff44, transparent);
+  opacity:.75;
+  animation: starDrift 160s linear infinite;
+}
+
+.layer-night .aurora{
+  position:absolute; inset:-8% -10%;
+  filter: blur(34px);
+  mix-blend-mode: screen;
+  opacity:.75;
+}
+
+.layer-night .aurora.a1{
+  background:
+    radial-gradient(ellipse at 20% 25%, rgba(0,169,186,.30), transparent 45%),
+    radial-gradient(ellipse at 50% 12%, rgba(127,135,255,.26), transparent 42%),
+    radial-gradient(ellipse at 78% 28%, rgba(120,255,190,.18), transparent 40%);
+  animation: auroraDrift1 20s ease-in-out infinite alternate;
+}
+
+.layer-night .aurora.a2{
+  background:
+    radial-gradient(ellipse at 30% 18%, rgba(198,199,248,.14), transparent 32%),
+    radial-gradient(ellipse at 62% 22%, rgba(0,169,186,.18), transparent 34%),
+    radial-gradient(ellipse at 85% 18%, rgba(127,135,255,.16), transparent 30%);
+  filter: blur(48px);
+  opacity:.52;
+  animation: auroraDrift2 26s ease-in-out infinite alternate;
+}
+
+.layer-night .moon-glow{
+  position:absolute;
+  top:7%;
+  right:12%;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle,
+      rgba(255,255,255,.22) 0%,
+      rgba(203,236,245,.12) 25%,
+      rgba(127,135,255,.08) 42%,
+      transparent 72%);
+  filter: blur(12px);
+  opacity:.55;
+}
+
+.layer-night .water-glow{
+  position:absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  height:30%;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0),
+    rgba(127,135,255,.06),
+    rgba(0,169,186,.08)
+  );
+  mix-blend-mode: screen;
+  opacity:.4;
+  animation: waterShift 12s ease-in-out infinite alternate;
+}
+
+/* =========================
+   SHARED PARTICLES / LIFE
+========================= */
+
+.sparkle,
+.stardust,
+.dawn-dust,
+.sun-dust {
+  position:absolute;
+  border-radius:50%;
+}
+
+.sparkle{
+  width:4px;
+  height:4px;
+  opacity:0;
+  animation: sparklePulse 7s infinite;
+}
+.sparkle.sA { left:22%; top:62%; animation-delay:1s; }
+.sparkle.sB { left:61%; top:54%; animation-delay:4s; }
+
+.dawn-dust,
+.sun-dust,
+.stardust{
+  width:3px;
+  height:3px;
+}
+
+.dawn-dust{
+  background: rgba(255,255,255,.65);
+  box-shadow: 0 0 6px rgba(255,255,255,.22);
+  opacity:.28;
+  animation: dustFloat 20s linear infinite;
+}
+.dawn-dust.d1 { left:14%; bottom:12%; animation-delay:-2s; }
+.dawn-dust.d2 { left:36%; bottom:18%; animation-delay:-7s; }
+.dawn-dust.d3 { left:58%; bottom:14%; animation-delay:-4s; }
+.dawn-dust.d4 { left:78%; bottom:20%; animation-delay:-10s; }
+
+.sun-dust{
+  background: rgba(255,255,255,.65);
+  box-shadow: 0 0 6px rgba(255,255,255,.28);
+  opacity:.35;
+  animation: dustFloat 18s linear infinite;
+}
+.sun-dust.d1 { left:16%; bottom:12%; animation-delay:-2s; }
+.sun-dust.d2 { left:34%; bottom:18%; animation-delay:-8s; }
+.sun-dust.d3 { left:58%; bottom:14%; animation-delay:-5s; }
+.sun-dust.d4 { left:74%; bottom:20%; animation-delay:-11s; }
+.sun-dust.d5 { left:88%; bottom:10%; animation-delay:-6s; }
+
+.stardust{
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 0 8px rgba(203,236,245,.5);
+  opacity:.65;
+  animation: dustFloatNight 20s linear infinite;
+}
+.stardust.s1 { left:12%; bottom:10%; animation-delay:-2s; }
+.stardust.s2 { left:28%; bottom:18%; animation-delay:-8s; }
+.stardust.s3 { left:54%; bottom:12%; animation-delay:-5s; }
+.stardust.s4 { left:72%; bottom:20%; animation-delay:-11s; }
+.stardust.s5 { left:88%; bottom:14%; animation-delay:-6s; }
+
+/* butterflies */
+.butterfly{
+  position:absolute;
+  width:18px;
+  height:14px;
+  pointer-events:none;
+  opacity:.70;
+  animation-timing-function:ease-in-out;
+  animation-iteration-count:infinite;
+}
+
+.butterfly::before,
+.butterfly::after{
+  content:"";
+  position:absolute;
+  width:10px;
+  height:14px;
+  border-radius:80% 20% 75% 25%;
+  top:0;
+  background: linear-gradient(180deg, rgba(127,135,255,.82), rgba(203,236,245,.82));
+  box-shadow: 0 0 4px rgba(127,135,255,.12);
+}
+
+.butterfly::before{
+  left:1px;
+  transform-origin:100% 50%;
+  transform: rotate(-18deg);
+  animation: flapL .9s ease-in-out infinite;
+}
+
+.butterfly::after{
+  right:1px;
+  transform-origin:0% 50%;
+  transform: scaleX(-1) rotate(-18deg);
+  animation: flapR .9s ease-in-out infinite;
+}
+
+.butterfly .body{
+  position:absolute;
+  left:8px;
+  top:2px;
+  width:2px;
+  height:10px;
+  border-radius:999px;
+  background: rgba(70,80,120,.50);
+}
+
+.b1{ left:10%; top:58%; animation: butterflyPath1 18s infinite; }
+.b2{ left:62%; top:44%; transform: scale(.85); animation: butterflyPath2 22s infinite; }
+
+/* bee */
+.bee{
+  position:absolute;
+  width:14px;
+  height:10px;
+  pointer-events:none;
+  opacity:.65;
+  animation: beePath1 14s infinite ease-in-out;
+}
+.bee::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:999px;
+  background:
+    linear-gradient(90deg,
+      #2f2a1f 0 18%,
+      #ffd54d 18% 38%,
+      #2f2a1f 38% 56%,
+      #ffd54d 56% 76%,
+      #2f2a1f 76% 100%);
+  box-shadow: 0 0 4px rgba(255,213,77,.18);
+}
+.bee::after{
+  content:"";
+  position:absolute;
+  left:3px;
+  top:-4px;
+  width:8px;
+  height:6px;
+  border-radius:999px;
+  background: rgba(255,255,255,.38);
+  box-shadow: 6px 0 0 rgba(255,255,255,.30);
+}
+.be1{ left:22%; top:72%; }
+
+/* rare moth */
+.moth{
+  position:absolute;
+  width:18px;
+  height:14px;
+  opacity:0;
+  animation: mothDrift 25s infinite;
+}
+.moth::before,
+.moth::after{
+  content:"";
+  position:absolute;
+  width:10px;
+  height:14px;
+  top:0;
+  background: linear-gradient(180deg, rgba(166,255,200,.72), rgba(203,236,245,.52));
+  border-radius:80% 20% 75% 25%;
+  box-shadow: 0 0 8px rgba(166,255,200,.18);
+}
+.moth::before{
+  left:1px;
+  transform-origin:100% 50%;
+  animation: flapL 1.6s ease-in-out infinite;
+}
+.moth::after{
+  right:1px;
+  transform-origin:0% 50%;
+  transform: scaleX(-1);
+  animation: flapR 1.6s ease-in-out infinite;
+}
+.moth .body{
+  position:absolute;
+  left:8px;
+  top:2px;
+  width:2px;
+  height:10px;
+  border-radius:999px;
+  background: rgba(200,255,220,.5);
+}
+.m1{ left:18%; top:62%; }
+
+/* shared overlays */
+.horizon-fade{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:32%;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(135,150,185,.08) 45%,
+    rgba(56,70,110,.16) 100%
+  );
+}
+
+.window-veil{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 24%),
+    linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,0) 18%, rgba(255,255,255,.015) 84%, rgba(255,255,255,.03) 100%);
+}
+
+/* =========================
+   WEATHER OVERLAYS
+========================= */
+
+.weather {
+  position:absolute;
+  inset:0;
+  opacity:0;
+  transition: opacity 1.2s ease;
+}
+
+.weather-cloudy{
+  background:
+    radial-gradient(ellipse at 20% 22%, rgba(255,255,255,.16), transparent 18%),
+    radial-gradient(ellipse at 68% 18%, rgba(255,255,255,.14), transparent 22%),
+    linear-gradient(180deg, rgba(180,190,210,.10), rgba(180,190,210,.04));
+}
+
+.weather-fog{
+  background:
+    linear-gradient(180deg, rgba(220,230,240,.12), rgba(220,230,240,.04)),
+    radial-gradient(ellipse at 50% 70%, rgba(255,255,255,.14), transparent 40%);
+  filter: blur(6px);
+}
+
+.rain-drop,
+.snowflake {
+  position:absolute;
+  opacity:0;
+}
+
+.rain-drop{
+  width:2px;
+  height:28px;
+  border-radius:999px;
+  background: linear-gradient(180deg, rgba(255,255,255,0), rgba(190,220,255,.55));
+  transform: rotate(12deg);
+  animation: rainFall linear infinite;
+}
+
+.snowflake{
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background: rgba(255,255,255,.9);
+  box-shadow: 0 0 6px rgba(255,255,255,.4);
+  animation: snowFall linear infinite;
+}
+
+.r1{ left:10%; top:-8%; animation-duration:1.6s; animation-delay:-1s; }
+.r2{ left:22%; top:-14%; animation-duration:1.8s; animation-delay:-0.5s; }
+.r3{ left:36%; top:-10%; animation-duration:1.5s; animation-delay:-1.3s; }
+.r4{ left:50%; top:-12%; animation-duration:1.9s; animation-delay:-0.9s; }
+.r5{ left:64%; top:-8%; animation-duration:1.7s; animation-delay:-1.1s; }
+.r6{ left:78%; top:-15%; animation-duration:1.6s; animation-delay:-0.2s; }
+.r7{ left:90%; top:-11%; animation-duration:1.8s; animation-delay:-1.5s; }
+
+.f1{ left:12%; top:-5%; animation-duration:8s; animation-delay:-1s; }
+.f2{ left:26%; top:-8%; animation-duration:10s; animation-delay:-3s; }
+.f3{ left:40%; top:-6%; animation-duration:9s; animation-delay:-6s; }
+.f4{ left:58%; top:-10%; animation-duration:11s; animation-delay:-4s; }
+.f5{ left:72%; top:-7%; animation-duration:8.5s; animation-delay:-2s; }
+.f6{ left:86%; top:-5%; animation-duration:10.5s; animation-delay:-5s; }
+
+/* =========================
+   ACTIVE MODE CLASSES
+========================= */
+
+body.mode-dawn .layer-dawn,
+body.mode-day .layer-day,
+body.mode-dusk .layer-dusk,
+body.mode-night .layer-night {
+  opacity: 1;
+}
+
+body.weather-cloudy .weather.cloudy,
+body.weather-fog .weather.fog,
+body.weather-rain .weather.rain,
+body.weather-snow .weather.snow {
+  opacity: 1;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes shimmerMove{
+  0% { transform: translateX(-30%); }
+  100% { transform: translateX(30%); }
+}
+
+@keyframes starDrift{
+  100% { transform: translate(-80px, -140px); }
+}
+
+@keyframes starDriftDawn{
+  100% { transform: translate(-60px, -100px); }
+}
+
+@keyframes auroraDrift{
+  0%   { transform: translateX(-2%) translateY(0%) scale(1.01); }
+  50%  { transform: translateX(2%) translateY(-1%) scale(1.04); }
+  100% { transform: translateX(4%) translateY(1%) scale(1.02); }
+}
+
+@keyframes auroraDriftSoft{
+  0%   { transform: translateX(-2%) translateY(0%) scale(1.01); }
+  50%  { transform: translateX(1%) translateY(-1%) scale(1.03); }
+  100% { transform: translateX(3%) translateY(1%) scale(1.02); }
+}
+
+@keyframes auroraDrift1 {
+  0%   { transform: translateX(-3%) translateY(0%) scale(1.02); }
+  50%  { transform: translateX(2%) translateY(-2%) scale(1.06); }
+  100% { transform: translateX(5%) translateY(1%) scale(1.03); }
+}
+
+@keyframes auroraDrift2 {
+  0%   { transform: translateX(4%) translateY(-1%) scale(1.02); }
+  50%  { transform: translateX(-2%) translateY(2%) scale(1.05); }
+  100% { transform: translateX(-5%) translateY(0%) scale(1.03); }
+}
+
+@keyframes waterShift {
+  0% { transform: translateX(-2%); }
+  100% { transform: translateX(2%); }
+}
+
+@keyframes sparklePulse{
+  0%,100% { opacity:0; transform: scale(.6); }
+  50% { opacity:.7; transform: scale(1.15); }
+}
+
+@keyframes dustFloat{
+  0% { transform: translateY(0) scale(1); opacity:0; }
+  10% { opacity:.3; }
+  100% { transform: translateY(-120px) scale(1.15); opacity:0; }
+}
+
+@keyframes dustFloatNight{
+  0% { transform: translateY(0) scale(1); opacity:0; }
+  10% { opacity:.65; }
+  100% { transform: translateY(-180px) scale(1.3); opacity:0; }
+}
+
+@keyframes flapL{
+  0%,100%{ transform: rotate(-22deg) scaleY(1); }
+  50%{ transform: rotate(8deg) scaleY(.92); }
+}
+
+@keyframes flapR{
+  0%,100%{ transform: scaleX(-1) rotate(-22deg) scaleY(1); }
+  50%{ transform: scaleX(-1) rotate(8deg) scaleY(.92); }
+}
+
+@keyframes butterflyPath1{
+  0%   { transform: translate(0,0) scale(.95); opacity:0; }
+  8%   { opacity:.7; }
+  25%  { transform: translate(90px,-24px) scale(1); }
+  50%  { transform: translate(180px,-66px) scale(.96); }
+  75%  { transform: translate(250px,-38px) scale(1.02); }
+  100% { transform: translate(340px,-92px) scale(.92); opacity:0; }
+}
+
+@keyframes butterflyPath2{
+  0%   { transform: translate(0,0) scale(.85); opacity:0; }
+  8%   { opacity:.65; }
+  35%  { transform: translate(-70px,-22px) scale(.9); }
+  65%  { transform: translate(-150px,14px) scale(.82); }
+  100% { transform: translate(-230px,-30px) scale(.78); opacity:0; }
+}
+
+@keyframes beePath1{
+  0%   { transform: translate(0,0); opacity:0; }
+  10%  { opacity:.65; }
+  30%  { transform: translate(26px,-10px); }
+  55%  { transform: translate(8px,12px); }
+  78%  { transform: translate(44px,-2px); }
+  100% { transform: translate(64px,-18px); opacity:0; }
+}
+
+@keyframes mothDrift{
+  0% { transform: translate(0,0); opacity:0; }
+  10% { opacity:.35; }
+  50% { transform: translate(120px,-40px); opacity:.55; }
+  90% { opacity:.28; }
+  100% { transform: translate(220px,-80px); opacity:0; }
+}
+
+@keyframes rainFall{
+  0%   { transform: translateY(0) rotate(12deg); opacity:0; }
+  10%  { opacity:.45; }
+  100% { transform: translateY(120%) translateX(18px) rotate(12deg); opacity:0; }
+}
+
+@keyframes snowFall{
+  0%   { transform: translateY(0) translateX(0); opacity:0; }
+  10%  { opacity:.6; }
+  50%  { transform: translateY(45vh) translateX(10px); opacity:.75; }
+  100% { transform: translateY(95vh) translateX(-6px); opacity:0; }
+}
+</style>
+</head>
+<body class="mode-night weather-clear">
+  <div class="window-root">
+    <!-- Dawn -->
+    <div class="layer layer-dawn">
+      <div class="dawn-glow"></div>
+      <div class="morning-shimmer"></div>
+      <div class="starfield"></div>
+      <div class="aurora-memory"></div>
+
+      <div class="sparkle sA"></div>
+      <div class="sparkle sB"></div>
+
+      <div class="dawn-dust d1"></div>
+      <div class="dawn-dust d2"></div>
+      <div class="dawn-dust d3"></div>
+      <div class="dawn-dust d4"></div>
+
+      <div class="horizon-fade"></div>
+      <div class="window-veil"></div>
+    </div>
+
+    <!-- Day -->
+    <div class="layer layer-day">
+      <div class="sky-glow"></div>
+      <div class="sun-shimmer"></div>
+
+      <div class="sun-dust d1"></div>
+      <div class="sun-dust d2"></div>
+      <div class="sun-dust d3"></div>
+      <div class="sun-dust d4"></div>
+      <div class="sun-dust d5"></div>
+
+      <div class="butterfly b1"><span class="body"></span></div>
+      <div class="butterfly b2"><span class="body"></span></div>
+
+      <div class="bee be1"></div>
+
+      <div class="horizon-fade"></div>
+      <div class="window-veil"></div>
+    </div>
+
+    <!-- Dusk -->
+    <div class="layer layer-dusk">
+      <div class="dusk-glow"></div>
+      <div class="evening-shimmer"></div>
+      <div class="starfield"></div>
+      <div class="aurora-haze"></div>
+
+      <div class="sparkle sA"></div>
+      <div class="sparkle sB"></div>
+
+      <div class="horizon-fade"></div>
+      <div class="window-veil"></div>
+    </div>
+
+    <!-- Night -->
+    <div class="layer layer-night">
+      <div class="starfield"></div>
+      <div class="aurora a1"></div>
+      <div class="aurora a2"></div>
+      <div class="moon-glow"></div>
+      <div class="water-glow"></div>
+
+      <div class="stardust s1"></div>
+      <div class="stardust s2"></div>
+      <div class="stardust s3"></div>
+      <div class="stardust s4"></div>
+      <div class="stardust s5"></div>
+
+      <div class="moth m1"><span class="body"></span></div>
+
+      <div class="horizon-fade"></div>
+      <div class="window-veil"></div>
+    </div>
+
+    <!-- Weather overlays -->
+    <div class="weather cloudy weather-cloudy"></div>
+    <div class="weather fog weather-fog"></div>
+
+    <div class="weather rain">
+      <div class="rain-drop r1"></div>
+      <div class="rain-drop r2"></div>
+      <div class="rain-drop r3"></div>
+      <div class="rain-drop r4"></div>
+      <div class="rain-drop r5"></div>
+      <div class="rain-drop r6"></div>
+      <div class="rain-drop r7"></div>
+    </div>
+
+    <div class="weather snow">
+      <div class="snowflake f1"></div>
+      <div class="snowflake f2"></div>
+      <div class="snowflake f3"></div>
+      <div class="snowflake f4"></div>
+      <div class="snowflake f5"></div>
+      <div class="snowflake f6"></div>
+    </div>
+  </div>
+
+<script>
+  const WEATHER_URLS = [
+    "/weather.json",
+    "/weather",
+    "/api/weather",
+    "/public/data/weather-cache.json"
+  ];
+
+  function getTimeMode(date = new Date()) {
+    const hour = date.getHours() + date.getMinutes() / 60;
+
+    if (hour >= 5 && hour < 7.5) return "dawn";
+    if (hour >= 7.5 && hour < 17.5) return "day";
+    if (hour >= 17.5 && hour < 19.5) return "dusk";
+    return "night";
+  }
+
+  function normalizeWeatherText(data) {
+    if (!data) return "";
+
+    const possible = [
+      data.condition,
+      data.conditions,
+      data.wxPhraseLong,
+      data.wx_phrase_long,
+      data.weather,
+      data.description,
+      data.current?.condition,
+      data.current?.conditions,
+      data.current?.wxPhraseLong,
+      data.current?.wx_phrase_long,
+      data.current_observation?.condition,
+      data.observations?.[0]?.condition,
+      data.observations?.[0]?.wx_phrase_long
+    ];
+
+    return possible.find(Boolean)?.toString().toLowerCase() || "";
+  }
+
+  function weatherModeFromText(text) {
+    if (!text) return "clear";
+    if (text.includes("snow") || text.includes("flurr")) return "snow";
+    if (text.includes("rain") || text.includes("drizzle") || text.includes("shower")) return "rain";
+    if (text.includes("fog") || text.includes("mist") || text.includes("haze")) return "fog";
+    if (text.includes("cloud") || text.includes("overcast")) return "cloudy";
+    return "clear";
+  }
+
+  async function getWeatherMode() {
+    for (const url of WEATHER_URLS) {
+      try {
+        const res = await fetch(url + "?_=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) continue;
+        const data = await res.json();
+        const text = normalizeWeatherText(data);
+        return weatherModeFromText(text);
+      } catch (err) {
+        // try next URL
+      }
+    }
+    return "clear";
+  }
+
+  async function applyModes() {
+    const body = document.body;
+
+    body.classList.remove("mode-dawn", "mode-day", "mode-dusk", "mode-night");
+    body.classList.remove("weather-clear", "weather-cloudy", "weather-rain", "weather-snow", "weather-fog");
+
+    const timeMode = getTimeMode();
+    const weatherMode = await getWeatherMode();
+
+    body.classList.add(`mode-${timeMode}`);
+    body.classList.add(`weather-${weatherMode}`);
+  }
+
+  applyModes();
+
+  setInterval(applyModes, 60 * 1000);
+
+function buildSpoonieSummary(weather = {}) {
+  const { temp = 0, humidity = 0, wind = 0, pressure = 0 } = weather;
+
+  let notes = [];
+  let tone = "balanced";
+
+  if (temp > 90) {
+    notes.push("Heat may drain energy quickly.");
+    tone = "low";
+  }
+
+  if (temp < 20) {
+    notes.push("Cold may increase pain sensitivity.");
+    tone = "low";
+  }
+
+  if (humidity > 80) {
+    notes.push("High humidity may feel heavy.");
+    tone = "low";
+  }
+
+  if (wind > 20) {
+    notes.push("Wind may increase discomfort.");
+  }
+
+  if (pressure && pressure < 29.8) {
+    notes.push("Pressure drop may affect joints and energy.");
+    tone = "low";
+  }
+
+  if (!notes.length) {
+    notes.push("Energy feels steady and manageable.");
+  }
+
+  return {
+    tone,
+    notes
+  };
+}
+
+
+</script>
+</body>
+</html>

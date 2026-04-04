@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Thought Bubble Control</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --text:#cbecf5;
+      --soft:#c6c7f8;
+      --aurora:#00a9ba;
+      --panel:rgba(20,24,45,0.82);
+      --line:rgba(203,236,245,0.16);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;
+      min-height:100%;
+      background:
+        radial-gradient(circle at top left, rgba(127,135,255,.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(0,169,186,.16), transparent 30%),
+        linear-gradient(180deg, #171b35 0%, #101426 100%);
+      font-family:'Quicksand',sans-serif;
+      color:var(--text);
+    }
+    .wrap{max-width:760px; margin:40px auto; padding:0 20px;}
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:22px;
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+      box-shadow:
+        0 0 26px rgba(0,169,186,.16),
+        inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .title{margin:0 0 8px; font-size:28px; font-weight:700;}
+    .subtitle{margin:0 0 18px; font-size:14px; line-height:1.45; color:rgba(203,236,245,.78);}
+    .input{
+      width:100%;
+      min-height:130px;
+      border:none;
+      border-radius:16px;
+      background:rgba(255,255,255,.08);
+      color:#fff;
+      padding:16px 18px;
+      font:inherit;
+      font-size:18px;
+      line-height:1.4;
+      resize:vertical;
+      outline:none;
+      box-shadow:inset 0 0 0 1px rgba(203,236,245,.1);
+    }
+    .input::placeholder{color:rgba(203,236,245,.5);}
+    .row{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+    .btn{
+      appearance:none;
+      border:none;
+      border-radius:12px;
+      padding:11px 14px;
+      font:inherit;
+      font-size:14px;
+      font-weight:700;
+      cursor:pointer;
+      background:rgba(0,169,186,.22);
+      color:#cbecf5;
+      transition:transform .12s ease, filter .12s ease;
+    }
+    .btn:hover{filter:brightness(1.08); transform:translateY(-1px);}
+    .btn.primary{
+      background:linear-gradient(180deg, rgba(127,135,255,.30), rgba(0,169,186,.26));
+    }
+    .status{margin-top:12px; font-size:13px; color:rgba(203,236,245,.72);}
+    .preview{
+      margin-top:22px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:rgba(203,236,245,.9);
+      color:#2b2772;
+      box-shadow:
+        0 0 18px rgba(0,169,186,.12),
+        inset 0 1px 0 rgba(255,255,255,.5);
+    }
+    .preview-label{
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:1.1px;
+      text-transform:uppercase;
+      opacity:.72;
+      margin-bottom:8px;
+    }
+    .preview-text{
+      font-size:22px;
+      line-height:1.28;
+      font-weight:700;
+      word-wrap:break-word;
+      overflow-wrap:break-word;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1 class="title">Aurora Thought Bubble Control</h1>
+      <p class="subtitle">Type a thought manually, or let your own Twitch messages fill the bubble automatically.</p>
+
+      <textarea id="bubbleInput" class="input" placeholder="Type what Aurora is thinking..."></textarea>
+
+      <div class="row">
+        <button class="btn primary" id="showBtn">Show Bubble</button>
+        <button class="btn" id="hideBtn">Hide Bubble</button>
+        <button class="btn" id="clearBtn">Clear Text</button>
+      </div>
+
+      <div class="status" id="statusText">Ready. Ctrl/Cmd + Enter sends the current thought.</div>
+
+      <div class="preview">
+        <div class="preview-label">Live Preview</div>
+        <div class="preview-text" id="previewText">Settling into the café...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:3000";
+    const input = document.getElementById("bubbleInput");
+    const statusText = document.getElementById("statusText");
+    const previewText = document.getElementById("previewText");
+
+    function setStatus(text) {
+      statusText.textContent = text;
+    }
+
+    function setPreview(text) {
+      previewText.textContent = text || "Settling into the café...";
+    }
+
+    async function postJson(path, body) {
+      const res = await fetch(`${API_BASE}${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body || {})
+      });
+      if (!res.ok) throw new Error(`${path} -> HTTP ${res.status}`);
+      return res.json();
+    }
+
+    async function loadCurrent() {
+      try {
+        const res = await fetch(`${API_BASE}/thought-bubble`, { cache: "no-store" });
+        const data = await res.json();
+        input.value = data.text || "";
+        setPreview(data.text || "");
+      } catch (err) {
+        console.error(err);
+        setStatus("Could not load current bubble state.");
+      }
+    }
+
+    async function showBubble() {
+      const text = input.value.trim();
+      try {
+        await postJson("/thought-bubble", {
+          text,
+          visible: true,
+          source: "manual",
+          durationMs: 25000
+        });
+        setPreview(text);
+        setStatus(text ? "Thought bubble updated." : "Bubble shown with idle text.");
+      } catch (err) {
+        console.error(err);
+        setStatus("Could not update thought bubble.");
+      }
+    }
+
+    document.getElementById("showBtn").addEventListener("click", showBubble);
+
+    document.getElementById("hideBtn").addEventListener("click", async () => {
+      try {
+        await postJson("/thought-bubble/hide", {});
+        setStatus("Thought bubble hidden.");
+      } catch (err) {
+        console.error(err);
+        setStatus("Could not hide bubble.");
+      }
+    });
+
+    document.getElementById("clearBtn").addEventListener("click", async () => {
+      input.value = "";
+      setPreview("");
+      try {
+        await postJson("/thought-bubble/clear", {});
+        setStatus("Thought bubble cleared.");
+      } catch (err) {
+        console.error(err);
+        setStatus("Could not clear bubble.");
+      }
+    });
+
+    input.addEventListener("input", () => setPreview(input.value.trim()));
+
+    input.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        showBubble();
+      }
+    });
+
+    loadCurrent();
+  </script>
+</body>
+</html>

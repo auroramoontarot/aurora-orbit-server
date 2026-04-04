@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Moon Café Channel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --text:#cbecf5;
+      --soft:#c6c7f8;
+      --aurora:#00a9ba;
+      --primary:#7f87ff;
+      --line:rgba(203,236,245,0.14);
+      --panel:rgba(12,16,30,0.88);
+      --screen-top:#232846;
+      --screen-bottom:#121529;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html, body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      background:transparent;
+      font-family:'Quicksand', sans-serif;
+      color:var(--text);
+    }
+
+    body{
+      position:relative;
+    }
+
+    .screen-wrap{
+      position:absolute;
+      top:0;
+      left:0;
+      width:1280px;
+      height:720px;
+      overflow:hidden;
+      background:transparent;
+    }
+
+    .screen{
+      position:absolute;
+      top:46px;
+      left:34px;
+      width:500px;
+      height:320px;
+      transform:rotate(1.4deg);
+      transform-origin:center center;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(127,135,255,0.08), transparent 26%),
+        radial-gradient(circle at 80% 12%, rgba(0,169,186,0.08), transparent 26%),
+        linear-gradient(180deg, var(--screen-top) 0%, var(--screen-bottom) 100%);
+      border:1px solid rgba(255,255,255,0.05);
+      box-shadow:
+        0 0 20px rgba(0,0,0,0.18),
+        inset 0 0 30px rgba(0,0,0,0.28);
+      overflow:hidden;
+      animation: screenPulse 18s ease-in-out infinite;
+    }
+
+    @keyframes screenPulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.03); }
+    }
+
+    .screen::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.045), transparent 24%),
+        radial-gradient(circle at center, transparent 58%, rgba(0,0,0,0.24) 100%);
+      pointer-events:none;
+      z-index:3;
+    }
+
+    .screen::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,255,255,0.02) 0px,
+          rgba(255,255,255,0.02) 1px,
+          transparent 2px,
+          transparent 4px
+        );
+      opacity:.14;
+      pointer-events:none;
+      z-index:3;
+      mix-blend-mode:screen;
+    }
+
+    .screen.flicker{
+      animation:
+        screenPulse 18s ease-in-out infinite,
+        quickFlicker 140ms ease-in-out 1;
+    }
+
+    @keyframes quickFlicker {
+      0%   { filter: brightness(1.08); }
+      25%  { filter: brightness(0.96); }
+      50%  { filter: brightness(1.05); }
+      75%  { filter: brightness(0.98); }
+      100% { filter: brightness(1.03); }
+    }
+
+    .channel-id{
+      position:absolute;
+      top:14px;
+      right:16px;
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:1px;
+      color:rgba(203,236,245,0.72);
+      z-index:4;
+    }
+
+    .channel{
+      position:absolute;
+      inset:28px 30px 28px 30px;
+      display:grid;
+      grid-template-rows:28px 1fr 28px;
+      gap:10px;
+      z-index:2;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid var(--line);
+      padding-bottom:6px;
+      min-width:0;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      min-width:0;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:var(--soft);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--aurora);
+      box-shadow:0 0 8px rgba(0,169,186,0.65);
+      flex-shrink:0;
+    }
+
+    .clock{
+      flex-shrink:0;
+      font-size:12px;
+      font-weight:700;
+      color:var(--text);
+      white-space:nowrap;
+    }
+
+    .main{
+      display:grid;
+      grid-template-columns:1fr 1.18fr;
+      gap:10px;
+      min-height:0;
+    }
+
+    .col{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid rgba(203,236,245,0.10);
+      border-radius:6px;
+      padding:10px 11px;
+      overflow:hidden;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+    }
+
+    .label{
+      margin-bottom:6px;
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:1.2px;
+      text-transform:uppercase;
+      color:var(--soft);
+      opacity:0.92;
+    }
+
+    .temp{
+      font-size:29px;
+      font-weight:700;
+      line-height:1;
+      color:#fff;
+      text-shadow:
+        0 0 10px rgba(127,135,255,0.20),
+        0 0 14px rgba(0,169,186,0.12);
+    }
+
+    .desc{
+      margin-top:5px;
+      font-size:12px;
+      line-height:1.25;
+      color:var(--text);
+      opacity:0.95;
+      overflow-wrap:break-word;
+    }
+
+    .weather-mini{
+      margin-top:8px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:3px 8px;
+      font-size:10px;
+      line-height:1.35;
+      color:var(--soft);
+    }
+
+    .schedule-list,
+    .headline-list{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-height:0;
+    }
+
+    .headline-list{
+      max-height:100%;
+      overflow:hidden;
+    }
+
+    .schedule-item,
+    .headline-item{
+      position:relative;
+      padding-left:10px;
+      font-size:11px;
+      line-height:1.28;
+      color:var(--text);
+      overflow:hidden;
+    }
+
+    .schedule-item{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:6px;
+    }
+
+    .schedule-item .title{
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .schedule-item::before,
+    .headline-item::before,
+    .feature-line::before{
+      content:"✦";
+      position:absolute;
+      left:0;
+      top:0;
+      font-size:8px;
+      color:var(--aurora);
+      opacity:0.95;
+    }
+
+    .time{
+      font-weight:700;
+      color:var(--soft);
+      white-space:nowrap;
+    }
+
+    .ticker{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      border-top:1px solid var(--line);
+      padding-top:6px;
+      min-width:0;
+      overflow:hidden;
+    }
+
+    .ticker-tag{
+      flex-shrink:0;
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      color:var(--aurora);
+      white-space:nowrap;
+    }
+
+    .ticker-window{
+      position:relative;
+      flex:1;
+      min-width:0;
+      overflow:hidden;
+      white-space:nowrap;
+      mask-image:linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+      -webkit-mask-image:linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    }
+
+    .ticker-text{
+      display:inline-block;
+      padding-left:100%;
+      white-space:nowrap;
+      font-size:11px;
+      color:var(--text);
+      animation:tickerScroll 42s linear infinite;
+    }
+
+    @keyframes tickerScroll{
+      from { transform:translateX(0); }
+      to   { transform:translateX(-100%); }
+    }
+
+    .feature-card{
+      flex:1;
+      min-height:0;
+      position:relative;
+    }
+
+    .feature-body{
+      height:100%;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .feature-view{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      animation: featureFade .6s ease;
+    }
+
+    .feature-line{
+      position:relative;
+      padding-left:10px;
+      font-size:11px;
+      line-height:1.35;
+      color:var(--text);
+    }
+
+    .feature-note{
+      font-size:12px;
+      line-height:1.4;
+      color:var(--text);
+    }
+
+    .feature-subtle{
+      color:var(--soft);
+      opacity:0.88;
+      font-size:10px;
+      line-height:1.3;
+    }
+
+    @keyframes featureFade{
+      from{ opacity:0; transform:translateY(6px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="screen-wrap">
+    <div class="screen" id="screen">
+      <div class="channel-id">CH 13</div>
+
+      <div class="channel">
+        <div class="topbar">
+          <div class="brand"><span class="dot"></span>Aurora Moon Café</div>
+          <div class="clock" id="clock">--:--</div>
+        </div>
+
+        <div class="main">
+          <div class="col">
+            <div class="card">
+              <div class="label">Weather</div>
+              <div class="temp" id="weatherTemp">--°</div>
+              <div class="desc" id="weatherDesc">Loading local weather…</div>
+              <div class="desc" id="weatherMeta" style="opacity:.7; font-size:10px;"></div>
+
+              <div class="weather-mini">
+                <div>Wind: <span id="weatherWind">--</span></div>
+                <div>Humidity: <span id="weatherHumidity">--</span></div>
+                <div>Feels: <span id="weatherFeels">--</span></div>
+                <div>Pressure: <span id="weatherPressure">--</span></div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="label">Today</div>
+              <div class="schedule-list" id="scheduleList">
+                <div class="schedule-item"><span class="time">--:--</span><span class="title">Loading schedule</span></div>
+              </div>
+            </div>
+
+            <div style="display:none;">
+              <span id="reading">—</span>
+              <span id="watching">—</span>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card feature-card" id="featureCard">
+              <div class="label" id="featureLabel">Headlines</div>
+              <div class="feature-body" id="featureBody">
+                <div class="headline-list" id="headlineList">
+                  <div class="headline-item">Loading cozy headlines…</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticker">
+          <div class="ticker-tag">Now Brewing</div>
+          <div class="ticker-window">
+            <div class="ticker-text" id="tickerText">
+              11th House Coffee + Collab • Scatter stardust • Moonbeams hydrate •
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:3000";
+
+    const RSS_FEED_URLS = [
+      "https://scatterstardust.com/feed/"
+    ];
+
+    const cozyTickerMessages = [
+      "11th House Coffee + Collab",
+      "Moonbeams please hydrate",
+      "Scatter stardust",
+      "Cosmo is on café duty",
+      "Coziness chance remains high",
+      "Gentleness is on the menu today",
+      "Aurora Moon Café now open",
+      "Soft skies over the creek",
+      "Sip slow and breathe deep",
+      "Magic brewing in the window"
+    ];
+
+    const fallbackData = {
+      weather: {
+        temp: "--°",
+        desc: "Aurora Moon Haven",
+        meta: "KMNSTLOU35 / GW6813",
+        wind: "--",
+        humidity: "--",
+        feels: "--",
+        pressure: "--",
+        pressureValue: null,
+        tempValue: null,
+        humidityValue: null,
+        windValue: null
+      },
+      schedule: [
+        { time: "10:00", title: "11th House Coffee + Collab" },
+        { time: "2:00", title: "Tarot & Cozy Games" }
+      ],
+      headlines: [
+        "Fresh coffee energy reported across Aurora Moon Café.",
+        "Moonbeams encouraged to hydrate and scatter stardust responsibly.",
+        "Coziness levels remain high around the creek."
+      ],
+      media: {
+        reading: "Currently curating the bookshelf.",
+        watching: "Creekside screen resting between broadcasts."
+      },
+      nightSky: {
+        moon: "🌙 Quiet moon",
+        aurora: "Aurora KP: --",
+        iss: "ISS check pending",
+        note: "Best viewing: creek-facing calm and clear windows."
+      }
+    };
+
+    let featureIndex = 0;
+    let latestFeatureData = {
+      weather: fallbackData.weather,
+      headlines: fallbackData.headlines,
+      media: fallbackData.media,
+      nightSky: fallbackData.nightSky
+    };
+
+    const featureModes = ["headlines", "spoonie", "weather", "sky", "media"];
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").textContent =
+        now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    }
+
+    function safeText(value, fallback = "--") {
+      if (value === null || value === undefined || value === "") return fallback;
+      return String(value);
+    }
+
+    function cleanFeedText(str = "") {
+      return String(str)
+        .replace(/<[^>]*>/g, "")
+        .replace(/&amp;/g, "&")
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&apos;/g, "'")
+        .replace(/&lt;/g, "<")
+        .replace(/&gt;/g, ">")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    async function fetchFeed(url) {
+      const proxyUrl = `${API_BASE}/rss?feed=${encodeURIComponent(url)}`;
+      const res = await fetch(proxyUrl, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Feed fetch failed: ${url} -> HTTP ${res.status}`);
+      const xml = await res.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xml, "text/xml");
+
+      return Array.from(doc.querySelectorAll("item"))
+        .map(item => cleanFeedText(item.querySelector("title")?.textContent || ""))
+        .filter(Boolean);
+    }
+
+    async function fetchJson(url) {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
+      return res.json();
+    }
+
+    function renderWeather(weather) {
+      document.getElementById("weatherTemp").textContent = safeText(weather.temp, "--°");
+      document.getElementById("weatherDesc").textContent = safeText(weather.desc, "Aurora Moon Haven");
+      document.getElementById("weatherMeta").textContent = safeText(weather.meta, "KMNSTLOU35 / GW6813");
+      document.getElementById("weatherWind").textContent = safeText(weather.wind);
+      document.getElementById("weatherHumidity").textContent = safeText(weather.humidity);
+      document.getElementById("weatherFeels").textContent = safeText(weather.feels);
+      document.getElementById("weatherPressure").textContent = safeText(weather.pressure);
+    }
+
+    function renderSchedule(schedule) {
+      const list = document.getElementById("scheduleList");
+      if (!schedule.length) {
+        list.innerHTML = `<div class="schedule-item"><span class="time">--:--</span><span class="title">No upcoming events</span></div>`;
+        return;
+      }
+
+      list.innerHTML = schedule.slice(0, 3).map(item => `
+        <div class="schedule-item">
+          <span class="time">${item.time}</span>
+          <span class="title">${item.title}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderHeadlines(headlines) {
+      const list = document.getElementById("headlineList");
+      if (!headlines.length) {
+        list.innerHTML = `<div class="headline-item">No fresh headlines just now.</div>`;
+        return;
+      }
+
+      list.innerHTML = headlines.slice(0, 3).map(item => `
+        <div class="headline-item">${item}</div>
+      `).join("");
+    }
+
+    function buildSpoonieSummary(weather = {}) {
+      const temp = Number(weather.tempValue ?? 0);
+      const humidity = Number(weather.humidityValue ?? 0);
+      const wind = Number(weather.windValue ?? 0);
+      const pressure = Number(weather.pressureValue ?? 0);
+      const hour = new Date().getHours();
+
+      const notes = [];
+      let tone = "balanced";
+
+      if (temp > 90) {
+        notes.push("Heat may drain energy quickly.");
+        tone = "low";
+      }
+
+      if (temp < 20) {
+        notes.push("Cold may increase pain sensitivity.");
+        tone = "low";
+      }
+
+      if (humidity > 80) {
+        notes.push("High humidity may feel heavy.");
+        tone = "low";
+      }
+
+      if (wind > 20) {
+        notes.push("Wind may increase discomfort.");
+      }
+
+      if (pressure && pressure < 29.8) {
+        notes.push("Pressure drop may affect joints and energy.");
+        tone = "low";
+      }
+
+      if (hour > 21 || hour < 6) {
+        notes.push("Late hours may call for softer pacing.");
+      }
+
+      if (!notes.length) {
+        notes.push("Energy feels steady and manageable.");
+      }
+
+      return { tone, notes };
+    }
+
+    function getMoonPhaseText() {
+      const lp = 2551443;
+      const newMoon = new Date(1970, 0, 7, 20, 35, 0);
+      const phase = ((Date.now() - newMoon) / 1000) % lp;
+      const percent = phase / lp;
+
+      if (percent < 0.03 || percent > 0.97) return "🌑 New Moon";
+      if (percent < 0.22) return "🌒 Waxing Crescent";
+      if (percent < 0.28) return "🌓 First Quarter";
+      if (percent < 0.47) return "🌔 Waxing Gibbous";
+      if (percent < 0.53) return "🌕 Full Moon";
+      if (percent < 0.72) return "🌖 Waning Gibbous";
+      if (percent < 0.78) return "🌗 Last Quarter";
+      return "🌘 Waning Crescent";
+    }
+
+    function buildNightSkyNote(moonText, auroraKp) {
+      const hour = new Date().getHours();
+      const nightish = hour >= 18 || hour < 7;
+
+      if (!nightish) return "Skywatching rests until dusk.";
+      if (auroraKp >= 6) return "Aurora energy is high tonight.";
+      if (auroraKp >= 4) return "Aurora chances look promising.";
+      if (moonText.includes("Full")) return "Bright moonlight may soften star visibility.";
+      if (moonText.includes("New")) return "Dark skies favor deeper skywatching.";
+      return "Creek-facing calm and clear windows are ideal tonight.";
+    }
+
+    function renderFeatureHeadlines(headlines) {
+      const body = document.getElementById("featureBody");
+      const label = document.getElementById("featureLabel");
+      label.textContent = "Headlines";
+
+      body.innerHTML = `
+        <div class="feature-view headline-list">
+          ${(headlines || []).slice(0, 3).map(item => `
+            <div class="headline-item">${item}</div>
+          `).join("") || `<div class="headline-item">No fresh headlines just now.</div>`}
+        </div>
+      `;
+    }
+
+    function renderFeatureSpoonie(weather) {
+      const body = document.getElementById("featureBody");
+      const label = document.getElementById("featureLabel");
+      label.textContent = "Spoonie Check-In";
+
+      const summary = buildSpoonieSummary(weather);
+
+      body.innerHTML = `
+        <div class="feature-view">
+          ${summary.notes.map(n => `<div class="feature-line">${n}</div>`).join("")}
+          <div class="feature-subtle">
+            ✨ ${summary.tone === "low" ? "Gentle day — go softly." : "Steady energy — move with ease."}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFeatureWeather(weather) {
+      const body = document.getElementById("featureBody");
+      const label = document.getElementById("featureLabel");
+      label.textContent = "Weather Report";
+
+      body.innerHTML = `
+        <div class="feature-view">
+          <div class="feature-note">${weather.desc || "Aurora Moon Haven"}</div>
+          <div class="feature-line">Temp: ${weather.temp || "--°"}</div>
+          <div class="feature-line">Feels like: ${weather.feels || "--"}</div>
+          <div class="feature-line">Humidity: ${weather.humidity || "--"}</div>
+          <div class="feature-line">Wind: ${weather.wind || "--"}</div>
+          <div class="feature-line">Pressure: ${weather.pressure || "--"}</div>
+          <div class="feature-subtle">${weather.meta || ""}</div>
+        </div>
+      `;
+    }
+
+    function renderFeatureNightSky(nightSky) {
+      const body = document.getElementById("featureBody");
+      const label = document.getElementById("featureLabel");
+
+      const hour = new Date().getHours();
+      const isNightish = hour >= 18 || hour < 7;
+      label.textContent = isNightish ? "Night Sky" : "Sky Notes";
+
+      body.innerHTML = `
+        <div class="feature-view">
+          <div class="feature-line">${safeText(nightSky.moon, "🌙 Quiet moon")}</div>
+          <div class="feature-line">${safeText(nightSky.aurora, "Aurora KP: --")}</div>
+          <div class="feature-line">${safeText(nightSky.iss, "ISS check pending")}</div>
+          <div class="feature-subtle">${safeText(nightSky.note, "Best viewing: creek-facing calm and clear windows.")}</div>
+        </div>
+      `;
+    }
+
+    function renderFeatureMedia(media) {
+      const body = document.getElementById("featureBody");
+      const label = document.getElementById("featureLabel");
+      label.textContent = "Moonbeam Media";
+
+      body.innerHTML = `
+        <div class="feature-view">
+          <div class="feature-line">📚 ${safeText(media.reading, "Currently curating the bookshelf.")}</div>
+          <div class="feature-line">📺 ${safeText(media.watching, "Creekside screen resting between broadcasts.")}</div>
+          <div class="feature-subtle">Currently flowing through Aurora Moon Haven</div>
+        </div>
+      `;
+    }
+
+    function rotateFeatureCard() {
+      const mode = featureModes[featureIndex % featureModes.length];
+
+      if (mode === "headlines") {
+        renderFeatureHeadlines(latestFeatureData.headlines);
+      } else if (mode === "spoonie") {
+        renderFeatureSpoonie(latestFeatureData.weather);
+      } else if (mode === "weather") {
+        renderFeatureWeather(latestFeatureData.weather);
+      } else if (mode === "sky") {
+        renderFeatureNightSky(latestFeatureData.nightSky);
+      } else if (mode === "media") {
+        renderFeatureMedia(latestFeatureData.media);
+      }
+
+      featureIndex++;
+    }
+
+    function buildTicker(headlines) {
+      const reading = latestFeatureData.media?.reading || "";
+      const watching = latestFeatureData.media?.watching || "";
+      const sky = latestFeatureData.nightSky?.aurora || "";
+
+      const pick = () => cozyTickerMessages[Math.floor(Math.random() * cozyTickerMessages.length)];
+
+      const mixed = [
+        reading ? `Reading: ${reading}` : pick(),
+        watching ? `Watching: ${watching}` : pick(),
+        sky || pick(),
+        ...(headlines || []).slice(0, 2),
+        "Aurora Moon Café now brewing"
+      ];
+
+      document.getElementById("tickerText").textContent = mixed.join(" • ") + " •";
+    }
+
+    function triggerFlicker() {
+      const screen = document.getElementById("screen");
+      screen.classList.add("flicker");
+      setTimeout(() => screen.classList.remove("flicker"), 160);
+    }
+
+    function scheduleRandomFlicker() {
+      const next = Math.random() * 25000 + 18000;
+      setTimeout(() => {
+        triggerFlicker();
+        scheduleRandomFlicker();
+      }, next);
+    }
+
+    async function fetchWeather() {
+      const data = await fetchJson(`${API_BASE}/weather`);
+      const obs = data?.observations?.[0];
+      const imperial = obs?.imperial || {};
+
+      const tempVal = Number.isFinite(imperial.temp) ? imperial.temp : null;
+      const dewptVal = Number.isFinite(imperial.dewpt) ? imperial.dewpt : null;
+      const humidityVal = obs?.humidity ?? null;
+      const windVal = Number.isFinite(imperial.windSpeed) ? imperial.windSpeed : null;
+      const pressureVal = Number.isFinite(imperial.pressure) ? imperial.pressure : null;
+
+      const feelsVal =
+        Number.isFinite(imperial.heatIndex) ? imperial.heatIndex :
+        Number.isFinite(imperial.windChill) ? imperial.windChill :
+        tempVal;
+
+      const temp = tempVal !== null ? `${Math.round(tempVal)}°` : "--°";
+      const wind = windVal !== null ? `${Math.round(windVal)} mph` : "--";
+      const humidity = humidityVal !== null ? `${humidityVal}%` : "--";
+      const feels = feelsVal !== null && feelsVal !== undefined ? `${Math.round(feelsVal)}°` : "--";
+      const pressure = pressureVal !== null ? `${pressureVal.toFixed(2)} in` : "--";
+
+      return {
+        temp,
+        desc: dewptVal !== null
+          ? `Aurora Moon Haven • Dew ${Math.round(dewptVal)}°`
+          : "Aurora Moon Haven",
+        meta: "KMNSTLOU35 / GW6813",
+        wind,
+        humidity,
+        feels,
+        pressure,
+        tempValue: tempVal,
+        humidityValue: humidityVal,
+        windValue: windVal,
+        pressureValue: pressureVal
+      };
+    }
+
+    async function fetchSchedule() {
+      const data = await fetchJson(`${API_BASE}/calendar`);
+      const now = new Date();
+
+      return (Array.isArray(data) ? data : [])
+        .slice(0, 3)
+        .map(item => {
+          const start = new Date(item.start);
+          let label = "--";
+
+          if (!isNaN(start)) {
+            const diffMs = start - now;
+            const diffMin = Math.floor(diffMs / 60000);
+            const diffHr = Math.floor(diffMin / 60);
+            const diffDay = Math.floor(diffHr / 24);
+
+            if (diffMin < 60 && diffMin >= 0) {
+              label = `in ${diffMin}m`;
+            } else if (diffHr < 24 && diffHr >= 0) {
+              label = `~${diffHr}h`;
+            } else if (diffDay === 1) {
+              label = "tomorrow";
+            } else if (diffDay > 1) {
+              label = `in ${diffDay}d`;
+            } else {
+              label = start.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+            }
+          }
+
+          return {
+            time: label,
+            title: item.title || "Untitled event"
+          };
+        });
+    }
+
+    async function fetchHeadlines() {
+      const settled = await Promise.allSettled(RSS_FEED_URLS.map(fetchFeed));
+      const combined = [];
+
+      for (const result of settled) {
+        if (result.status === "fulfilled") combined.push(...result.value);
+      }
+
+      const unique = [];
+      const seen = new Set();
+
+      for (const item of combined) {
+        const key = item.toLowerCase();
+        if (!seen.has(key)) {
+          seen.add(key);
+          unique.push(item);
+        }
+      }
+
+      return unique.slice(0, 6);
+    }
+
+    async function fetchMedia() {
+      try {
+        const data = await fetchJson(`${API_BASE}/media`);
+        const media = {
+          reading: data?.book || data?.reading || data?.currentBook || fallbackData.media.reading,
+          watching: data?.tv || data?.watching || data?.movie || fallbackData.media.watching
+        };
+
+        document.getElementById("reading").textContent = media.reading || "—";
+        document.getElementById("watching").textContent = media.watching || "—";
+
+        return media;
+      } catch (err) {
+        console.error("Media load failed:", err);
+        document.getElementById("reading").textContent = fallbackData.media.reading;
+        document.getElementById("watching").textContent = fallbackData.media.watching;
+        return fallbackData.media;
+      }
+    }
+
+    async function fetchNightSky() {
+      const moon = getMoonPhaseText();
+
+      let aurora = "Aurora KP: --";
+      let auroraKp = null;
+
+      try {
+        const auroraData = await fetchJson(`${API_BASE}/aurastream`);
+        auroraKp = Number(auroraData?.kp ?? auroraData?.Kp ?? 0);
+        if (!Number.isNaN(auroraKp)) {
+          aurora = `Aurora KP: ${auroraKp}`;
+        }
+      } catch (err) {
+        console.error("Aurora load failed:", err);
+      }
+
+      let iss = "ISS check pending";
+
+      try {
+        const res = await fetch("https://api.wheretheiss.at/v1/satellites/25544", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          const lat = Number(data?.latitude ?? 0).toFixed(2);
+          const lon = Number(data?.longitude ?? 0).toFixed(2);
+          iss = `🛰 ISS: ${lat}°, ${lon}°`;
+        }
+      } catch (err) {
+        console.error("ISS load failed:", err);
+      }
+
+      return {
+        moon,
+        aurora,
+        iss,
+        note: buildNightSkyNote(moon, auroraKp)
+      };
+    }
+
+    async function loadLiveData() {
+      const [weatherResult, scheduleResult, headlinesResult, mediaResult, nightSkyResult] = await Promise.allSettled([
+        fetchWeather(),
+        fetchSchedule(),
+        fetchHeadlines(),
+        fetchMedia(),
+        fetchNightSky()
+      ]);
+
+      const weather = weatherResult.status === "fulfilled" ? weatherResult.value : fallbackData.weather;
+      const schedule = scheduleResult.status === "fulfilled" ? scheduleResult.value : fallbackData.schedule;
+      const headlines = headlinesResult.status === "fulfilled" ? headlinesResult.value : fallbackData.headlines;
+      const media = mediaResult.status === "fulfilled" ? mediaResult.value : fallbackData.media;
+      const nightSky = nightSkyResult.status === "fulfilled" ? nightSkyResult.value : fallbackData.nightSky;
+
+      if (weatherResult.status === "rejected") console.error("Weather load failed:", weatherResult.reason);
+      if (scheduleResult.status === "rejected") console.error("Schedule load failed:", scheduleResult.reason);
+      if (headlinesResult.status === "rejected") console.error("Headlines load failed:", headlinesResult.reason);
+      if (mediaResult.status === "rejected") console.error("Media load failed:", mediaResult.reason);
+      if (nightSkyResult.status === "rejected") console.error("Night sky load failed:", nightSkyResult.reason);
+
+      latestFeatureData.weather = weather;
+      latestFeatureData.headlines = headlines;
+      latestFeatureData.media = media;
+      latestFeatureData.nightSky = nightSky;
+
+      renderWeather(weather);
+      renderSchedule(schedule);
+      renderHeadlines(headlines);
+      buildTicker(headlines);
+      rotateFeatureCard();
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    loadLiveData();
+    setInterval(loadLiveData, 5 * 60 * 1000);
+    setInterval(rotateFeatureCard, 15000);
+
+    setInterval(() => {
+      const currentHeadlines = latestFeatureData.headlines?.length
+        ? latestFeatureData.headlines
+        : fallbackData.headlines;
+      buildTicker(currentHeadlines);
+    }, 20000);
+
+    scheduleRandomFlicker();
+  </script>
+</body>
+</html>

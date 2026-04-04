@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Moon Cafe Window Dawn</title>
+
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+.window-dawn{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg,
+      rgba(188,210,255,.18) 0%,
+      rgba(205,225,255,.14) 28%,
+      rgba(235,223,210,.10) 62%,
+      rgba(255,240,210,.12) 100%);
+}
+
+/* cool early light */
+.dawn-glow{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(circle at 24% 20%, rgba(210,230,255,.20), transparent 24%),
+    radial-gradient(circle at 70% 16%, rgba(255,225,200,.12), transparent 28%),
+    linear-gradient(180deg,
+      rgba(200,220,255,.08) 0%,
+      rgba(215,225,245,.06) 44%,
+      rgba(255,235,205,.08) 100%);
+  pointer-events:none;
+}
+
+/* first warm rays */
+.morning-shimmer{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(115deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,245,220,.06) 45%,
+      rgba(255,255,255,0) 100%);
+  opacity:.18;
+  animation: shimmerMove 20s linear infinite;
+}
+
+/* fading stars */
+.starfield{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(2px 2px at 18% 26%, rgba(255,255,255,.28), transparent),
+    radial-gradient(2px 2px at 72% 20%, rgba(255,255,255,.22), transparent),
+    radial-gradient(1px 1px at 54% 30%, rgba(255,255,255,.24), transparent),
+    radial-gradient(2px 2px at 84% 36%, rgba(255,255,255,.18), transparent),
+    radial-gradient(1px 1px at 30% 18%, rgba(255,255,255,.14), transparent);
+  opacity:.22;
+  animation: starDrift 200s linear infinite;
+}
+
+/* lingering aurora memory */
+.aurora-memory{
+  position:absolute;
+  inset:-8% -10%;
+  pointer-events:none;
+  filter: blur(42px);
+  mix-blend-mode: screen;
+  opacity:.12;
+  background:
+    radial-gradient(ellipse at 26% 20%, rgba(0,169,186,.12), transparent 36%),
+    radial-gradient(ellipse at 58% 14%, rgba(127,135,255,.10), transparent 34%),
+    radial-gradient(ellipse at 82% 22%, rgba(198,199,248,.08), transparent 28%);
+  animation: auroraDrift 28s ease-in-out infinite alternate;
+}
+
+/* tiny dew-like sparkle */
+.sparkle{
+  position:absolute;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 0 7px rgba(220,235,255,.35);
+  opacity:0;
+  animation: sparklePulse 8s infinite;
+}
+
+.sA { left: 20%; top: 66%; animation-delay: 2s; }
+.sB { left: 66%; top: 58%; animation-delay: 5s; }
+
+/* faint floating dust / pollen */
+.dawn-dust{
+  position:absolute;
+  width:3px;
+  height:3px;
+  border-radius:50%;
+  background: rgba(255,255,255,.65);
+  box-shadow: 0 0 6px rgba(255,255,255,.22);
+  animation: dustFloat linear infinite;
+  opacity:.28;
+}
+
+.d1 { left: 14%; bottom: 12%; animation-duration: 18s; animation-delay: -2s; }
+.d2 { left: 36%; bottom: 18%; animation-duration: 22s; animation-delay: -7s; }
+.d3 { left: 58%; bottom: 14%; animation-duration: 20s; animation-delay: -4s; }
+.d4 { left: 78%; bottom: 20%; animation-duration: 24s; animation-delay: -10s; }
+
+/* lower soft lift */
+.horizon-fade{
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:32%;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(220,228,238,.05) 45%,
+    rgba(255,230,205,.10) 100%
+  );
+}
+
+/* subtle glass sheen */
+.window-veil{
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0) 24%),
+    linear-gradient(90deg, rgba(255,255,255,.02), rgba(255,255,255,0) 18%, rgba(255,255,255,.015) 84%, rgba(255,255,255,.03) 100%);
+  pointer-events:none;
+}
+
+@keyframes shimmerMove{
+  0% { transform: translateX(-30%); }
+  100% { transform: translateX(30%); }
+}
+
+@keyframes starDrift{
+  100% { transform: translate(-60px, -100px); }
+}
+
+@keyframes auroraDrift{
+  0%   { transform: translateX(-2%) translateY(0%) scale(1.01); }
+  50%  { transform: translateX(1%) translateY(-1%) scale(1.03); }
+  100% { transform: translateX(3%) translateY(1%) scale(1.02); }
+}
+
+@keyframes sparklePulse{
+  0%,100% { opacity:0; transform: scale(.6); }
+  50% { opacity:.55; transform: scale(1.1); }
+}
+
+@keyframes dustFloat{
+  0%{
+    transform: translateY(0) scale(1);
+    opacity:0;
+  }
+  10%{
+    opacity:.28;
+  }
+  100%{
+    transform: translateY(-120px) scale(1.15);
+    opacity:0;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="window-dawn">
+    <div class="dawn-glow"></div>
+    <div class="morning-shimmer"></div>
+    <div class="starfield"></div>
+    <div class="aurora-memory"></div>
+
+    <div class="sparkle sA"></div>
+    <div class="sparkle sB"></div>
+
+    <div class="dawn-dust d1"></div>
+    <div class="dawn-dust d2"></div>
+    <div class="dawn-dust d3"></div>
+    <div class="dawn-dust d4"></div>
+
+    <div class="horizon-fade"></div>
+    <div class="window-veil"></div>
+  </div>
+</body>
+</html>

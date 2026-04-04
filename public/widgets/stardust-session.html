@@ -152,7 +152,7 @@ function switchMode() {
   if (isFocus) {
     // Leaving focus, entering break
     isFocus = false;
-    focusMusic.volume = 0.07;
+    focusMusic.volume = 0.13;
     startCycle(BREAK_DURATION);
 
     fetch("http://localhost:3000/coffee-break", { method: "POST" })

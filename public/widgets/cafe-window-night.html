@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Moon Cafe Window Night</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+}
+
+/* whole window area */
+.window-night {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg,
+      rgba(8,12,28,.92) 0%,
+      rgba(12,18,40,.90) 38%,
+      rgba(14,22,46,.84) 70%,
+      rgba(18,28,52,.78) 100%);
+}
+
+/* stars */
+.starfield {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(2px 2px at 20% 30%, #ffffff66, transparent),
+    radial-gradient(2px 2px at 70% 80%, #ffffff66, transparent),
+    radial-gradient(1px 1px at 40% 60%, #ffffff88, transparent),
+    radial-gradient(2px 2px at 80% 20%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 10% 70%, #ffffff99, transparent),
+    radial-gradient(1px 1px at 50% 50%, #ffffff55, transparent),
+    radial-gradient(2px 2px at 30% 75%, #ffffff44, transparent);
+  animation: starDrift 160s linear infinite;
+  opacity: .75;
+}
+
+/* aurora layers */
+.aurora {
+  position: absolute;
+  inset: -8% -10%;
+  pointer-events: none;
+  filter: blur(34px);
+  mix-blend-mode: screen;
+  opacity: .75;
+}
+
+.aurora.a1 {
+  background:
+    radial-gradient(ellipse at 20% 25%, rgba(0,169,186,.30), transparent 45%),
+    radial-gradient(ellipse at 50% 12%, rgba(127,135,255,.26), transparent 42%),
+    radial-gradient(ellipse at 78% 28%, rgba(120,255,190,.18), transparent 40%);
+  animation: auroraDrift1 20s ease-in-out infinite alternate;
+}
+
+.aurora.a2 {
+  background:
+    radial-gradient(ellipse at 30% 18%, rgba(198,199,248,.14), transparent 32%),
+    radial-gradient(ellipse at 62% 22%, rgba(0,169,186,.18), transparent 34%),
+    radial-gradient(ellipse at 85% 18%, rgba(127,135,255,.16), transparent 30%);
+  filter: blur(48px);
+  opacity: .52;
+  animation: auroraDrift2 26s ease-in-out infinite alternate;
+}
+
+/* moon haze */
+.moon-glow {
+  position: absolute;
+  top: 7%;
+  right: 12%;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle,
+      rgba(255,255,255,.22) 0%,
+      rgba(203,236,245,.12) 25%,
+      rgba(127,135,255,.08) 42%,
+      transparent 72%);
+  filter: blur(12px);
+  opacity: .55;
+}
+
+/* subtle map presence */
+.map-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url("auroramoonmap.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: .10;
+  mix-blend-mode: screen;
+  filter: blur(4px) saturate(.9);
+}
+
+/* soft glow near lower window edge */
+.horizon-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 36%;
+  background: linear-gradient(
+    180deg,
+    rgba(10,16,32,0) 0%,
+    rgba(14,20,36,.18) 35%,
+    rgba(16,24,44,.34) 100%
+  );
+}
+
+/* subtle glass sheen */
+.window-veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,0) 24%),
+    linear-gradient(90deg, rgba(255,255,255,.03), rgba(255,255,255,0) 18%, rgba(255,255,255,.02) 84%, rgba(255,255,255,.04) 100%);
+  pointer-events: none;
+}
+
+/* tiny drifting stardust */
+.stardust {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.8);
+  box-shadow: 0 0 8px rgba(203,236,245,.5);
+  animation: dustFloat linear infinite;
+  opacity: .65;
+}
+
+.s1 { left: 12%; bottom: 10%; animation-duration: 18s; animation-delay: -2s; }
+.s2 { left: 28%; bottom: 18%; animation-duration: 22s; animation-delay: -8s; }
+.s3 { left: 54%; bottom: 12%; animation-duration: 20s; animation-delay: -5s; }
+.s4 { left: 72%; bottom: 20%; animation-duration: 24s; animation-delay: -11s; }
+.s5 { left: 88%; bottom: 14%; animation-duration: 19s; animation-delay: -6s; }
+
+@keyframes starDrift {
+  100% { transform: translate(-120px, -260px); }
+}
+
+@keyframes auroraDrift1 {
+  0%   { transform: translateX(-3%) translateY(0%) scale(1.02); }
+  50%  { transform: translateX(2%) translateY(-2%) scale(1.06); }
+  100% { transform: translateX(5%) translateY(1%) scale(1.03); }
+}
+
+@keyframes auroraDrift2 {
+  0%   { transform: translateX(4%) translateY(-1%) scale(1.02); }
+  50%  { transform: translateX(-2%) translateY(2%) scale(1.05); }
+  100% { transform: translateX(-5%) translateY(0%) scale(1.03); }
+}
+
+@keyframes dustFloat {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: .65;
+  }
+  100% {
+    transform: translateY(-180px) scale(1.3);
+    opacity: 0;
+  }
+}
+
+.water-glow {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30%;
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,0),
+    rgba(127,135,255,.06),
+    rgba(0,169,186,.08)
+  );
+  mix-blend-mode: screen;
+  opacity: .4;
+  animation: waterShift 12s ease-in-out infinite alternate;
+}
+
+@keyframes waterShift {
+  0% { transform: translateX(-2%); }
+  100% { transform: translateX(2%); }
+}
+
+.sparkle {
+  position:absolute;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:white;
+  opacity:0;
+  animation: sparklePulse 6s infinite;
+}
+
+.sA { left:20%; top:60%; animation-delay: 1s; }
+.sB { left:65%; top:50%; animation-delay: 3s; }
+
+@keyframes sparklePulse {
+  0%,100% { opacity:0; transform: scale(0.5); }
+  50% { opacity:.8; transform: scale(1.2); }
+}
+
+.moth {
+  position:absolute;
+  width:18px;
+  height:14px;
+  opacity:0;
+  animation: mothDrift 25s infinite;
+}
+
+@keyframes mothDrift {
+  0% { transform: translate(0,0); opacity:0; }
+  10% { opacity:.6; }
+  50% { transform: translate(120px,-40px); }
+  90% { opacity:.4; }
+  100% { transform: translate(220px,-80px); opacity:0; }
+}
+
+</style>
+</head>
+<body>
+  <div class="window-night">
+    <div class="starfield"></div>
+    <div class="aurora a1"></div>
+    <div class="aurora a2"></div>
+    <div class="moon-glow"></div>
+    <div class="map-overlay"></div>
+
+    <div class="stardust s1"></div>
+    <div class="stardust s2"></div>
+    <div class="stardust s3"></div>
+    <div class="stardust s4"></div>
+    <div class="stardust s5"></div>
+
+    <div class="horizon-fade"></div>
+    <div class="window-veil"></div>
+  </div>
+</body>
+</html>
+
+    <div class="horizon-fade"></div>
+    <div class="window-veil"></div>
+  </div>
+</body>
+</html>

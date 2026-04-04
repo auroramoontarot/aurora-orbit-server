@@ -1,0 +1,1 @@
+import{r as o,c as e}from"./common-f12nnrtM.js";import{P as t}from"./PanelExtensionApp-BlkWfony.js";const r=document.getElementById("root");o(()=>e(t,{}),r);

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Luna-Tics Shuttle Chat</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: transparent;
+      font-family: 'Quicksand', sans-serif;
+    }
+
+    :root{
+      --lav:#7f87ff;
+      --teal:#00a9ba;
+      --ice:#cbecf5;
+      --mist:#c6c7f8;
+      --bubble:rgba(12,18,38,.16);
+      --bubble-strong:rgba(16,22,46,.24);
+      --line:rgba(203,236,245,.12);
+      --line-strong:rgba(127,135,255,.24);
+    }
+
+.chat-wrap{
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(25, 18, 14, 0.18);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow:
+    inset 0 0 10px rgba(255,255,255,0.03),
+    0 4px 18px rgba(0,0,0,0.14);
+  backdrop-filter: blur(2px);
+}
+
+.chat-wrap::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+  z-index:0;
+}
+
+    .chat-wrap.speaking{
+      box-shadow:
+        inset 0 0 18px rgba(255,255,255,0.06),
+        inset 0 0 34px rgba(0,169,186,0.10),
+        0 0 18px rgba(127,135,255,0.18),
+        0 0 28px rgba(0,169,186,0.12);
+      border-color: rgba(203,236,245,0.18);
+    }
+
+    .chat-wrap.speaking::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      border-radius:26px;
+      background:
+        radial-gradient(circle at center, rgba(127,135,255,0.08), transparent 60%),
+        radial-gradient(circle at top right, rgba(0,169,186,0.08), transparent 45%);
+      animation: astreaGlowPulse 1.8s ease-in-out infinite;
+      z-index:1;
+    }
+
+.chat-title{
+  position:absolute;
+  top:10px;
+  left:14px;
+  z-index:3;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+  color:rgba(255,245,225,.88);
+  text-shadow:none;
+}
+
+.chat-title .dot{
+  width:auto;
+  height:auto;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  animation: pulseStar 2.4s ease-in-out infinite;
+}
+
+.chat-title .dot::before{
+  content:"✦";
+  color:#f6d98f;
+  font-size:12px;
+  text-shadow:
+    0 0 6px rgba(246,217,143,.35),
+    0 0 10px rgba(127,135,255,.18);
+}
+
+@keyframes pulseStar{
+  0%,100%{ transform:scale(1); opacity:.85; }
+  50%{ transform:scale(1.15); opacity:1; }
+}
+
+    .chat-feed{
+      position:absolute;
+      left:14px;
+      right:14px;
+      top:38px;
+      bottom:14px;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      gap:8px;
+      overflow:hidden;
+      z-index:2;
+    }
+
+.msg{
+  position:relative;
+  align-self:flex-start;
+  max-width:84%;
+  padding:12px 12px 10px 14px;
+  border-radius:12px;
+  background: rgba(255, 248, 238, 0.88);
+  border: 1px solid rgba(120, 90, 60, 0.12);
+  color:#3b2e2a;
+  font-size:15px;
+  line-height:1.35;
+  word-break:break-word;
+  box-shadow:
+    0 4px 10px rgba(0,0,0,.10),
+    0 1px 0 rgba(255,255,255,.35) inset;
+  opacity:0;
+  transform:translateY(14px) scale(.98) rotate(-0.4deg);
+  animation:chatIn .45s ease forwards;
+}
+
+.msg::before{
+  content:"★";
+  position:absolute;
+  top:-6px;
+  left:12px;
+  font-size:10px;
+  color:#f6c177;
+
+  text-shadow:
+    0 0 4px rgba(246,193,119,.25);
+
+  transform: rotate(-8deg);
+}
+
+.meta{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:4px;
+  font-size:10px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:rgba(92,72,58,.65);
+}
+
+.tag{
+  padding:2px 7px;
+  border-radius:999px;
+  border:1px solid rgba(120,90,60,.12);
+  background:rgba(255,255,255,.38);
+  color:#6e5a52;
+  font-weight:700;
+  letter-spacing:1px;
+  font-size:10px;
+}
+
+.user{
+  font-weight:700;
+  color:#6a5cff;
+  text-shadow:none;
+}
+
+.text{
+  color:#3b2e2a;
+  font-size:15px;
+}
+
+.msg.mod .user{
+  color:#00a9ba;
+  text-shadow:none;
+}
+
+.msg.owner{
+  background: rgba(244, 240, 255, 0.92);
+  border-color: rgba(127,135,255,.16);
+}
+
+.msg.owner .user{
+  color:#4d56d8;
+  text-shadow:none;
+}
+
+.msg.old{
+  opacity:.42 !important;
+  transform:none !important;
+  filter:saturate(.82);
+}
+
+.empty-state{
+  align-self:center;
+  margin-top:auto;
+  margin-bottom:auto;
+  padding:10px 14px;
+  border-radius:12px;
+  font-size:12px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:rgba(255,245,225,.76);
+  background:rgba(60,38,28,.22);
+  border:1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(2px);
+}
+
+    .error-state{
+      color:#fff;
+      border-color:rgba(255,120,120,.3);
+      background:rgba(80,20,30,.25);
+    }
+
+    @keyframes chatIn{
+      to{
+        opacity:1;
+        transform:translateY(0) scale(1);
+      }
+    }
+
+    @keyframes pulseDot{
+      0%,100%{
+        transform:scale(1);
+        opacity:.9;
+      }
+      50%{
+        transform:scale(1.2);
+        opacity:1;
+      }
+    }
+
+    @keyframes astreaGlowPulse{
+      0%,100%{
+        opacity:.45;
+      }
+      50%{
+        opacity:.9;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-wrap">
+    <div class="chat-title">
+      <span class="dot"></span>
+      <span>11th House Coffee + Collab</span>
+    </div>
+
+    <div class="chat-feed" id="chatFeed">
+      <div class="empty-state" id="emptyState">Cosmic coffee brewing...</div>
+    </div>
+  </div>
+
+  <audio id="astreaChime" src="/widgets/sounds/moonbeam.mp3" preload="auto"></audio>
+
+  <script>
+    const MAX_MESSAGES = 10;
+    const feed = document.getElementById("chatFeed");
+    const chatWrap = document.querySelector(".chat-wrap");
+    let currentAudio = null;
+    let speakingTimeout = null;
+
+    function setSpeakingState(isSpeaking) {
+      if (!chatWrap) return;
+
+      if (isSpeaking) {
+        chatWrap.classList.add("speaking");
+
+        if (speakingTimeout) {
+          clearTimeout(speakingTimeout);
+          speakingTimeout = null;
+        }
+      } else {
+        speakingTimeout = setTimeout(() => {
+          chatWrap.classList.remove("speaking");
+        }, 250);
+      }
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function getTimeStamp(){
+      const now = new Date();
+      return now.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+
+    function refreshAges(){
+      const messages = [...feed.querySelectorAll(".msg")];
+      messages.forEach((el, index) => {
+        el.classList.remove("old");
+        if (index < messages.length - 3) el.classList.add("old");
+      });
+    }
+
+    function removeOldestIfNeeded(){
+      while (feed.querySelectorAll(".msg").length > MAX_MESSAGES) {
+        const firstMsg = feed.querySelector(".msg");
+        if (firstMsg) firstMsg.remove();
+      }
+    }
+
+    function buildRoleTag(data){
+      if (data.broadcaster) return "Host";
+      if (data.mod) return "Mod";
+      if (data.subscriber) return "Moonbeam";
+      return "Signal";
+    }
+
+    function addMessage(data){
+      const currentEmpty = document.getElementById("emptyState");
+      if (currentEmpty) currentEmpty.remove();
+
+      const msg = document.createElement("div");
+      msg.className = "msg";
+
+      if (data.broadcaster) {
+        msg.classList.add("owner");
+      } else if (data.mod) {
+        msg.classList.add("mod");
+      }
+
+      msg.innerHTML = `
+        <div class="meta">
+          <span class="tag">${buildRoleTag(data)}</span>
+          <span>${getTimeStamp()}</span>
+        </div>
+        <div class="content">
+          <span class="user">${escapeHtml(data.user)}:</span>
+          <span class="text">${escapeHtml(data.text)}</span>
+        </div>
+      `;
+
+      feed.appendChild(msg);
+      removeOldestIfNeeded();
+      refreshAges();
+    }
+
+    async function playTTS(text, mode = "astrea"){
+      try {
+        const res = await fetch("/tts", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ text, mode })
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          throw new Error(err || `HTTP ${res.status}`);
+        }
+
+        const blob = await res.blob();
+
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio = null;
+        }
+
+        const chime = document.getElementById("astreaChime");
+
+        if (mode === "astrea") {
+          setSpeakingState(true);
+        }
+
+        if (chime && mode === "astrea") {
+          chime.volume = 0.3;
+          chime.currentTime = 0;
+          await chime.play();
+        }
+
+        await new Promise(r => setTimeout(r, mode === "astrea" ? 500 : 120));
+
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        currentAudio = audio;
+        audio.volume = 0.8;
+
+        audio.onended = () => {
+          URL.revokeObjectURL(url);
+          if (mode === "astrea") {
+            setSpeakingState(false);
+          }
+        };
+
+        await audio.play();
+
+      } catch (err) {
+        if (mode === "astrea") {
+          setSpeakingState(false);
+        }
+        console.error("TTS play failed:", err);
+      }
+    }
+
+    const stream = new EventSource("/chatstream");
+
+    stream.onopen = () => {
+      const currentEmpty = document.getElementById("emptyState");
+      if (currentEmpty) currentEmpty.textContent = "Signal locked in...";
+    };
+
+    stream.onmessage = async (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        if (data.type === "status") {
+          const currentEmpty = document.getElementById("emptyState");
+          if (currentEmpty) currentEmpty.textContent = "Signal locked in...";
+          return;
+        }
+
+        if (data.type === "message") {
+          addMessage(data);
+          return;
+        }
+
+        if (data.type === "tts") {
+          await playTTS(data.text, data.mode || "astrea");
+          return;
+        }
+
+        if (data.type === "astrea") {
+          await playTTS(data.text, "astrea");
+          return;
+        }
+
+        if (data.type === "aurora") {
+          await playTTS(data.text, "aurora");
+          return;
+        }
+
+      } catch (err) {
+        console.error("Bad chatstream payload:", err);
+      }
+    };
+
+    stream.onerror = () => {
+      const currentEmpty = document.getElementById("emptyState");
+      if (currentEmpty) {
+        currentEmpty.textContent = "Relay offline...";
+        currentEmpty.classList.add("error-state");
+      }
+    };
+  </script>
+</body>
+</html>

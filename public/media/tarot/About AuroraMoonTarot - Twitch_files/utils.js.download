@@ -1,0 +1,774 @@
+// ============================================================================
+// CONFIGURATION
+// ============================================================================
+const IS_STAGING = false;
+
+const URLS = {
+    CANDIDATES: IS_STAGING
+        ? [
+            'https://twitch-coffee-server-staging.up.railway.app',
+            'https://test.thecozydeck.ch'
+        ]
+        : [
+            'https://cozycafe.thecozydeck.ch',
+            'https://test.thecozydeck.ch'
+        ],
+    BASE: null
+};
+async function ensureBaseUrl(timeoutMs = 3000) {
+    if (URLS.BASE) return URLS.BASE;
+
+    for (const base of URLS.CANDIDATES) {
+        try {
+            const controller = new AbortController();
+            const t = setTimeout(() => controller.abort(), timeoutMs);
+
+            const channelId = currentAuth?.channelId || '61792542'; 
+            const testEndpoints = [
+                `/config/${channelId}`,
+                '/clients',
+                `/overlay/?channel=${channelId}`
+            ];
+            
+            const results = await Promise.all(
+                testEndpoints.map(endpoint =>
+                    fetch(`${base}${endpoint}`, { 
+                        signal: controller.signal,
+                        headers: currentAuth?.token ? {
+                            'Authorization': `Bearer ${currentAuth.token}`
+                        } : {}
+                    })
+                        .then(res => res.ok)
+                        .catch(() => false)
+                )
+            );
+
+            clearTimeout(t);
+            const successCount = results.filter(Boolean).length;
+            console.log(`[API] ${base} - ${successCount}/3 endpoints succeeded`);
+            
+            if (successCount == 3) {
+                URLS.BASE = base;
+                console.log('[API] Using base URL:', base);
+                return base;
+            }
+        } catch (e) {
+            console.warn('[API] Base failed:', base, e?.name || e);
+        }
+    }
+    
+    const errorMsg = 'Unable to connect to server. Please check your internet connection and try again.';
+    showError(errorMsg, new Error('No API base reachable'));
+    throw new Error('No API base reachable');
+}
+// ============================================================================
+// GOOGLE ANALYTICS
+// ============================================================================
+
+window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+
+gtag('js', new Date());
+gtag('config', 'G-G59LDHMH1J', {
+    anonymize_ip: true,
+    cookie_flags: 'max-age=7200;secure;samesite=none'
+});
+// ============================================================================
+// TWITCH FUNCTIONS
+// ============================================================================
+async function fetchTwitchProducts() {
+    if (!Twitch.ext.bits) return [];
+
+    try {
+        const products = await Twitch.ext.bits.getProducts();
+        products.sort((a, b) => Number(a.cost.amount) - Number(b.cost.amount));
+        return products;
+    } catch (err) {
+        console.error('Failed to fetch Twitch catalog', err);
+        showError("Could not load Twitch Bits products. Twitch may be down. Please try again later.");
+        return [];
+    }
+}
+// ============================================================================
+// COLOR PALETTES
+// ============================================================================
+const palettes = {
+    brown: {
+        "--primary-1": "#513018",
+        "--primary-2": "#65462F",
+        "--primary-3": "#966C4E",
+        "--primary-4": "#AF8362",
+        "--primary-5": "#DDBEA7",
+        "--primary-6": "#F5E1D2",
+        "--gradient-1": "linear-gradient(208deg, #AA8264 9.62%, #C39A7B 100.9%)",
+        "--gradient-2": "linear-gradient(208deg, #A0714F 9.62%, #AA8264 100.9%)",
+        "--gradient-3": "linear-gradient(180deg, #452610 0%, #513018 100%)",
+        "--gradient-4": "linear-gradient(127deg, #81573A 4.35%, #623D23 87.61%)",
+    },
+    autumnHarvest: {
+        "--primary-1": "#553F17",
+        "--primary-2": "#8B5A2B",
+        "--primary-3": "#C97A3E",
+        "--primary-4": "#E09952",
+        "--primary-5": "#F5C582",
+        "--primary-6": "#FFE4B8",
+        "--gradient-1": "linear-gradient(208deg, #C97A3E 10%, #E09952 100%)",
+        "--gradient-2": "linear-gradient(208deg, #8B5A2B 10%, #C97A3E 100%)",
+        "--gradient-3": "linear-gradient(180deg, #5C3D1F 0%, #8B5A2B 100%)",
+        "--gradient-4": "linear-gradient(127deg, #C97A3E 5%, #8B5A2B 88%)"
+    },
+
+    peachyKeen: {
+        "--primary-1": "#B76141",
+        "--primary-2": "#E69580",
+        "--primary-3": "#F5B29B",
+        "--primary-4": "#FFD7C7",
+        "--primary-5": "#FFE4D6",
+        "--primary-6": "#FFF5F0",
+        "--gradient-1": "linear-gradient(208deg, #E69580 10%, #F5B29B 100%)",
+        "--gradient-2": "linear-gradient(208deg, #E69580 10%, #F5B29B 100%)",
+        "--gradient-3": "linear-gradient(180deg, #CC7A5C 0%, #E69580 100%)",
+        "--gradient-4": "linear-gradient(127deg, #F5B29B 5%, #E69580 88%)"
+    },
+
+    cottonCandy: {
+        "--primary-1": "#933872",
+        "--primary-2": "#C264A0",
+        "--primary-3": "#D283B6",
+        "--primary-4": "#E8B4D6",
+        "--primary-5": "#F2C9E3",
+        "--primary-6": "#FFF5FC",
+        "--gradient-1": "linear-gradient(208deg, #CE86B8 10%, #BFB0ED 100%)",
+        "--gradient-2": "linear-gradient(208deg, #CA93C8 10%, #CE86B8 100%)",
+        "--gradient-3": "linear-gradient(180deg, #CA93C8 0%, #CE86B8 100%)",
+        "--gradient-4": "linear-gradient(127deg, #FAE0F0 5%, #E8B4D6 88%)"
+    },
+    oceaniaCore: {
+        "--primary-1": "#1A5C6B",
+        "--primary-2": "#2A7A8A",
+        "--primary-3": "#4FA3B0",
+        "--primary-4": "#7EC9D4",
+        "--primary-5": "#B3E5E8",
+        "--primary-6": "#E0F5F7",
+        "--gradient-1": "linear-gradient(208deg, #4FA3B0 10%, #7EC9D4 100%)",
+        "--gradient-2": "linear-gradient(208deg, #2A7A8A 10%, #4FA3B0 100%)",
+        "--gradient-3": "linear-gradient(180deg, #1A5C6B 0%, #2A7A8A 100%)",
+        "--gradient-4": "linear-gradient(127deg, #4FA3B0 5%, #2A7A8A 88%)"
+    },
+    purple: {
+        "--primary-1": "#3A1F4F",
+        "--primary-2": "#56307A",
+        "--primary-3": "#7D52A3",
+        "--primary-4": "#A076C8",
+        "--primary-5": "#C2A2E0",
+        "--primary-6": "#E0D2F5",
+        "--gradient-1": "linear-gradient(208deg, #7D52A3 9.62%, #A076C8 100.9%)",
+        "--gradient-2": "linear-gradient(208deg, #56307A 9.62%, #7D52A3 100.9%)",
+        "--gradient-3": "linear-gradient(180deg, #3A1F4F 0%, #56307A 100%)",
+        "--gradient-4": "linear-gradient(127deg, #8157A0 4.35%, #623D79 87.61%)",
+    },
+    cottagecore: {
+        "--primary-1": "#354725",
+        "--primary-2": "#5C704A",
+        "--primary-3": "#7A9461",
+        "--primary-4": "#9BB083",
+        "--primary-5": "#C4D9B8",
+        "--primary-6": "#E8F2E1",
+        "--gradient-1": "linear-gradient(208deg, #7A9461 10%, #9BB083 100%)",
+        "--gradient-2": "linear-gradient(208deg, #5C704A 10%, #7A9461 100%)",
+        "--gradient-3": "linear-gradient(180deg, #4A5C3A 0%, #5C704A 100%)",
+        "--gradient-4": "linear-gradient(127deg, #7A9461 5%, #5C704A 88%)"
+    },
+    vampireRed: {
+        "--primary-1": "#DDC3C4",
+        "--primary-2": "#B8001F",
+        "--primary-3": "#8B0000",
+        "--primary-4": "#4D0000",
+        "--primary-5": "#3B0002",
+        "--primary-6": "#2B0002",
+        "--gradient-1": "linear-gradient(208deg, #8B0000 10%, #B8001F 100%)",
+        "--gradient-2": "linear-gradient(208deg, #4D0000 10%, #8B0000 100%)",
+        "--gradient-3": "linear-gradient(180deg, #DDC3C4 0%, #CE8487 100%)",
+        "--gradient-4": "linear-gradient(127deg, #8B0000 5%, #1A0A0A 88%)"
+    },
+    darkPurpleGoth: {
+        "--primary-1": "#F9D8FF",
+        "--primary-2": "#7B1FA2",
+        "--primary-3": "#4A0072",
+        "--primary-4": "#2A0045",
+        "--primary-5": "#1B001F",
+        "--primary-6": "#0D000D",
+        "--gradient-1": "linear-gradient(208deg, #4A0072 10%, #7B1FA2 100%)",
+        "--gradient-2": "linear-gradient(208deg, #2A0045 10%, #4A0072 100%)",
+        "--gradient-3": "linear-gradient(180deg, #E6D8FF 0%, #A45ED8 100%)",
+        "--gradient-4": "linear-gradient(127deg, #4A0072 5%, #0D000D 88%)"
+    },
+    charcoal: {
+        "--primary-1": "#D9D9D9",
+        "--primary-2": "#A0A0A0",
+        "--primary-3": "#6B6B6B",
+        "--primary-4": "#4A4A4A",
+        "--primary-5": "#2E2E2E",
+        "--primary-6": "#131313",
+        "--gradient-1": "linear-gradient(208deg, #6B6B6B 10%, #4A4A4A 100%)",
+        "--gradient-2": "linear-gradient(208deg, #A0A0A0 10%, #6B6B6B 100%)",
+        "--gradient-3": "linear-gradient(180deg, #D9D9D9 0%, #A0A0A0 100%)",
+        "--gradient-4": "linear-gradient(127deg, #6B6B6B 5%, #A0A0A0 88%)"
+    },
+
+    neonCyberDark: {
+        "--primary-1": "#D1FFD8",
+        "--primary-2": "#A1F227",
+        "--primary-3": "#6FAE18",
+        "--primary-4": "#6FAE18",
+        "--primary-5": "#0E1600",
+        "--primary-6": "#050800",
+
+        "--gradient-1": "linear-gradient(208deg, #A1F227 10%, #6FAE18 100%)",
+        "--gradient-2": "linear-gradient(208deg, #1E2B00 10%, #2F4400 100%)",
+        "--gradient-3": "linear-gradient(180deg, #D1FFD8 0%, #A1F227 100%)",
+        "--gradient-4": "linear-gradient(127deg, #6FAE18 5%, #050800 88%)"
+    }
+};
+
+function applyPalette(name) {
+    const root = document.documentElement;
+    const palette = palettes[name];
+    if (!palette) return;
+
+    const alias = {
+        "--brown-1": "--primary-1",
+        "--brown-2": "--primary-2",
+        "--brown-3": "--primary-3",
+        "--brown-4": "--primary-4",
+        "--brown-5": "--primary-5",
+        "--brown-6": "--primary-6",
+        "--gradient-1": "--gradient-1",
+        "--gradient-2": "--gradient-2",
+        "--gradient-3": "--gradient-3",
+        "--gradient-4": "--gradient-4",
+    };
+
+    Object.entries(alias).forEach(([oldVar, newVar]) => {
+        root.style.setProperty(oldVar, palette[newVar]);
+    });
+    return name;
+}
+// ============================================================================
+// API CALLS
+// ============================================================================
+
+async function fetchServerConfig(channelId, authToken) {
+    try {
+        const res = await fetch(`${URLS.BASE}/config/${channelId}`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const data = await res.json();
+        return data.config || null;
+    } catch (err) {
+        console.error("Failed to fetch config from server:", err);
+        return null;
+    }
+}
+
+
+async function saveConfig({
+    catalog,
+    volume,
+    decorList,
+    clients,
+    hideClients,
+    chatMessage,
+    auth,
+    channelId,
+    palette,
+    baseUrl = URLS.BASE
+}) {
+
+    if (!auth || !channelId) {
+        console.error("Auth or channelId missing, cannot save config");
+        return;
+    }
+    const currentWall = decorList.filter(d => d.category === 'Wall')?.[currentWallIndex];
+    const currentCounter = decorList.filter(d => d.category === 'Counter')?.[currentCounterIndex];
+    const configPayload = {
+        catalog: catalog.map(item => {
+            const payload = {
+                displayName: item.displayName,
+                sku: item.sku,
+                isDisplayed: item.isDisplayed
+            };
+            // Only save custom properties if they exist
+            if (item.isCustom) {
+                payload.isCustom = true;
+                if (item.image) payload.image = item.image;
+                if (item.category) payload.category = item.category;
+            }
+            return payload;
+        }),
+        volume,
+
+
+        decor: {
+            wall: currentWall
+                ? {
+                    image: currentWall.image,
+                    isCustom: !!currentWall.isCustom
+                }
+                : null,
+
+            counter: currentCounter
+                ? {
+                    image: currentCounter.image,
+                    isCustom: !!currentCounter.isCustom
+                }
+                : null
+        },
+        clients: clients.map(c => {
+            const payload = {
+                displayName: c.displayName,
+                isDisplayed: c.isDisplayed
+            };
+
+            if (c.isCustom) {
+                payload.isCustom = true;
+                if (c.image) payload.image = c.image;
+                if (c.customId) payload.customId = c.customId;
+            }
+
+            return payload;
+        }),
+        hideClients,
+        chatMessage,
+        palette
+    };
+
+    try {
+        const res = await fetch(`${baseUrl}/config/${channelId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${auth.token}`
+            },
+            body: JSON.stringify(configPayload)
+        });
+
+        if (!res.ok) {
+            console.error("Failed to save config:", await res.text());
+            return false;
+        }
+        if (window.Twitch?.ext?.send) {
+            Twitch.ext.send('broadcast', 'application/json', { type: 'reload' });
+        }
+
+        return true;
+    } catch (err) {
+        console.error("Error saving config:", err);
+        return false;
+    }
+}
+
+async function fetchCatalog(channelId, headers) {
+    try {
+        const res = await fetch(`${URLS.BASE}/catalog?channelId=${channelId}`, { headers });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const data = await res.json();
+        return data.catalog || [];
+    } catch (err) {
+        console.error('Failed to fetch catalog from server:', err);
+        return [];
+    }
+}
+
+async function fetchClients(headers) {
+    try {
+        const res = await fetch(`${URLS.BASE}/clients`, { headers });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const data = await res.json();
+        return data.clients || [];
+    } catch (err) {
+        console.error('Failed to load clients from server:', err);
+        return [];
+    }
+}
+
+async function fetchLeaderboard(channelId, authToken, period = 'all') {
+    try {
+        const res = await fetch(
+            `${URLS.BASE}/leaderboard/${channelId}?period=${period}`,
+            {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const data = await res.json();
+        return data.leaderboard || [];
+    } catch (err) {
+        console.error('Failed to fetch leaderboard:', err);
+        return [];
+    }
+}
+
+async function fetchDecor(headers) {
+    try {
+        const res = await fetch(`${URLS.BASE}/decor`, { headers });
+        if (!res.ok) throw new Error(`Server responded ${res.status}`);
+        const data = await res.json();
+        return data.decor || [];
+    } catch (err) {
+        console.error('Failed to fetch decor list from server:', err);
+        return [];
+    }
+}
+
+// ============================================================================
+// DATA MERGING
+// ============================================================================
+
+function mergeWithOverrides(serverList, overrideList, twitchProducts = null) {
+    const serverMap = new Map(
+        serverList.map(item => [item.displayName, item])
+    );
+
+    const usedNames = new Set();
+    const merged = overrideList.map(override => {
+        const serverItem = serverMap.get(override.displayName);
+        usedNames.add(override.displayName);
+
+        // If item no longer exists on server (custom or removed), keep it
+        if (!serverItem) {
+            return { ...override };
+        }
+
+        // Merge: server defaults ← overridden by saved config
+        return {
+            ...serverItem,
+            ...override
+        };
+    });
+
+    // 2️⃣ Append new server items not in saved config
+    serverList.forEach(serverItem => {
+        if (!usedNames.has(serverItem.displayName)) {
+            merged.push({ ...serverItem });
+        }
+    });
+
+    // 3️⃣ Optional: filter invalid SKUs
+    if (twitchProducts) {
+        return merged.filter(item =>
+            twitchProducts.some(p => p.sku === item.sku)
+        );
+    }
+
+    return merged;
+}
+
+function isDuplicateName({ name, type }) {
+    name = name.trim().toLowerCase();
+    if (type === 'item') {
+        return catalog.some(
+            item => item.displayName.trim().toLowerCase() === name
+        );
+    } else if (type === 'client') {
+        return clients.some(
+            client => client.displayName.trim().toLowerCase() === name
+        );
+    }
+    return false;
+}
+
+
+// ============================================================================
+// WEBSOCKET
+// ============================================================================
+
+async function connectSocket(existingSocket, authToken, channelId) {
+    // Disconnect existing socket if present
+    if (existingSocket) {
+        if (existingSocket.connected) {
+            existingSocket.disconnect();
+        }
+        existingSocket.removeAllListeners();
+    }
+
+    const socket = io(URLS.BASE, {
+        auth: {
+            token: authToken
+        },
+        transports: ['polling', 'websocket'],
+        reconnection: true,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        reconnectionAttempts: 10, // Increased attempts
+        timeout: 20000, // Increased timeout
+        forceNew: true, // Force new connection
+        autoConnect: true
+    });
+
+    return new Promise((resolve, reject) => {
+        // Connection successful
+        socket.on('connect', () => {
+            console.log('Current transport:', socket.io.engine.transport.name);
+            console.log('[Socket.IO] Connected');
+            enableAllUI();
+            hideReconnectToast();
+
+            // Subscribe to channel updates
+            socket.emit('subscribe', { channelID: channelId });
+
+            // Global pong listener
+            socket.off('pong');
+            socket.on('pong', (data) => {
+                if (data.channelID !== channelId) return;
+
+                console.log('[overlay] Pong received:', data);
+                // Only call if function exists (config panel only)
+                if (typeof updateOverlayStatus === 'function') {
+                    updateOverlayStatus(!!data.online);
+                }
+            });
+        });
+
+        // Connection error
+        socket.on('connect_error', (error) => {
+            console.error('[Socket.IO] Connection error:', error);
+            reject(error);
+        });
+
+        // Disconnection handling
+        socket.on('disconnect', (reason) => {
+            console.warn('[Socket.IO] Disconnected:', reason);
+            disableAllUI();
+
+            // If server disconnected us, show reconnect message
+            if (reason === 'io server disconnect') {
+                // Server forcibly disconnected, manual reconnection needed
+                socket.connect();
+            }
+            // Otherwise Socket.IO will auto-reconnect
+        });
+
+        // Reconnection attempt
+        socket.io.on('reconnect_attempt', (attemptNumber) => {
+            console.log(`[Socket.IO] Reconnection attempt ${attemptNumber}`);
+            showReconnectToast(5);
+        });
+
+        // Reconnection successful
+        socket.on('reconnect', (attemptNumber) => {
+            console.log(`[Socket.IO] Reconnected after ${attemptNumber} attempts`);
+            enableAllUI();
+            hideReconnectToast();
+
+            // Re-subscribe to channel
+            socket.emit('subscribe', { channelID: channelId });
+        });
+
+        // Reconnection failed
+        socket.io.on('reconnect_failed', () => {
+            console.error('[Socket.IO] Reconnection failed');
+            showError("Connection lost. Please reload the page.");
+        });
+
+        // Wait for initial connection
+        const timeout = setTimeout(() => {
+            reject(new Error('Connection timeout'));
+        }, 10000);
+
+        socket.once('connect', () => {
+            clearTimeout(timeout);
+            resolve(socket);
+        });
+    });
+}
+
+async function pingOverlay(socket, channelId, timeoutMs = 3000) {
+    return new Promise(resolve => {
+        console.log('[pingOverlay] Starting ping...', {
+            connected: socket?.connected,
+            channelId
+        });
+
+        if (!socket || !socket.connected) {
+            console.warn('[pingOverlay] Socket not connected');
+            //   updateOverlayStatus(false);
+            return resolve(false);
+        }
+
+        let responded = false;
+        let timeout;
+
+        const onPong = (data) => {
+            console.log('[pingOverlay] Received pong:', data);
+            console.log('[pingOverlay] data.online value:', data.online); // ADD THIS
+            console.log('[pingOverlay] channelID match:', data.channelID === channelId); // ADD THIS
+
+            if (data.channelID === channelId) {
+                responded = true;
+                cleanup();
+                console.log('[pingOverlay] Resolving with:', data.online); // ADD THIS
+                //  updateOverlayStatus(data.online);
+                resolve(data.online);
+            }
+        };
+
+        function cleanup() {
+            clearTimeout(timeout);
+            socket.off('pong', onPong);
+        }
+
+        socket.on('pong', onPong);
+        socket.emit('ping', { channelID: channelId });
+        console.log('[pingOverlay] Ping emitted');
+
+        timeout = setTimeout(() => {
+            if (!responded) {
+                console.warn('[pingOverlay] Ping timeout - no response received');
+                cleanup();
+                //  updateOverlayStatus(false);
+                resolve(false);
+            }
+        }, timeoutMs);
+    });
+}
+
+// ============================================================================
+// UI UTILITIES
+// ============================================================================
+
+function showLoader(id = "loader") {
+    document.getElementById(id)?.classList.remove("hidden");
+}
+
+function hideLoader(id = "loader") {
+    document.getElementById(id)?.classList.add("hidden");
+}
+
+function showModal() {
+    document.querySelector('.modal').classList.add('show');
+    document.querySelector('.backdrop').classList.add('show');
+}
+
+function hideModal() {
+    document.querySelector('.modal').classList.remove('show');
+    document.querySelector('.backdrop').classList.remove('show');
+}
+
+function showError(msg = "An unexpected error occurred.", error = null, elementId = "data-error") {
+
+    hideLoader();
+
+    const el = document.getElementById(elementId);
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.remove("hidden");
+    const parent = el.parentElement;
+    if (parent) {
+        Array.from(parent.children).forEach(child => {
+            if (child !== el) child.classList.add('hidden');
+        });
+    }
+
+    gtag('event', 'error_displayed', {
+        event_category: 'UI',
+        event_label: msg,
+        error_element: elementId,
+        error_message: error?.message || 'No error details',
+        error_name: error?.name || 'Unknown'
+    });
+}
+
+function showToast(message, type = 'success', toastId = 'toast', duration = 5000) {
+    const toast = document.getElementById(toastId);
+    if (!toast) return;
+
+    toast.textContent = '';
+
+    const icon = document.createElement('span');
+    icon.className = 'material-symbols-rounded';
+    icon.style.marginRight = '8px';
+
+    if (type === 'success') icon.textContent = 'check_circle';
+    else if (type === 'error') icon.textContent = 'error';
+    else if (type === 'warning') icon.textContent = 'warning';
+
+    toast.appendChild(icon);
+    toast.appendChild(document.createTextNode(message));
+    toast.classList.add('show');
+
+    setTimeout(() => toast.classList.remove('show'), duration);
+}
+
+function showReconnectToast(seconds, toastId = 'toast') {
+    const toast = document.getElementById(toastId);
+    if (!toast) return;
+
+    toast.textContent = '';
+
+    const icon = document.createElement('span');
+    icon.className = 'material-symbols-rounded';
+    icon.style.marginRight = '8px';
+    icon.textContent = 'sync_problem';
+
+    const text = document.createTextNode(`Connection lost — attempting reconnection`);
+
+    toast.appendChild(icon);
+    toast.appendChild(text);
+    toast.classList.add('show');
+}
+
+function hideReconnectToast(toastId = 'toast') {
+    const toast = document.getElementById(toastId);
+    if (!toast) return;
+    toast.classList.remove('show');
+}
+
+
+function showCardLoader(card) {
+    const loader = document.createElement("div");
+    loader.className = "card-loader";
+
+    const spinner = document.createElement("div");
+    spinner.className = "spinner";
+
+    loader.appendChild(spinner);
+    card.appendChild(loader);
+}
+
+function hideCardLoader(card) {
+    const loader = card.querySelector(".card-loader");
+    if (loader) loader.remove();
+}
+
+function resolveAssetUrl(url) {
+    if (!url) return url;
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        try {
+            const urlObj = new URL(url);
+            if (urlObj.hostname === 'assets.thecozydeck.ch') {
+                return url;
+            }
+
+            const path = urlObj.pathname;
+            return URLS.BASE ? `${URLS.BASE}${path}` : url;
+        } catch {
+            return url;
+        }
+    }
+
+    if (url.startsWith('/') && URLS.BASE) {
+        return `${URLS.BASE}${url}`;
+    }
+
+    return url;
+}

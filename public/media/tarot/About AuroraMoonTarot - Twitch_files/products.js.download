@@ -1,0 +1,156 @@
+let pendingItem = null;
+let catalogData;
+function displayProducts(catalog = []) {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = '';
+    const sorted = [...catalog];
+    const fragment = document.createDocumentFragment();
+    sorted
+        .filter(item => item.isDisplayed !== false)
+        .forEach(item => {
+            const product = latestProducts.find(p => p.sku === item.sku);
+            const cost = product ? product.cost.amount : 'N/A';
+            const card = document.createElement('div');
+            card.className = 'card main';
+            // Image wrapper
+            const imgHolder = document.createElement('div');
+            imgHolder.className = 'img-holder';
+            const img = document.createElement('img');
+            img.className = 'drink';
+            //img.setAttribute('src', item.image);
+            const resolvedImage = resolveAssetUrl(item.image);
+            img.setAttribute('src', resolvedImage);
+
+            img.setAttribute('alt', item.displayName);
+            imgHolder.appendChild(img);
+            card.appendChild(imgHolder);
+            // Name
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'text drink-name';
+            nameDiv.textContent = item.displayName;
+            card.appendChild(nameDiv);
+            // Badge
+            const badgeDiv = document.createElement('div');
+            badgeDiv.className = 'text badge';
+            const svgNS = "http://www.w3.org/2000/svg";
+            const svg = document.createElementNS(svgNS, 'svg');
+            svg.setAttribute('width', '7');
+            svg.setAttribute('height', '9');
+            svg.setAttribute('viewBox', '0 0 7 9');
+            svg.setAttribute('fill', 'none');
+            const path = document.createElementNS(svgNS, 'path');
+            path.setAttribute('d', 'M6.64839 4.90298L3.78729 0.238752C3.59217 -0.0793295 3.13 -0.0793303 2.93488 0.238751L0.0737783 4.90298C-0.050108 5.10494 -0.015237 5.36613 0.157294 5.52851L3.0184 8.22141C3.21092 8.40261 3.51125 8.40261 3.70377 8.2214L6.56487 5.52851C6.73741 5.36613 6.77228 5.10494 6.64839 4.90298Z');
+            path.setAttribute('fill', 'var(--brown-6)');
+            svg.appendChild(path);
+            badgeDiv.textContent = cost;
+            badgeDiv.prepend(svg);
+            card.appendChild(badgeDiv);
+            card.addEventListener('click', () => {
+                if (!UIReady || card.classList.contains('disabled')) return;
+                buyProduct(item, card);
+            });
+            fragment.appendChild(card);
+
+        });
+    grid.appendChild(fragment);
+}
+
+// Initiate the purchase flow
+async function buyProduct(item, clickedCard) {
+    pendingItem = item;
+    const allCards = document.querySelectorAll('.card');
+    const allTabs = document.querySelectorAll('.tablinks');
+    allCards.forEach(card => {
+        if (card !== clickedCard) card.classList.add('disabled');
+    });
+    allTabs.forEach(tab => tab.classList.add('disabled'));
+    showCardLoader(clickedCard);
+    try {
+        // Check if socket is connected, if not, connect
+        if (!socket || !socket.connected) {
+            console.log('[Socket.IO] Connecting for purchase...');
+            socket = await connectSocket(socket, currentAuth.token, currentAuth.channelId);
+        }
+
+        // Wait a moment for socket to be fully ready
+        if (!socket.connected) {
+            await new Promise((resolve, reject) => {
+                const timeout = setTimeout(() => reject(new Error('Connection timeout')), 3000);
+                socket.once('connect', () => {
+                    clearTimeout(timeout);
+                    resolve();
+                });
+            });
+        }
+    } catch (err) {
+        console.error("[Socket.IO] Connection failed during purchase:", err);
+        hideCardLoader(clickedCard);
+        showToast("Unable to connect. Please check your internet connection and try again.", 'error');
+        enableAllUI();
+        pendingItem = null;
+        return;
+    }
+    // Check overlay health before purchase
+    const overlayOk = await pingOverlay(socket, currentAuth.channelId);
+    hideCardLoader(clickedCard);
+
+    if (!overlayOk) {
+        showToast("It looks like the streamer is offline or didn’t add the extension as a browser source! Please try again later.", 'warning');
+        pendingItem = null;
+        enableAllUI();
+        return;
+    }
+    // Overlay is alive → allow purchase
+    try {
+        Twitch.ext.bits.useBits(item.sku);
+    } catch (err) {
+        console.error("Error initiating purchase:", err);
+        enableAllUI();
+        pendingItem = null;
+    }
+}
+
+function renderTabs(catalog, selectedTab = activeTab) {
+    const tabContainer = document.getElementById("category-tabs");
+    tabContainer.innerHTML = "";
+    const displayedItems = catalog.filter(item => item.isDisplayed !== false);
+    const categories = [...new Set(displayedItems.map(item => item.category || "Other"))];
+
+    if (categories.length <= 1) {
+        tabContainer.style.display = 'none';
+        displayProducts(catalog);
+        return;
+    } else {
+        tabContainer.style.display = 'flex';
+    }
+
+    categories.unshift("All");
+
+    categories.forEach((category) => {
+        const btn = document.createElement("button");
+        btn.className = "tablinks" + (category === selectedTab ? " active" : "");
+        btn.textContent = category;
+        btn.dataset.category = category;
+        tabContainer.appendChild(btn);
+
+        btn.addEventListener("click", () => {
+            activeTab = btn.dataset.category;
+            tabContainer.querySelectorAll(".tablinks").forEach(t => t.classList.remove("active"));
+            btn.classList.add("active");
+
+            const displayedItems = catalog.filter(item => item.isDisplayed !== false);
+            const filtered = activeTab === "All"
+                ? displayedItems
+                : displayedItems.filter(item => (item.category || "Other") === activeTab);
+
+            displayProducts(filtered);
+        });
+    });
+
+    // After creating tabs, display products for the active tab
+    const filtered = selectedTab === "All"
+        ? catalog.filter(item => item.isDisplayed !== false)
+        : catalog.filter(item => (item.category || "Other") === selectedTab && item.isDisplayed !== false);
+
+    displayProducts(filtered);
+}
