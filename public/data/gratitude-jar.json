@@ -1,0 +1,48 @@
+[
+  {
+    "text": "Coffee tasted extra good today",
+    "type": "cozy",
+    "date": "2026-05-17"
+  },
+  {
+    "text": "Jacob hugged me really tight",
+    "type": "love",
+    "date": "2026-05-17"
+  },
+  {
+    "text": "windows open all day",
+    "type": "cozy",
+    "date": "2026-05-17",
+    "createdAt": "2026-05-17T23:13:35.354Z"
+  },
+  {
+    "text": "family therapy scheduled",
+    "type": "tiny-victory",
+    "date": "2026-05-18",
+    "createdAt": "2026-05-18T18:25:11.278Z"
+  },
+  {
+    "text": "$20 circle rewards",
+    "type": "tiny-victory",
+    "date": "2026-05-18",
+    "createdAt": "2026-05-18T18:25:42.141Z"
+  },
+  {
+    "text": "Everything will be OK",
+    "type": "comfort",
+    "date": "2026-05-20",
+    "createdAt": "2026-05-20T23:31:28.693Z"
+  },
+  {
+    "text": "My past does not create me; I create my future.",
+    "type": "affirmation",
+    "date": "2026-05-21",
+    "createdAt": "2026-05-21T00:46:17.867Z"
+  },
+  {
+    "text": "I am enough just as I am, without needing to prove anything.",
+    "type": "affirmation",
+    "date": "2026-05-21",
+    "createdAt": "2026-05-21T14:07:29.078Z"
+  }
+]

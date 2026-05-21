@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora Avatar</title>
+
+<style>
+html, body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+}
+
+body{
+  position:relative;
+}
+
+/* =========================
+   AVATAR
+========================= */
+
+.avatar-wrap{
+  position:absolute;
+  bottom:0;
+  left:80px;
+  width:900px;
+  aspect-ratio:1 / 1;
+  transform-origin:center bottom;
+  isolation:isolate;
+  transition:transform .08s ease, filter .25s ease;
+}
+
+.avatar-wrap.talking{
+  transform:scale(1.008);
+}
+
+.avatar-base,
+.avatar-layer{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+
+.avatar-base{ z-index:1; }
+#talk{ z-index:2; }
+#blink{ z-index:3; }
+
+.avatar-layer{
+  opacity:0;
+  transition:opacity .08s linear;
+}
+
+.avatar-layer.show{
+  opacity:1;
+}
+
+/* aura behind avatar */
+.avatar-wrap::after{
+  content:"";
+  position:absolute;
+  inset:-30px;
+  z-index:-1;
+  pointer-events:none;
+  background:radial-gradient(circle,
+    rgba(127,135,255,.22),
+    rgba(0,169,186,.14),
+    transparent 70%);
+  filter:blur(10px);
+  opacity:.5;
+  transition:opacity .2s ease, filter .25s ease, transform .25s ease, background .25s ease;
+}
+
+/* optional modes */
+.avatar-wrap.low-spoon::after{
+  opacity:.28;
+  filter:blur(8px);
+}
+
+.avatar-wrap.night-mode::after{
+  background:radial-gradient(circle,
+    rgba(127,135,255,.18),
+    rgba(0,169,186,.10),
+    transparent 72%);
+}
+
+.avatar-wrap.vikings-mode::after{
+  background:radial-gradient(circle,
+    rgba(123,63,152,.30),
+    rgba(255,198,39,.14),
+    transparent 72%);
+  opacity:.6;
+}
+
+/* audio reactive aura */
+.avatar-wrap.music-reactive::after{
+  transform:scale(var(--aura-scale, 1));
+  opacity:var(--aura-opacity, .5);
+  filter:blur(var(--aura-blur, 10px));
+}
+
+/* fallback pulsing silent-disco mode */
+.avatar-wrap.music-pulse::after{
+  animation:musicPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes musicPulse{
+  0%,100%{
+    transform:scale(1);
+    opacity:.42;
+    filter:blur(9px);
+  }
+  50%{
+    transform:scale(1.06);
+    opacity:.72;
+    filter:blur(13px);
+  }
+}
+
+/* sparkles */
+.sparkle{
+  position:absolute;
+  pointer-events:none;
+  font-size:14px;
+  opacity:0;
+  animation:sparkleBurst .9s ease-out forwards;
+  z-index:5;
+}
+
+@keyframes sparkleBurst{
+  0%{
+    opacity:1;
+    transform:translate(0,0) scale(.6);
+  }
+  100%{
+    opacity:0;
+    transform:translate(var(--x),var(--y)) scale(1.2);
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="avatar-wrap" id="avatarWrap">
+  <img id="base" class="avatar-base" src="/widgets/pngtuber/idle.png" alt="Avatar base">
+  <img id="talk" class="avatar-layer" src="/widgets/pngtuber/talk.png" alt="Talking avatar">
+  <img id="blink" class="avatar-layer" src="/widgets/pngtuber/blink.png" alt="Blink avatar">
+</div>
+
+<script>
+/* =========================
+   SETTINGS
+========================= */
+
+const ENABLE_BLINK = true;
+const ENABLE_SPARKLES = true;
+const ENABLE_TIME_OF_DAY_AURA = true;
+
+/* mic talk sensitivity */
+const TALK_THRESHOLD = 20;
+const TALK_SMOOTHING = 0.85;
+
+/* sparkle trigger */
+const SPARKLE_THRESHOLD = 58;
+
+/* blink timing */
+const BLINK_MIN_MS = 2200;
+const BLINK_MAX_MS = 5200;
+const BLINK_DURATION_MS = 120;
+
+/* mood images */
+const moods = {
+  idle: "/widgets/pngtuber/idle.png",
+  love: "/widgets/pngtuber/love.png",
+  sad: "/widgets/pngtuber/sad.png",
+  angry: "/widgets/pngtuber/angry.png"
+};
+
+/* =========================
+   STATE
+========================= */
+
+let audioContext, analyser, dataArray;
+let smoothed = 0;
+let rawVolume = 0;
+let isBlinking = false;
+let lastSparkleAt = 0;
+
+const params = new URLSearchParams(window.location.search);
+
+let currentMood = params.get("mood") || "idle";
+let lowSpoonMode = params.get("lowspoon") === "1";
+let vikingsMode = params.get("vikings") === "1";
+let musicMode = params.get("music") || "off"; // off | pulse | reactive
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const wrap = document.getElementById("avatarWrap");
+const baseLayer = document.getElementById("base");
+const talkLayer = document.getElementById("talk");
+const blinkLayer = document.getElementById("blink");
+
+/* =========================
+   URL STATE HELPERS
+========================= */
+
+function applyUrlState(){
+  baseLayer.src = moods[currentMood] || moods.idle;
+  wrap.classList.toggle("low-spoon", lowSpoonMode);
+  wrap.classList.toggle("vikings-mode", vikingsMode);
+  wrap.classList.toggle("music-reactive", musicMode === "reactive");
+  wrap.classList.toggle("music-pulse", musicMode === "pulse");
+}
+
+function setMood(m){
+  currentMood = m;
+  applyUrlState();
+}
+
+function toggleLowSpoon(){
+  lowSpoonMode = !lowSpoonMode;
+  applyUrlState();
+}
+
+function toggleVikings(){
+  vikingsMode = !vikingsMode;
+  applyUrlState();
+}
+
+function cycleMusicMode(){
+  if (musicMode === "off") musicMode = "pulse";
+  else if (musicMode === "pulse") musicMode = "reactive";
+  else musicMode = "off";
+  applyUrlState();
+}
+
+/* expose for control popup if opened directly */
+window.setMood = setMood;
+window.toggleLowSpoon = toggleLowSpoon;
+window.toggleVikings = toggleVikings;
+window.cycleMusicMode = cycleMusicMode;
+
+/* =========================
+   TIME OF DAY AURA
+========================= */
+
+function applyTimeOfDayAura(){
+  if (!ENABLE_TIME_OF_DAY_AURA) return;
+  const hour = new Date().getHours();
+  const isNight = hour >= 18 || hour < 6;
+  wrap.classList.toggle("night-mode", isNight);
+}
+
+/* =========================
+   MIC / AUDIO
+========================= */
+
+async function initMic(){
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioContext.createAnalyser();
+
+    const mic = audioContext.createMediaStreamSource(stream);
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.5;
+
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+    mic.connect(analyser);
+
+    loop();
+  }catch(e){
+    console.log("mic blocked", e);
+  }
+}
+
+function loop(){
+  if (!analyser) return;
+
+  analyser.getByteFrequencyData(dataArray);
+
+  rawVolume = dataArray.reduce((a,b)=>a+b,0) / dataArray.length;
+  smoothed = smoothed * TALK_SMOOTHING + rawVolume * (1 - TALK_SMOOTHING);
+
+  const shouldTalk = smoothed > TALK_THRESHOLD;
+
+  if (shouldTalk && !isBlinking){
+    talkLayer.classList.add("show");
+    wrap.classList.add("talking");
+  } else {
+    talkLayer.classList.remove("show");
+    wrap.classList.remove("talking");
+  }
+
+  if (musicMode === "reactive") {
+    updateAuraFromAudio(smoothed);
+  }
+
+  if (ENABLE_SPARKLES && rawVolume > SPARKLE_THRESHOLD) {
+    maybeSparkle();
+  }
+
+  requestAnimationFrame(loop);
+}
+
+function updateAuraFromAudio(volume){
+  const normalized = Math.max(0, Math.min(1, (volume - 8) / 35));
+  const scale = 1 + normalized * 0.08;
+  const opacity = lowSpoonMode ? 0.18 + normalized * 0.18 : 0.32 + normalized * 0.35;
+  const blur = 8 + normalized * 8;
+
+  wrap.style.setProperty("--aura-scale", scale.toFixed(3));
+  wrap.style.setProperty("--aura-opacity", opacity.toFixed(3));
+  wrap.style.setProperty("--aura-blur", `${blur.toFixed(1)}px`);
+}
+
+/* =========================
+   BLINK
+========================= */
+
+function blinkLoop(){
+  if (!ENABLE_BLINK) return;
+
+  const delay = BLINK_MIN_MS + Math.random() * (BLINK_MAX_MS - BLINK_MIN_MS);
+
+  setTimeout(() => {
+    isBlinking = true;
+
+    talkLayer.classList.remove("show");
+    blinkLayer.classList.add("show");
+
+    setTimeout(() => {
+      blinkLayer.classList.remove("show");
+      isBlinking = false;
+      blinkLoop();
+    }, BLINK_DURATION_MS);
+
+  }, delay);
+}
+
+/* =========================
+   SPARKLES
+========================= */
+
+function maybeSparkle(){
+  const now = Date.now();
+  if (now - lastSparkleAt < 1200) return;
+  lastSparkleAt = now;
+  spawnSparkles();
+}
+
+function spawnSparkles(){
+  const rect = wrap.getBoundingClientRect();
+
+  for(let i = 0; i < 5; i++){
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.textContent = "✦";
+
+    const x = (Math.random() * 90 - 45) + "px";
+    const y = (Math.random() * 70 - 35) + "px";
+
+    s.style.setProperty("--x", x);
+    s.style.setProperty("--y", y);
+
+    s.style.left = (rect.left + rect.width * 0.5) + "px";
+    s.style.top = (rect.top + rect.height * 0.18) + "px";
+
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  }
+}
+
+async function updateSpotify(){
+  try{
+    const res = await fetch("/media-status?nocache=" + Date.now());
+    if (!res.ok) return;
+
+    const data = await res.json();
+
+    if (!data.spotify) return;
+
+    const track = data.spotify.track || "";
+    const artist = data.spotify.artist || "";
+
+    applySpotifyAura(track, artist);
+
+  }catch(err){
+    console.log("spotify fetch failed");
+  }
+}
+
+function applySpotifyAura(track, artist){
+  const wrap = document.getElementById("avatarWrap");
+
+  const text = (track + artist).toLowerCase();
+
+  /* SUPER SIMPLE VIBE SYSTEM */
+  if (text.includes("love") || text.includes("dream")){
+    wrap.style.setProperty("--aura-scale", 1.05);
+    wrap.style.setProperty("--aura-opacity", 0.7);
+  }
+  else if (text.includes("night") || text.includes("moon")){
+    wrap.style.setProperty("--aura-opacity", 0.5);
+  }
+  else{
+    wrap.style.setProperty("--aura-opacity", 0.6);
+  }
+}
+
+/* =========================
+   HOTKEYS
+========================= */
+
+window.addEventListener("keydown", (e) => {
+  if (e.key === "1") setMood("idle");
+  if (e.key === "2") setMood("love");
+  if (e.key === "3") setMood("sad");
+  if (e.key === "4") setMood("angry");
+  if (e.key === "5") toggleLowSpoon();
+  if (e.key === "6") toggleVikings();
+  if (e.key === "7") cycleMusicMode();
+});
+
+/* =========================
+   INIT
+========================= */
+
+applyUrlState();
+applyTimeOfDayAura();
+setInterval(applyTimeOfDayAura, 60 * 60 * 1000);
+
+initMic();
+blinkLoop();
+
+setInterval(updateSpotify, 10000);
+</script>
+
+</body>
+</html>

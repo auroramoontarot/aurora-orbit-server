@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+html, body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+  font-family:'Quicksand', sans-serif;
+}
+
+.mini-clipboard{
+  position:absolute;
+  top:18px;
+  right:18px;
+  width:150px; /* adjust for your corner */
+  aspect-ratio:900 / 1600;
+  filter:
+    drop-shadow(0 8px 14px rgba(0,0,0,.22))
+    drop-shadow(0 0 10px rgba(127,135,255,.14));
+}
+
+.mini-clipboard img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+
+.mini-paper{
+  position:absolute;
+  top:21%;
+  left:16%;
+  width:68%;
+  height:60%;
+  padding:6% 5%;
+  color:#575390;
+  overflow:hidden;
+}
+
+.mini-title{
+  text-align:center;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#6a6fd3;
+  margin-bottom:6px;
+}
+
+.mini-list{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  font-size:8px;
+  line-height:1.25;
+}
+
+.mini-item{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.mini-item.done{
+  color:#278e87;
+}
+
+.mini-progress{
+  margin-top:7px;
+  font-size:7px;
+  color:#7a78a7;
+  text-align:center;
+  letter-spacing:.08em;
+}
+</style>
+</head>
+<body>
+
+<div class="mini-clipboard">
+  <div class="mini-paper">
+    <div class="mini-title">Today</div>
+
+    <div class="mini-list">
+      <div class="mini-item done">☑ Walk Koda</div>
+      <div class="mini-item">☐ Zen Yoga</div>
+      <div class="mini-item done">☑ Bird Log</div>
+      <div class="mini-item">☐ Nature Project</div>
+      <div class="mini-item">☐ Tarot Reading</div>
+      <div class="mini-item">☐ Brain Games</div>
+    </div>
+
+    <div class="mini-progress">Orbit 33%</div>
+  </div>
+</body>
+</html>

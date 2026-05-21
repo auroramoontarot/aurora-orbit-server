@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Moon Overnight Minimal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --text:#cbecf5;
+      --soft:rgba(203,236,245,0.78);
+      --line:rgba(203,236,245,0.14);
+      --panel:rgba(12,16,30,0.34);
+      --panel-strong:rgba(12,16,30,0.46);
+      --primary:#7f87ff;
+      --aurora:#00a9ba;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html, body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      background:transparent;
+      font-family:'Quicksand', sans-serif;
+      color:var(--text);
+    }
+
+    body{ position:relative; }
+
+    .screen-wrap{
+      position:absolute;
+      inset:0;
+      width:1920px;
+      height:1080px;
+      overflow:hidden;
+      background:transparent;
+    }
+
+    .bg-video{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      pointer-events:none;
+      filter:saturate(1.02) brightness(.8);
+    }
+
+    .bg-wash{
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(127,135,255,0.12), transparent 26%),
+        radial-gradient(circle at 82% 14%, rgba(0,169,186,0.10), transparent 28%),
+        linear-gradient(180deg, rgba(10,12,28,0.08) 0%, rgba(10,12,28,0.22) 100%);
+      pointer-events:none;
+    }
+
+    .overlay{
+      position:absolute;
+      /* positioned to sit inside the small TV */
+      left:120px;
+      top:110px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      z-index:3;
+      transform:scale(0.75);
+      transform-origin:top left;
+    }
+
+    .pill{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      min-height:42px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:var(--panel);
+      border:1px solid var(--line);
+      box-shadow:
+        0 10px 30px rgba(0,0,0,0.18),
+        inset 0 1px 0 rgba(255,255,255,0.08);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+    }
+
+    .pill.main{
+      background:var(--panel-strong);
+      padding:11px 16px;
+    }
+
+    .dot{
+      width:13px;
+      height:13px;
+      border-radius:50%;
+      background:var(--aurora);
+      box-shadow:0 0 10px rgba(0,169,186,0.7);
+      flex-shrink:0;
+    }
+
+    .label{
+      font-size:40px;
+      line-height:1;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--soft);
+      font-weight:700;
+    }
+
+    .value{
+      font-size:45px;
+      line-height:1;
+      color:#fff;
+      font-weight:700;
+      text-shadow:0 0 10px rgba(127,135,255,0.18);
+      white-space:nowrap;
+    }
+
+    .stack{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:0;
+    }
+
+    .sub{
+      font-size:40px;
+      line-height:1;
+      color:var(--soft);
+      font-weight:600;
+      white-space:nowrap;
+    }
+
+    .moon{
+      font-size:55px;
+      line-height:1;
+    }
+
+    .corner-tag{
+      position:absolute;
+      top:28px;
+      right:32px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(12,16,30,0.26);
+      border:1px solid rgba(203,236,245,0.12);
+      color:rgba(203,236,245,0.7);
+      font-size:12px;
+      letter-spacing:0.14em;
+      text-transform:uppercase;
+      font-weight:700;
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      z-index:3;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen-wrap">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="creek-background.mp4" type="video/mp4">
+    </video>
+    <div class="bg-wash"></div>
+
+    <div class="corner-tag">overnight channel</div>
+
+    <div class="overlay">
+      <div class="pill main">
+        <span class="dot"></span>
+        <div class="stack">
+          <div class="label">Aurora Local</div>
+          <div class="value" id="clock">--:--</div>
+        </div>
+      </div>
+
+      <div class="pill">
+        <div class="stack">
+          <div class="label">Temp</div>
+          <div class="value" id="weatherTemp">--°</div>
+        </div>
+      </div>
+
+      <div class="pill">
+        <span class="moon" id="moonEmoji">🌙</span>
+        <div class="stack">
+          <div class="label">Moon</div>
+          <div class="sub" id="moonText">Quiet moon</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:3000";
+
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function updateClock() {
+      const now = new Date();
+      setText("clock", now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+    }
+
+    function getMoonPhase() {
+      const lp = 2551443;
+      const newMoon = new Date(1970, 0, 7, 20, 35, 0);
+      const phase = ((Date.now() - newMoon) / 1000) % lp;
+      const percent = phase / lp;
+
+      if (percent < 0.03 || percent > 0.97) return { emoji: "🌑", text: "New Moon" };
+      if (percent < 0.22) return { emoji: "🌒", text: "Waxing Crescent" };
+      if (percent < 0.28) return { emoji: "🌓", text: "First Quarter" };
+      if (percent < 0.47) return { emoji: "🌔", text: "Waxing Gibbous" };
+      if (percent < 0.53) return { emoji: "🌕", text: "Full Moon" };
+      if (percent < 0.72) return { emoji: "🌖", text: "Waning Gibbous" };
+      if (percent < 0.78) return { emoji: "🌗", text: "Last Quarter" };
+      return { emoji: "🌘", text: "Waning Crescent" };
+    }
+
+    function updateMoon() {
+      const moon = getMoonPhase();
+      setText("moonEmoji", moon.emoji);
+      setText("moonText", moon.text);
+    }
+
+    async function fetchJson(url) {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
+      return res.json();
+    }
+
+    async function loadWeather() {
+      try {
+        const data = await fetchJson(`${API_BASE}/weather`);
+        const obs = data?.observations?.[0];
+        const imperial = obs?.imperial || {};
+        const tempVal = Number.isFinite(imperial.temp) ? imperial.temp : null;
+        setText("weatherTemp", tempVal !== null ? `${Math.round(tempVal)}°` : "--°");
+      } catch (err) {
+        console.error("Weather load failed:", err);
+        setText("weatherTemp", "--°");
+      }
+    }
+
+    updateClock();
+    updateMoon();
+    loadWeather();
+
+    setInterval(updateClock, 1000);
+    setInterval(updateMoon, 60 * 60 * 1000);
+    setInterval(loadWeather, 5 * 60 * 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Moonbeam Arena — Shuttle Mode</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ice:#cbecf5;
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --accent:#c6c7f8;
+
+  --window-top: 33.5%;
+  --window-left: 50%;
+  --window-width: 58vw;
+  --window-max-width: 1040px;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:transparent;
+  overflow:hidden;
+  font-family:'Quicksand', sans-serif;
+  color:var(--ice);
+}
+
+#arena{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+}
+
+#arena::before{
+  content:"";
+  position:absolute;
+  inset:-10%;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(127,135,255,.16), transparent 30%),
+    radial-gradient(circle at 75% 22%, rgba(0,169,186,.12), transparent 28%),
+    radial-gradient(circle at 50% 65%, rgba(198,199,248,.08), transparent 35%);
+  filter:blur(40px);
+  animation:auroraFloat 20s ease-in-out infinite alternate;
+  pointer-events:none;
+  z-index:1;
+}
+
+@keyframes auroraFloat{
+  from{
+    transform:translateX(-1.5%) translateY(0);
+  }
+  to{
+    transform:translateX(1.5%) translateY(-1%);
+  }
+}
+
+.hud-window{
+  position:absolute;
+  top:var(--window-top);
+  left:var(--window-left);
+  transform:translate(-50%, -50%);
+  width:var(--window-width);
+  max-width:var(--window-max-width);
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  pointer-events:none;
+}
+
+.orbital-label{
+  align-self:center;
+  padding:5px 12px;
+  font-size:13px;
+  letter-spacing:2.4px;
+  text-transform:uppercase;
+  color:var(--accent);
+  opacity:.8;
+  border:1px solid rgba(203,236,245,.12);
+  border-radius:999px;
+  background:rgba(10,14,28,.34);
+  backdrop-filter:blur(8px);
+}
+
+.overlay{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.panel{
+  position:relative;
+  background:
+    linear-gradient(180deg, rgba(18,24,46,.84), rgba(10,14,28,.78));
+  border:1px solid rgba(203,236,245,.14);
+  border-radius:18px;
+  padding:14px 18px;
+  overflow:hidden;
+  backdrop-filter:blur(12px) saturate(1.08);
+  -webkit-backdrop-filter:blur(12px) saturate(1.08);
+
+  box-shadow:
+    0 0 20px rgba(0,169,186,.14),
+    0 0 38px rgba(127,135,255,.12),
+    inset 0 0 30px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.panel::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:18px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0,169,186,.12) 0%,
+      transparent 20%,
+      transparent 80%,
+      rgba(127,135,255,.14) 100%
+    );
+  pointer-events:none;
+  opacity:.75;
+}
+
+.screenFX{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.12;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.06) 0px,
+      rgba(255,255,255,.06) 1px,
+      transparent 2px,
+      transparent 4px
+    );
+}
+
+.twinkle{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:1;
+  opacity:.1;
+  background:
+    radial-gradient(circle at 10% 18%, rgba(255,255,255,.45) 0 1px, transparent 2px),
+    radial-gradient(circle at 83% 26%, rgba(255,255,255,.3) 0 1px, transparent 2px),
+    radial-gradient(circle at 71% 74%, rgba(198,199,248,.26) 0 1px, transparent 2px),
+    radial-gradient(circle at 24% 80%, rgba(203,236,245,.3) 0 1px, transparent 2px);
+}
+
+#title{
+  position:relative;
+  z-index:2;
+  font-size:12px;
+  letter-spacing:2.4px;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:6px;
+}
+
+#mainText{
+  position:relative;
+  z-index:2;
+  font-size:42px;
+  line-height:1.05;
+  font-weight:700;
+  text-align:center;
+}
+
+#subText{
+  position:relative;
+  z-index:2;
+  margin-top:7px;
+  font-size:18px;
+  opacity:.86;
+  text-align:center;
+}
+
+#scoreBox{
+  width:100%;
+  opacity:0;
+  transition:opacity .35s ease;
+}
+
+#scoreBox::before{
+  content:"";
+  position:absolute;
+  left:16px;
+  right:16px;
+  top:0;
+  height:2px;
+  border-radius:999px;
+  background:linear-gradient(90deg, var(--teal), var(--lav), var(--ice));
+  opacity:.72;
+  z-index:2;
+}
+
+.scoreRow{
+  position:relative;
+  z-index:2;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:24px;
+}
+
+.teamWrap{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+
+.teamWrap.left{
+  justify-content:flex-start;
+}
+
+.teamWrap.right{
+  justify-content:flex-end;
+}
+
+.team{
+  font-size:26px;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.teamLogo{
+  width:36px;
+  height:36px;
+  object-fit:contain;
+  flex:0 0 36px;
+}
+
+.scoreMiddle{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-width:180px;
+}
+
+#score{
+  font-size:64px;
+  font-weight:700;
+  line-height:1;
+  text-align:center;
+}
+
+#status{
+  margin-top:8px;
+  font-size:15px;
+  opacity:.72;
+  text-transform:uppercase;
+  letter-spacing:1.5px;
+  text-align:center;
+}
+
+.bottomRow{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:12px;
+}
+
+#spoon{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:8px 12px;
+  font-size:14px;
+  position:relative;
+  z-index:2;
+}
+
+#spoon span{
+  font-weight:700;
+  color:var(--accent);
+}
+
+#footer{
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  font-size:12px;
+  opacity:.66;
+}
+
+#arena.theme-vikings .panel{
+  box-shadow:
+    0 0 22px rgba(140,92,255,.26),
+    0 0 44px rgba(106,61,240,.20),
+    inset 0 0 30px rgba(0,0,0,.48);
+}
+
+#arena.theme-vikings #scoreBox::before{
+  background:linear-gradient(90deg, #8c5cff, #6a3df0, #c6a8ff);
+}
+
+@media (max-width:760px){
+
+  :root{
+    --window-width:82vw;
+  }
+
+  #mainText{
+    font-size:24px;
+  }
+
+  #score{
+    font-size:40px;
+  }
+
+  .team{
+    font-size:18px;
+  }
+
+  #spoon{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+}
+</style>
+</head>
+
+<body>
+
+<div id="arena" class="theme-lynx">
+
+<div class="hud-window">
+
+<div class="orbital-label">
+ORBITAL FEED • TARGET: MINNESOTA
+</div>
+
+<div class="overlay">
+
+<div class="panel">
+<div class="twinkle"></div>
+<div class="screenFX"></div>
+
+<div id="title">Moonbeam Arena</div>
+
+<div id="mainText">
+Entering the Moonbeam Arena
+</div>
+
+<div id="subText">
+The story unfolds…
+</div>
+</div>
+
+<div class="panel" id="scoreBox">
+
+<div class="twinkle"></div>
+<div class="screenFX"></div>
+
+<div class="scoreRow">
+
+<div class="teamWrap left">
+<img id="logoA" class="teamLogo" src="/images/default-team.png">
+<div class="team" id="teamA">MIN</div>
+</div>
+
+<div class="scoreMiddle">
+<div id="score">—</div>
+<div id="status">Loading</div>
+</div>
+
+<div class="teamWrap right">
+<div class="team" id="teamB">OPP</div>
+<img id="logoB" class="teamLogo" src="/images/default-team.png">
+</div>
+
+</div>
+</div>
+
+<div class="bottomRow">
+
+<div class="panel">
+<div class="twinkle"></div>
+<div class="screenFX"></div>
+
+<div id="spoon">
+<div>Energy: <span id="energy">—</span></div>
+<div>Focus: <span id="focus">—</span></div>
+<div>Pain: <span id="pain">—</span></div>
+<div>Hydration: <span id="hydration">—</span></div>
+</div>
+
+</div>
+
+<div class="panel">
+<div class="twinkle"></div>
+<div class="screenFX"></div>
+
+<div id="footer">
+Audio: Solomonster-approved
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<script>
+
+// ==================================================
+// CHANGE ONLY THIS
+// ==================================================
+
+let mode = "wolves";
+
+// "wolves"
+// "lynx"
+// "vikings"
+// "aew"
+
+// ==================================================
+
+const TEAM_CONFIG = {
+
+wolves:{
+  label:"Wolves Watch Mode",
+  short:"Wolves",
+  league:"nba",
+  url:"https://site.api.espn.com/apis/site/v2/sports/basketball/nba/scoreboard",
+  abbr:"MIN",
+},
+
+lynx:{
+  label:"Lynx Watch Mode",
+  short:"Lynx",
+  league:"wnba",
+  url:"https://site.api.espn.com/apis/site/v2/sports/basketball/wnba/scoreboard",
+  abbr:"MIN",
+},
+
+vikings:{
+  label:"Skol Mode Engaged",
+  short:"Vikings",
+  league:"nfl",
+  url:"https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard",
+  abbr:"MIN",
+}
+
+};
+
+function setText(id,text){
+const el=document.getElementById(id);
+if(el) el.textContent=text ?? "";
+}
+
+function showScoreBox(show=true){
+document.getElementById("scoreBox").style.opacity=show ? 1 : 0;
+}
+
+function applyTheme(){
+
+const arena=document.getElementById("arena");
+
+arena.classList.remove(
+"theme-wolves",
+"theme-lynx",
+"theme-vikings"
+);
+
+if(mode==="wolves"){
+arena.classList.add("theme-wolves");
+}
+
+if(mode==="lynx"){
+arena.classList.add("theme-lynx");
+}
+
+if(mode==="vikings"){
+arena.classList.add("theme-vikings");
+}
+
+}
+
+async function getJSON(url){
+const res=await fetch(url,{cache:"no-store"});
+if(!res.ok) throw new Error(res.status);
+return await res.json();
+}
+
+function setLogos(myTeamAbbr, oppTeamAbbr, league){
+
+  const logoA = document.getElementById("logoA");
+  const logoB = document.getElementById("logoB");
+
+  const leaguePath = {
+    nba: "nba",
+    wnba: "wnba",
+    nfl: "nfl"
+  };
+
+  const path = leaguePath[league];
+
+  logoA.src =
+    `https://a.espncdn.com/i/teamlogos/${path}/500/${myTeamAbbr.toLowerCase()}.png`;
+
+  logoB.src =
+    `https://a.espncdn.com/i/teamlogos/${path}/500/${oppTeamAbbr.toLowerCase()}.png`;
+
+  logoA.onerror = () => {
+    logoA.src = "/images/default-team.png";
+  };
+
+  logoB.onerror = () => {
+    logoB.src = "/images/default-team.png";
+  };
+
+}
+
+function shortTeam(name=""){
+return name
+.replace("Minnesota Timberwolves","Wolves")
+.replace("Minnesota Lynx","Lynx")
+.replace("Minnesota Vikings","Vikings");
+}
+
+function renderAEW(){
+
+showScoreBox(false);
+
+setText("mainText","Moonbeam Wrestling Feed");
+setText("subText","The timeline has shifted");
+
+}
+
+async function renderSports(){
+
+const config=TEAM_CONFIG[mode];
+
+showScoreBox(true);
+
+setText("mainText",config.label);
+setText("subText","Gathering game threads...");
+
+try{
+
+const data=await getJSON(config.url);
+
+const events=data.events || [];
+
+let game=null;
+
+for(const ev of events){
+
+const comp=ev.competitions?.[0];
+const teams=comp?.competitors || [];
+
+const mine=teams.find(
+t=>t.team?.abbreviation===config.abbr
+);
+
+if(mine){
+
+const opp=teams.find(t=>t!==mine);
+
+game={
+mine,
+opp,
+status:ev.status?.type?.shortDetail || "Live"
+};
+
+setLogos(
+  config.abbr,
+  game.opp.team.abbreviation,
+  config.league
+);
+
+break;
+
+}
+
+}
+
+if(!game){
+
+setText("score","—");
+setText("status","No game found");
+return;
+
+}
+
+setText("teamA",config.short);
+setText("teamB",shortTeam(game.opp.team.displayName));
+
+setText(
+"score",
+`${game.mine.score} - ${game.opp.score}`
+);
+
+setText("status",game.status);
+
+}catch(err){
+
+console.error(err);
+
+setText("score","—");
+setText("status","Signal lost");
+
+}
+
+}
+
+function randomSpoons(){
+
+const states=[
+
+{
+energy:"Game-locked",
+focus:"100%",
+pain:"Existing",
+hydration:"Drink water pls"
+},
+
+{
+energy:"Low but loyal",
+focus:"Locked in",
+pain:"Managed",
+hydration:"Check"
+},
+
+{
+energy:"Sustained",
+focus:"Hyperfixated",
+pain:"Background",
+hydration:"...maybe"
+}
+
+];
+
+const s=states[Math.floor(Math.random()*states.length)];
+
+setText("energy",s.energy);
+setText("focus",s.focus);
+setText("pain",s.pain);
+setText("hydration",s.hydration);
+
+}
+
+async function loop(){
+
+applyTheme();
+
+if(mode==="aew"){
+renderAEW();
+}else{
+await renderSports();
+}
+
+randomSpoons();
+
+}
+
+loop();
+
+setInterval(loop,15000);
+
+</script>
+
+</body>
+</html>

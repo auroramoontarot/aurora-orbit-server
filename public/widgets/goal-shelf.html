@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Moonbeam Shelf Cart</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    background:transparent;
+    font-family:'Quicksand',sans-serif;
+}
+
+/* =========================================
+   MAIN CART
+========================================= */
+
+.cart-widget{
+    position:relative;
+    width:620px;
+    height:300px;
+}
+
+/* =========================================
+   FLOATY PARTICLES
+========================================= */
+
+.particles{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+}
+
+.sparkle{
+    position:absolute;
+    width:4px;
+    height:4px;
+    border-radius:50%;
+    background:white;
+    opacity:.5;
+
+    animation:floatUp linear infinite;
+}
+
+@keyframes floatUp{
+
+    from{
+        transform:
+            translateY(0px)
+            scale(.6);
+        opacity:0;
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    to{
+        transform:
+            translateY(-100px)
+            scale(1.2);
+        opacity:0;
+    }
+}
+
+
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.cart-header{
+
+    position:absolute;
+    top:12px;
+    left:22px;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    z-index:5;
+}
+
+.moon{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+
+    background:
+        radial-gradient(circle at 30% 30%, white, #cbecf5 70%, #7f87ff);
+
+    box-shadow:
+        0 0 18px rgba(203,236,245,.75);
+
+    animation:moonFloat 6s ease-in-out infinite;
+}
+
+@keyframes moonFloat{
+    0%{transform:translateY(0px);}
+    50%{transform:translateY(-6px);}
+    100%{transform:translateY(0px);}
+}
+
+.header-text h1{
+
+    font-size:28px;
+    color:#4c4c88;
+    font-weight:700;
+}
+
+.header-text p{
+
+    font-size:12px;
+    letter-spacing:2px;
+    color:#5f648f;
+}
+
+/* =========================================
+   SHELF
+========================================= */
+
+.shelf-area{
+
+    position:absolute;
+    left:28px;
+    right:28px;
+    bottom:38px;
+    height:90px;
+}
+
+.shelf-board{
+
+    position:absolute;
+    bottom:0;
+
+    width:100%;
+    height:14px;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #7f5c4b,
+            #5b3e32
+        );
+
+    box-shadow:
+        0 4px 10px rgba(0,0,0,.25);
+}
+
+/* =========================================
+   BOOKS
+========================================= */
+
+.books{
+    position:absolute;
+    bottom:12px;
+    left:18px;
+    right:130px;
+
+    display:flex;
+    align-items:flex-end;
+    gap:5px;
+
+    overflow:hidden;
+}
+
+.book{
+
+    width:28px;
+
+    border-radius:
+        6px 6px 0 0;
+
+    position:relative;
+
+    box-shadow:
+        0 0 10px rgba(255,255,255,.2);
+
+    animation:bookAppear .5s ease;
+}
+
+.book::after{
+
+    content:'';
+
+    position:absolute;
+
+    left:4px;
+    top:6px;
+
+    width:2px;
+    height:70%;
+
+    border-radius:2px;
+
+    background:rgba(255,255,255,.45);
+}
+
+@keyframes bookAppear{
+
+    from{
+        opacity:0;
+        transform:
+            translateY(16px)
+            scale(.8);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+/* =========================================
+   DECOR ITEMS
+========================================= */
+
+.decor{
+
+    position:absolute;
+    bottom:14px;
+    right:18px;
+
+    display:flex;
+    align-items:flex-end;
+    gap:12px;
+}
+
+.crystal{
+    font-size:34px;
+    filter:drop-shadow(0 0 8px rgba(127,135,255,.45));
+}
+
+.mug{
+    font-size:34px;
+}
+
+.plant{
+    font-size:34px;
+}
+
+.mini-jar{
+
+    position:relative;
+
+    width:46px;
+    height:58px;
+
+    border-radius:
+        12px 12px 18px 18px;
+
+    border:
+        2px solid rgba(203,236,245,.45);
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(203,236,245,.14),
+            rgba(127,135,255,.08)
+        );
+
+    box-shadow:
+        0 0 16px rgba(127,135,255,.22);
+
+    overflow:hidden;
+
+    backdrop-filter:blur(6px);
+}
+
+.mini-jar::before{
+
+    content:'';
+
+    position:absolute;
+
+    top:-6px;
+    left:9px;
+
+    width:24px;
+    height:10px;
+
+    border-radius:10px;
+
+    border:
+        2px solid rgba(203,236,245,.4);
+
+    background:
+        rgba(255,255,255,.08);
+}
+
+.jar-star{
+
+    position:absolute;
+
+    animation:
+        miniFloat ease-in-out infinite;
+
+    opacity:.9;
+
+    text-shadow:
+        0 0 8px currentColor;
+
+    pointer-events:none;
+}
+
+@keyframes miniFloat{
+
+    0%,100%{
+        transform:
+            translateY(0px)
+            scale(1);
+    }
+
+    50%{
+        transform:
+            translateY(-3px)
+            scale(1.08);
+    }
+}
+
+/* =========================================
+   FAIRY LIGHTS
+========================================= */
+
+.lights{
+
+    position:absolute;
+
+    left:50%;
+    transform:translateX(-50%);
+
+    top:146px;
+
+    display:flex;
+    gap:12px;
+
+    padding-top:6px;
+
+    border-top:
+        2px solid rgba(255,255,255,.12);
+}
+
+.light{
+
+    width:8px;
+    height:8px;
+    border-radius:50%;
+
+    background:#fff7c2;
+
+    box-shadow:
+        0 0 10px #fff7c2,
+        0 0 18px #fff7c2;
+
+    animation:twinkle 2s infinite alternate;
+}
+
+.light:nth-child(2){animation-delay:.5s;}
+.light:nth-child(3){animation-delay:1s;}
+.light:nth-child(4){animation-delay:1.5s;}
+.light:nth-child(5){animation-delay:2s;}
+
+@keyframes twinkle{
+    from{
+        opacity:.4;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
+.shelf-label{
+
+    position:absolute;
+
+    left:50%;
+    transform:translateX(-50%);
+
+    bottom:-7px;
+
+    display:flex;
+    align-items:center;
+    gap:3px;
+
+    padding:
+        3px 3px;
+
+    border-radius:18px;
+
+    background:
+        rgba(18,27,62,.72);
+
+    backdrop-filter:blur(8px);
+
+    border:
+        2px solid rgba(203,236,245,.25);
+
+    box-shadow:
+        0 0 16px rgba(127,135,255,.18);
+}
+
+.moon-small{
+
+    width:24px;
+    height:24px;
+
+    border-radius:50%;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            white,
+            #cbecf5 70%,
+            #7f87ff
+        );
+
+    box-shadow:
+        0 0 10px rgba(203,236,245,.5);
+}
+
+.library-name{
+
+    font-size:13px;
+    font-weight:700;
+
+    color:#cbecf5;
+}
+
+.library-progress{
+
+    margin-top:2px;
+
+    font-size:13px;
+
+    color:#c6c7f8;
+}
+
+/* =========================================
+   FOOTER
+========================================= */
+
+.footer{
+
+    position:absolute;
+    right:24px;
+    top:18px;
+
+    text-align:right;
+}
+
+.goal{
+
+    font-size:18px;
+    font-weight:700;
+    color:#50517d;
+}
+
+.progress{
+
+    margin-top:4px;
+
+    font-size:15px;
+    color:#6466a0;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="cart-widget">
+
+    <div class="particles" id="particles"></div>
+
+    <div class="cart">
+
+        
+
+        <div class="lights">
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+        </div>
+
+       
+
+        <div class="shelf-area">
+
+            <div class="books" id="books"></div>
+
+            <div class="decor">
+                <div class="crystal">🔮</div>
+                <div class="mini-jar" id="miniJar"></div>
+                <div class="plant">🌿</div>
+            </div>
+
+            <div class="shelf-board"></div>
+
+        </div>
+
+<div class="shelf-label">
+
+    <div class="moon-small"></div>
+
+    <div class="label-text">
+        <div class="library-name">
+            Moonbeam Library
+        </div>
+
+        <div class="library-progress" id="progressText">
+            0 / 50 Books Shelved
+        </div>
+    </div>
+
+</div>
+
+    </div>
+
+
+
+</div>
+
+<script>
+
+/* =========================================
+   EDIT THESE
+========================================= */
+
+const currentGoal = 54;
+const maxGoal = 60;
+
+/* =========================================
+   BOOK COLORS
+========================================= */
+
+const colors = [
+    '#7f87ff',
+    '#00a9ba',
+    '#cbecf5',
+    '#c6c7f8',
+    '#ffcce6',
+    '#8da0ff',
+    '#82dfe8'
+];
+
+/* =========================================
+   CREATE BOOKS
+========================================= */
+
+const booksContainer =
+    document.getElementById('books');
+
+const maxVisibleBooks = 18;
+
+const visibleBooks =
+    Math.min(currentGoal, maxVisibleBooks);
+
+for(let i = 0; i < visibleBooks; i++){
+
+    const book =
+        document.createElement('div');
+
+    book.classList.add('book');
+
+    const height =
+        Math.floor(Math.random() * 38) + 40;
+
+    const color =
+        colors[
+            Math.floor(Math.random() * colors.length)
+        ];
+
+    book.style.height = height + 'px';
+    book.style.background = color;
+
+    booksContainer.appendChild(book);
+}
+
+/* =========================================
+   PROGRESS TEXT
+========================================= */
+
+document.getElementById('progressText')
+.innerText =
+`${currentGoal} / ${maxGoal}`;
+
+/* =========================================
+   PARTICLES
+========================================= */
+
+function createSparkle(){
+
+    const sparkle =
+        document.createElement('div');
+
+    sparkle.classList.add('sparkle');
+
+    sparkle.style.left =
+        Math.random() * 620 + 'px';
+
+    sparkle.style.top =
+        (Math.random() * 250) + 20 + 'px';
+
+    sparkle.style.animationDuration =
+        (Math.random() * 4 + 3) + 's';
+
+    document.getElementById('particles')
+        .appendChild(sparkle);
+
+    setTimeout(()=>{
+        sparkle.remove();
+    },7000);
+}
+
+setInterval(createSparkle,400);
+const miniJar =
+    document.getElementById('miniJar');
+
+async function loadConstellationJar(){
+
+    try{
+
+        const res =
+            await fetch('/data/gratitude-jar.json?t=' + Date.now());
+
+        const entries =
+            await res.json();
+
+        generateMiniJar(entries.length);
+
+    }catch(err){
+
+        console.error(
+            'Mini jar failed:',
+            err
+        );
+    }
+}
+
+function generateMiniJar(total){
+
+    miniJar.innerHTML = '';
+
+    const visibleStars =
+        Math.min(total, 18);
+
+    for(let i = 0; i < visibleStars; i++){
+
+        const star =
+            document.createElement('div');
+
+        star.classList.add('jar-star');
+
+        const symbols =
+            ['✦','✧','⋆','·'];
+
+        star.innerText =
+            symbols[
+                Math.floor(
+                    Math.random() * symbols.length
+                )
+            ];
+
+        const colors = [
+            '#cbecf5',
+            '#7f87ff',
+            '#c6c7f8',
+            '#00a9ba'
+        ];
+
+        star.style.color =
+            colors[
+                Math.floor(
+                    Math.random() * colors.length
+                )
+            ];
+
+        star.style.left =
+            (Math.random() * 28 + 6) + 'px';
+
+        star.style.bottom =
+            (Math.random() * 38 + 4) + 'px';
+
+        star.style.fontSize =
+            (8 + Math.random() * 6) + 'px';
+
+        star.style.animationDuration =
+            (3 + Math.random() * 3) + 's';
+
+        miniJar.appendChild(star);
+    }
+}
+
+loadConstellationJar();
+
+</script>
+
+</body>
+</html>

@@ -2,15 +2,23 @@
   {
     "name": "Aurora Moon Tarot",
     "url": "https://twitch.tv/auroramoontarot",
+    "twitch": "auroramoontarot",
     "shift": "Day Shift",
-    "vibe": "cozy spoonie cowork",
-    "status": "LIVE"
+    "vibe": "spoonie cowork + stardust",
+    "timezone": "America/Chicago",
+    "start": 9,
+    "end": 21,
+    "fallback": true
   },
+
   {
     "name": "Danelah",
     "url": "https://twitch.tv/danelah",
+    "twitch": "danelah",
     "shift": "Night Shift",
-    "vibe": "chaotic admin energy",
-    "status": "LIVE"
+    "vibe": "misfit desk + cozy chaos",
+    "timezone": "America/Chicago",
+    "start": 21,
+    "end": 2
   }
 ]

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Moon Tarot Deck</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --mist:#c6c7f8;
+  --deep:#2b2772;
+  --glass:rgba(14,18,45,.58);
+  --line:rgba(203,236,245,.22);
+}
+
+html, body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+  font-family:'Quicksand', sans-serif;
+  color:var(--ice);
+}
+
+.oracle-wrap,
+.tarot-wrap{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  box-sizing:border-box;
+}
+
+/* =========================================
+   SHARED COSMIC CARD BASE
+========================================= */
+
+.cosmic-card{
+  position:relative;
+  width:320px;
+  height:480px;
+
+  border-radius:28px;
+  padding:22px;
+  box-sizing:border-box;
+  overflow:hidden;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+
+  background:
+    radial-gradient(circle at 20% 10%, rgba(127,135,255,.38), transparent 34%),
+    radial-gradient(circle at 90% 20%, rgba(0,169,186,.32), transparent 34%),
+    linear-gradient(145deg, rgba(43,39,114,.9), rgba(8,12,36,.76));
+
+  border:1px solid var(--line);
+
+  box-shadow:
+    0 0 28px rgba(127,135,255,.24),
+    0 0 48px rgba(0,169,186,.16),
+    inset 0 0 26px rgba(255,255,255,.06);
+
+  backdrop-filter: blur(8px);
+
+  animation: floatCard 6s ease-in-out infinite;
+}
+
+.cosmic-card::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 35%,
+      rgba(203,236,245,.12) 45%,
+      rgba(198,199,248,.20) 50%,
+      transparent 62%
+    );
+
+  animation:holoSweep 7s linear infinite;
+  pointer-events:none;
+}
+
+.cosmic-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1.5px);
+
+  background-size:34px 34px;
+  opacity:.10;
+  pointer-events:none;
+}
+
+/* =========================================
+   SHARED TEXT + CONTENT
+========================================= */
+
+.deck-label{
+  position:relative;
+  z-index:2;
+
+  font-size:11px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  font-weight:700;
+
+  color:rgba(203,236,245,.78);
+
+  text-align:center;
+  margin-bottom:14px;
+}
+
+.symbol{
+  position:relative;
+  z-index:2;
+
+  width:118px;
+  height:118px;
+
+  margin:0 auto 18px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:58px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(203,236,245,.22),
+      rgba(127,135,255,.12),
+      transparent 72%
+    );
+
+  border:1px solid rgba(203,236,245,.20);
+
+  box-shadow:
+    0 0 24px rgba(0,169,186,.22),
+    inset 0 0 18px rgba(255,255,255,.08);
+}
+
+.card-title{
+  position:relative;
+  z-index:2;
+
+  text-align:center;
+
+  font-size:26px;
+  line-height:1.05;
+  font-weight:700;
+
+  color:#fff;
+
+  text-shadow:
+    0 0 12px rgba(127,135,255,.55),
+    0 0 18px rgba(0,169,186,.24);
+
+  margin-bottom:10px;
+}
+
+.card-keyword{
+  position:relative;
+  z-index:2;
+
+  text-align:center;
+
+  font-size:13px;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+
+  color:var(--mist);
+
+  margin-bottom:18px;
+}
+
+.message{
+  position:relative;
+  z-index:2;
+
+  font-size:15.5px;
+  line-height:1.45;
+
+  text-align:center;
+
+  color:rgba(203,236,245,.95);
+
+  margin-bottom:18px;
+}
+
+.stardust-action{
+  position:relative;
+  z-index:2;
+
+  margin-top:auto;
+
+  padding:13px 14px;
+
+  border-radius:18px;
+
+  background:rgba(255,255,255,.08);
+
+  border:1px solid rgba(203,236,245,.16);
+
+  font-size:14px;
+  line-height:1.35;
+
+  text-align:center;
+  color:#fff;
+}
+
+.footer{
+  position:relative;
+  z-index:2;
+
+  margin-top:15px;
+
+  text-align:center;
+
+  font-size:11px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+
+  color:rgba(203,236,245,.62);
+}
+
+/* =========================================
+   SPARKLES
+========================================= */
+
+.sparkle{
+  position:absolute;
+  color:#fff;
+  opacity:.7;
+  animation: twinkle 3s ease-in-out infinite;
+  z-index:1;
+}
+
+.s1{ top:28px; left:28px; animation-delay:.2s; }
+.s2{ top:76px; right:30px; animation-delay:1.1s; }
+.s3{ bottom:88px; left:34px; animation-delay:1.8s; }
+.s4{ bottom:34px; right:42px; animation-delay:.7s; }
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.draw-button{
+  position:absolute;
+  bottom:16px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  z-index:5;
+
+  border:1px solid rgba(203,236,245,.25);
+
+  background:rgba(20,24,58,.72);
+
+  color:var(--ice);
+
+  font-family:'Quicksand', sans-serif;
+
+  font-weight:700;
+
+  letter-spacing:1px;
+  text-transform:uppercase;
+
+  border-radius:999px;
+
+  padding:9px 16px;
+
+  cursor:pointer;
+
+  box-shadow:0 0 18px rgba(127,135,255,.22);
+
+  transition:all .25s ease;
+}
+
+.draw-button:hover{
+  background:rgba(127,135,255,.34);
+
+  box-shadow:
+    0 0 22px rgba(127,135,255,.35),
+    0 0 34px rgba(0,169,186,.22);
+}
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes floatCard{
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-6px);
+  }
+}
+
+@keyframes holoSweep{
+  from{
+    transform:translateX(-30%) rotate(0deg);
+  }
+
+  to{
+    transform:translateX(30%) rotate(360deg);
+  }
+}
+
+@keyframes twinkle{
+  0%,100%{
+    opacity:.25;
+    transform:scale(.9);
+  }
+
+  50%{
+    opacity:.9;
+    transform:scale(1.18);
+  }
+}
+
+.card-changing{
+  animation: cardFlip .55s ease;
+}
+
+@keyframes cardFlip{
+  0%{
+    transform:scale(.96) rotateY(0deg);
+    opacity:.55;
+  }
+
+  50%{
+    transform:scale(1.02) rotateY(8deg);
+    opacity:.8;
+  }
+
+  100%{
+    transform:scale(1) rotateY(0deg);
+    opacity:1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="tarot-wrap">
+  <div class="cosmic-card tarot-card" id="tarotCard">
+    <div class="sparkle s1">✦</div>
+    <div class="sparkle s2">✧</div>
+    <div class="sparkle s3">✦</div>
+    <div class="sparkle s4">✧</div>
+
+    <div class="deck-label">Aurora Moon Tarot</div>
+    <div class="symbol" id="symbol">🌙</div>
+    <div class="card-title" id="title">The Moon</div>
+    <div class="card-keyword" id="keyword">Intuition • Mystery • Dreams</div>
+    <div class="message" id="message">
+      Trust what glimmers beneath the surface. Not everything sacred arrives fully explained.
+    </div>
+    <div class="stardust-action" id="action">
+      Scatter stardust: honor your intuition before asking the world to validate it.
+    </div>
+    <div class="footer">Aurora Moon Tarot • scatter stardust</div>
+  </div>
+
+  <button class="draw-button" onclick="drawCard()">Draw Card</button>
+</div>
+
+<script>
+const majorArcana = [
+  ["🌀","The Fool","Beginnings • Trust • Leap","A new path opens when you stop demanding a perfect map.","Scatter stardust: take one gentle step toward the unknown."],
+  ["🪄","The Magician","Will • Tools • Creation","You already hold more resources than you realize.","Scatter stardust: use what is in your hands before waiting for more."],
+  ["🌙","The High Priestess","Intuition • Mystery • Inner Knowing","The quiet answer may be the truest one.","Scatter stardust: make space for your inner voice."],
+  ["🌿","The Empress","Care • Creation • Nurture","What you tend with love can become a sanctuary.","Scatter stardust: nourish something living, including yourself."],
+  ["🪐","The Emperor","Structure • Protection • Stability","Healthy structure can become a container for softness.","Scatter stardust: create one boundary that helps life flow."],
+  ["🕯️","The Hierophant","Tradition • Teaching • Sacred Practice","Wisdom can be inherited, questioned, and remade.","Scatter stardust: honor a teaching while making it humane."],
+  ["💞","The Lovers","Choice • Alignment • Devotion","Love is also the courage to choose in alignment with truth.","Scatter stardust: choose what reflects your values."],
+  ["🚀","The Chariot","Direction • Focus • Momentum","Your movement matters, even when the road is uneven.","Scatter stardust: choose your direction and take the next step."],
+  ["🦁","Strength","Compassion • Courage • Soft Power","Your softness is not the opposite of strength. It is part of it.","Scatter stardust: meet one hard thing with gentleness."],
+  ["🔦","The Hermit","Solitude • Wisdom • Inner Light","A quiet season can still be deeply productive.","Scatter stardust: protect a pocket of sacred solitude."],
+  ["🎡","Wheel of Fortune","Cycles • Change • Turning Point","The wheel turns. You are allowed to turn with it.","Scatter stardust: release the need to control every outcome."],
+  ["⚖️","Justice","Truth • Accountability • Balance","Clarity asks for both honesty and responsibility.","Scatter stardust: make one choice that restores balance."],
+  ["🕸️","The Hanged One","Pause • Surrender • New View","A pause is not failure. It may be the doorway to perspective.","Scatter stardust: stop forcing and look again."],
+  ["🦋","Death","Ending • Release • Transformation","Something can end without meaning you failed.","Scatter stardust: let one old version of yourself rest."],
+  ["🌈","Temperance","Integration • Healing • Flow","Healing may arrive through small adjustments, not dramatic extremes.","Scatter stardust: blend patience with action."],
+  ["⛓️","The Devil","Attachment • Shadow • Liberation","Naming the pattern is the beginning of loosening it.","Scatter stardust: notice what drains your freedom."],
+  ["⚡","The Tower","Disruption • Truth • Liberation","What falls may have been too small to hold your becoming.","Scatter stardust: protect what is real while the false breaks away."],
+  ["⭐","The Star","Hope • Renewal • Blessing","Hope returns like starlight: quiet, distant, and still real.","Scatter stardust: offer hope without denying pain."],
+  ["🌕","The Moon","Dreams • Fear • Intuition","Not all shadows are warnings. Some are invitations inward.","Scatter stardust: listen to what your dreams are trying to soften."],
+  ["☀️","The Sun","Joy • Clarity • Vitality","Joy is medicine, not a distraction from the work.","Scatter stardust: let one honest delight take up space."],
+  ["📣","Judgement","Awakening • Calling • Renewal","A deeper call is rising through you. You do not have to ignore it.","Scatter stardust: answer one truth you have been avoiding."],
+  ["🌍","The World","Completion • Wholeness • Arrival","You have crossed more thresholds than you remember.","Scatter stardust: celebrate one cycle you survived or completed."]
+];
+
+const suitData = {
+  Wands: {
+    symbol:"🔥",
+    theme:"Spark • Purpose • Creative Fire",
+    element:"fire",
+    action:"Scatter stardust: move one spark from idea into action."
+  },
+  Cups: {
+    symbol:"💧",
+    theme:"Heart • Feeling • Connection",
+    element:"water",
+    action:"Scatter stardust: respond with emotional honesty and care."
+  },
+  Swords: {
+    symbol:"🗡️",
+    theme:"Mind • Truth • Clarity",
+    element:"air",
+    action:"Scatter stardust: speak clearly without using truth as a weapon."
+  },
+  Pentacles: {
+    symbol:"🌿",
+    theme:"Body • Resources • Daily Life",
+    element:"earth",
+    action:"Scatter stardust: care for the practical thing right in front of you."
+  }
+};
+
+const rankMeanings = {
+  Ace:["Seed","A new beginning is glowing. Protect the spark before demanding the harvest."],
+  Two:["Choice","Two paths are asking for your attention. Choose with your whole self, not only your fear."],
+  Three:["Growth","Something is beginning to take shape through collaboration, practice, or patience."],
+  Four:["Foundation","Stability is asking to be tended. What supports you deserves care too."],
+  Five:["Challenge","Tension is present, but it is not the whole story. Let friction reveal what needs healing."],
+  Six:["Return","Support, memory, and restoration are available. Let care move both ways."],
+  Seven:["Discernment","Not every option deserves your energy. Choose what is aligned, not merely loud."],
+  Eight:["Momentum","Progress is happening. Stay present with the rhythm instead of rushing the result."],
+  Nine:["Threshold","You are close to a meaningful shift. Honor the effort it took to get here."],
+  Ten:["Completion","A cycle is heavy, full, or ready to transform. You may put some of it down."],
+  Page:["Message","Beginner energy is sacred. Let curiosity open the door."],
+  Knight:["Movement","Energy is moving quickly. Aim it with intention."],
+  Queen:["Embodiment","This card asks you to lead through presence, care, and inner authority."],
+  King:["Mastery","Power is most sacred when it protects, steadies, and serves."]
+};
+
+function buildMinorArcana(){
+  const ranks = Object.keys(rankMeanings);
+  const cards = [];
+
+  for (const suit in suitData) {
+    ranks.forEach(rank => {
+      const data = suitData[suit];
+      const meaning = rankMeanings[rank];
+
+      cards.push([
+        data.symbol,
+        `${rank} of ${suit}`,
+        `${meaning[0]} • ${data.theme}`,
+        `${meaning[1]} In the realm of ${suit.toLowerCase()}, your ${data.element} medicine is asking to be honored.`,
+        data.action
+      ]);
+    });
+  }
+
+  return cards;
+}
+
+const tarotDeck = [
+  ...majorArcana,
+  ...buildMinorArcana()
+].map(card => ({
+  symbol: card[0],
+  title: card[1],
+  keyword: card[2],
+  message: card[3],
+  action: card[4]
+}));
+
+function drawCard(){
+  const card = document.getElementById("tarotCard");
+  const chosen = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
+
+  card.classList.remove("card-changing");
+  void card.offsetWidth;
+  card.classList.add("card-changing");
+
+  setTimeout(() => {
+  document.getElementById("symbol").textContent = chosen.symbol;
+  document.getElementById("title").textContent = chosen.title;
+  document.getElementById("keyword").textContent = chosen.keyword;
+  document.getElementById("message").textContent = chosen.message;
+  document.getElementById("action").textContent = chosen.action;
+
+  fetch("/card-draw", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      deck: "Tarot",
+      symbol: chosen.symbol,
+      title: chosen.title,
+      keyword: chosen.keyword,
+      message: chosen.message,
+      action: chosen.action
+    })
+  }).catch(err => console.error("Tarot board save failed:", err));
+}, 180);
+}
+
+drawCard();
+
+/* Auto-refresh every 10 minutes */
+setInterval(drawCard, 10 * 60 * 1000);
+</script>
+
+</body>
+</html>

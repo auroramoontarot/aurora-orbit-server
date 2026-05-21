@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora Avatar Control</title>
+<style>
+html, body{
+  margin:0;
+  background:#151735;
+  color:#cbecf5;
+  font-family:Arial, sans-serif;
+}
+.wrap{
+  padding:18px;
+  max-width:420px;
+}
+h1{
+  font-size:18px;
+  margin:0 0 14px;
+}
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:12px;
+}
+button{
+  background:#2b2772;
+  color:#cbecf5;
+  border:none;
+  border-radius:8px;
+  padding:10px 12px;
+  cursor:pointer;
+}
+button:hover{
+  filter:brightness(1.08);
+}
+.note{
+  font-size:12px;
+  opacity:.8;
+}
+.status{
+  margin-top:12px;
+  font-size:13px;
+  opacity:.9;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Aurora Avatar Control</h1>
+
+  <div class="row">
+    <button onclick="sendMood('idle')">Idle</button>
+    <button onclick="sendMood('love')">Love</button>
+    <button onclick="sendMood('sad')">Sad</button>
+    <button onclick="sendMood('angry')">Angry</button>
+  </div>
+
+  <div class="row">
+    <button onclick="toggleLowSpoon()">Low Spoon</button>
+    <button onclick="toggleVikings()">Vikings</button>
+    <button onclick="cycleMusic()">Music Mode</button>
+  </div>
+
+  <div class="note">
+    Music mode cycles: Off → Pulse → Reactive
+  </div>
+
+  <div class="status" id="status">Ready.</div>
+</div>
+
+<script>
+let state = {
+  mood: "idle",
+  lowspoon: false,
+  vikings: false,
+  music: "off"
+};
+
+function buildUrl(){
+  const p = new URLSearchParams();
+  p.set("mood", state.mood);
+  if (state.lowspoon) p.set("lowspoon", "1");
+  if (state.vikings) p.set("vikings", "1");
+  if (state.music !== "off") p.set("music", state.music);
+  return `/widgets/pngtuber/pngtuber.html?${p.toString()}`;
+}
+
+function updateStatus(){
+  document.getElementById("status").textContent =
+    `Mood: ${state.mood} | Low Spoon: ${state.lowspoon ? "On" : "Off"} | Vikings: ${state.vikings ? "On" : "Off"} | Music: ${state.music}`;
+}
+
+function openOrRefreshAvatar(){
+  const url = buildUrl();
+  window.open(url, "aurora_pngtuber");
+  updateStatus();
+}
+
+function sendMood(m){
+  state.mood = m;
+  openOrRefreshAvatar();
+}
+
+function toggleLowSpoon(){
+  state.lowspoon = !state.lowspoon;
+  openOrRefreshAvatar();
+}
+
+function toggleVikings(){
+  state.vikings = !state.vikings;
+  openOrRefreshAvatar();
+}
+
+function cycleMusic(){
+  if (state.music === "off") state.music = "pulse";
+  else if (state.music === "pulse") state.music = "reactive";
+  else state.music = "off";
+  openOrRefreshAvatar();
+}
+
+updateStatus();
+</script>
+</body>
+</html>

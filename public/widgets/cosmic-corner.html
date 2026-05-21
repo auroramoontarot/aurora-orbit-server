@@ -242,6 +242,7 @@
 
   let creators = [];
   let currentIndex = 0;
+  let twitchStatuses = {};
 
   const creatorName = document.getElementById("creatorName");
   const creatorMeta = document.getElementById("creatorMeta");
@@ -258,10 +259,77 @@
     return {
       name: creator.name || "Mystery Desk",
       url: creator.url || "#",
+      twitch: creator.twitch || "",
       shift: creator.shift || "Open Orbit",
       vibe: creator.vibe || "cozy co-working energy",
-      status: creator.status || "offline"
+      status: creator.status || "offline",
+      timezone: creator.timezone || "America/Chicago",
+      start: creator.start,
+      end: creator.end,
+      fallback: creator.fallback || false
     };
+  }
+
+  async function loadTwitchStatuses() {
+    try {
+      const response = await fetch("/top8-status", {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not load Twitch statuses");
+      }
+
+      twitchStatuses = await response.json();
+
+    } catch (error) {
+      console.error("Twitch status error:", error);
+    }
+  }
+
+  function isCreatorActive(creator) {
+
+    // PRIORITY 1:
+    // Actually live on Twitch
+    if (
+      creator.twitch &&
+      twitchStatuses[creator.twitch] &&
+      twitchStatuses[creator.twitch].live
+    ) {
+      return true;
+    }
+
+    // PRIORITY 2:
+    // Scheduled shift
+    const currentHour = new Date().toLocaleString("en-US", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: creator.timezone || "America/Chicago"
+    });
+
+    const hour = parseInt(currentHour, 10);
+
+    const start = creator.start;
+    const end = creator.end;
+
+    if (start === undefined || end === undefined) {
+      return false;
+    }
+
+    // Overnight shifts
+    if (start > end) {
+      return hour >= start || hour < end;
+    }
+
+    return hour >= start && hour < end;
+  }
+
+  function getActiveCreators() {
+    return creators.filter(isCreatorActive);
+  }
+
+  function getFallbackCreator() {
+    return creators.find(c => c.fallback);
   }
 
   function renderCreator(index) {
@@ -270,11 +338,25 @@
     const creator = normalizeCreator(creators[index]);
 
     creatorName.textContent = creator.name;
+
+    let liveText = creator.status;
+
+    // Live Twitch indicator
+    if (
+      creator.twitch &&
+      twitchStatuses[creator.twitch] &&
+      twitchStatuses[creator.twitch].live
+    ) {
+      liveText = "LIVE NOW ☄";
+    }
+
     creatorMeta.innerHTML = `
       ${creator.shift}<br>
       ${creator.vibe}
     `;
-    creatorStatus.textContent = creator.status;
+
+    creatorStatus.textContent = liveText;
+
     visitBtn.href = creator.url;
   }
 
@@ -297,17 +379,24 @@
     }
 
     let newIndex;
+
     do {
       newIndex = Math.floor(Math.random() * creators.length);
     } while (newIndex === currentIndex);
 
     currentIndex = newIndex;
+
     renderCreator(currentIndex);
   }
 
   async function loadCreators() {
+
     try {
-      const response = await fetch(DATA_URL, { cache: "no-store" });
+
+      // Load JSON
+      const response = await fetch(DATA_URL, {
+        cache: "no-store"
+      });
 
       if (!response.ok) {
         throw new Error(`Could not load ${DATA_URL}`);
@@ -319,14 +408,63 @@
         throw new Error("No creators found in cosmic-corner.json");
       }
 
+      // Normalize creators
+      creators = creators.map(normalizeCreator);
+
+      // Load Twitch statuses
+      await loadTwitchStatuses();
+
+      // Find active creators
+      const activeCreators = creators.filter(isCreatorActive);
+
+      // ACTIVE ORBITERS
+      if (activeCreators.length > 0) {
+
+        creators = activeCreators;
+
+        creators.forEach(c => {
+
+          // Live on Twitch
+          if (
+            c.twitch &&
+            twitchStatuses[c.twitch] &&
+            twitchStatuses[c.twitch].live
+          ) {
+            c.status = "LIVE NOW ☄";
+
+          } else {
+            c.status = "currently orbiting";
+          }
+
+        });
+
+      } else {
+
+        // FALLBACK MODE
+        const fallback = getFallbackCreator();
+
+        if (fallback) {
+
+          fallback.status = "quiet orbit hours";
+          fallback.vibe = "the café lights remain on ☄";
+
+          creators = [fallback];
+        }
+      }
+
+      currentIndex = 0;
+
       renderCreator(currentIndex);
+
     } catch (error) {
+
       document.getElementById("orbitCard").innerHTML = `
         <div class="error">
           ✦ Cosmic signal lost ✦<br>
           Check /public/data/cosmic-corner.json
         </div>
       `;
+
       console.error(error);
     }
   }
@@ -336,7 +474,10 @@
   randomBtn.addEventListener("click", randomCreator);
 
   loadCreators();
-</script>
 
+  // Refresh orbit every 5 minutes
+  setInterval(loadCreators, 300000);
+
+</script>
 </body>
 </html>

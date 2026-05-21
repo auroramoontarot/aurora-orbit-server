@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Cosmic Oracle</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --mist:#c6c7f8;
+  --deep:#2b2772;
+  --glass:rgba(14,18,45,.58);
+  --line:rgba(203,236,245,.22);
+}
+
+html, body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+  font-family:'Quicksand', sans-serif;
+  color:var(--ice);
+}
+
+.oracle-wrap,
+.tarot-wrap{
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  box-sizing:border-box;
+}
+
+/* =========================================
+   SHARED COSMIC CARD BASE
+========================================= */
+
+.cosmic-card{
+  position:relative;
+  width:320px;
+  height:480px;
+
+  border-radius:28px;
+  padding:22px;
+  box-sizing:border-box;
+  overflow:hidden;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+
+  background:
+    radial-gradient(circle at 20% 10%, rgba(127,135,255,.38), transparent 34%),
+    radial-gradient(circle at 90% 20%, rgba(0,169,186,.32), transparent 34%),
+    linear-gradient(145deg, rgba(43,39,114,.9), rgba(8,12,36,.76));
+
+  border:1px solid var(--line);
+
+  box-shadow:
+    0 0 28px rgba(127,135,255,.24),
+    0 0 48px rgba(0,169,186,.16),
+    inset 0 0 26px rgba(255,255,255,.06);
+
+  backdrop-filter: blur(8px);
+
+  animation: floatCard 6s ease-in-out infinite;
+}
+
+.cosmic-card::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+
+  background:
+    linear-gradient(
+      115deg,
+      transparent 35%,
+      rgba(203,236,245,.12) 45%,
+      rgba(198,199,248,.20) 50%,
+      transparent 62%
+    );
+
+  animation:holoSweep 7s linear infinite;
+  pointer-events:none;
+}
+
+.cosmic-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.8) 1px, transparent 1.5px);
+
+  background-size:34px 34px;
+  opacity:.10;
+  pointer-events:none;
+}
+
+/* =========================================
+   SHARED TEXT + CONTENT
+========================================= */
+
+.deck-label{
+  position:relative;
+  z-index:2;
+
+  font-size:11px;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+  font-weight:700;
+
+  color:rgba(203,236,245,.78);
+
+  text-align:center;
+  margin-bottom:14px;
+}
+
+.symbol{
+  position:relative;
+  z-index:2;
+
+  width:118px;
+  height:118px;
+
+  margin:0 auto 18px;
+
+  border-radius:50%;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:58px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(203,236,245,.22),
+      rgba(127,135,255,.12),
+      transparent 72%
+    );
+
+  border:1px solid rgba(203,236,245,.20);
+
+  box-shadow:
+    0 0 24px rgba(0,169,186,.22),
+    inset 0 0 18px rgba(255,255,255,.08);
+}
+
+.card-title{
+  position:relative;
+  z-index:2;
+
+  text-align:center;
+
+  font-size:26px;
+  line-height:1.05;
+  font-weight:700;
+
+  color:#fff;
+
+  text-shadow:
+    0 0 12px rgba(127,135,255,.55),
+    0 0 18px rgba(0,169,186,.24);
+
+  margin-bottom:10px;
+}
+
+.card-keyword{
+  position:relative;
+  z-index:2;
+
+  text-align:center;
+
+  font-size:13px;
+  letter-spacing:1.2px;
+  text-transform:uppercase;
+
+  color:var(--mist);
+
+  margin-bottom:18px;
+}
+
+.message{
+  position:relative;
+  z-index:2;
+
+  font-size:15.5px;
+  line-height:1.45;
+
+  text-align:center;
+
+  color:rgba(203,236,245,.95);
+
+  margin-bottom:18px;
+}
+
+.stardust-action{
+  position:relative;
+  z-index:2;
+
+  margin-top:auto;
+
+  padding:13px 14px;
+
+  border-radius:18px;
+
+  background:rgba(255,255,255,.08);
+
+  border:1px solid rgba(203,236,245,.16);
+
+  font-size:14px;
+  line-height:1.35;
+
+  text-align:center;
+  color:#fff;
+}
+
+.footer{
+  position:relative;
+  z-index:2;
+
+  margin-top:15px;
+
+  text-align:center;
+
+  font-size:11px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+
+  color:rgba(203,236,245,.62);
+}
+
+/* =========================================
+   SPARKLES
+========================================= */
+
+.sparkle{
+  position:absolute;
+  color:#fff;
+  opacity:.7;
+  animation: twinkle 3s ease-in-out infinite;
+  z-index:1;
+}
+
+.s1{ top:28px; left:28px; animation-delay:.2s; }
+.s2{ top:76px; right:30px; animation-delay:1.1s; }
+.s3{ bottom:88px; left:34px; animation-delay:1.8s; }
+.s4{ bottom:34px; right:42px; animation-delay:.7s; }
+
+/* =========================================
+   BUTTONS
+========================================= */
+
+.draw-button{
+  position:absolute;
+  bottom:16px;
+  left:50%;
+
+  transform:translateX(-50%);
+
+  z-index:5;
+
+  border:1px solid rgba(203,236,245,.25);
+
+  background:rgba(20,24,58,.72);
+
+  color:var(--ice);
+
+  font-family:'Quicksand', sans-serif;
+
+  font-weight:700;
+
+  letter-spacing:1px;
+  text-transform:uppercase;
+
+  border-radius:999px;
+
+  padding:9px 16px;
+
+  cursor:pointer;
+
+  box-shadow:0 0 18px rgba(127,135,255,.22);
+
+  transition:all .25s ease;
+}
+
+.draw-button:hover{
+  background:rgba(127,135,255,.34);
+
+  box-shadow:
+    0 0 22px rgba(127,135,255,.35),
+    0 0 34px rgba(0,169,186,.22);
+}
+
+/* =========================================
+   ANIMATIONS
+========================================= */
+
+@keyframes floatCard{
+  0%,100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-6px);
+  }
+}
+
+@keyframes holoSweep{
+  from{
+    transform:translateX(-30%) rotate(0deg);
+  }
+
+  to{
+    transform:translateX(30%) rotate(360deg);
+  }
+}
+
+@keyframes twinkle{
+  0%,100%{
+    opacity:.25;
+    transform:scale(.9);
+  }
+
+  50%{
+    opacity:.9;
+    transform:scale(1.18);
+  }
+}
+
+.card-changing{
+  animation: cardFlip .55s ease;
+}
+
+@keyframes cardFlip{
+  0%{
+    transform:scale(.96) rotateY(0deg);
+    opacity:.55;
+  }
+
+  50%{
+    transform:scale(1.02) rotateY(8deg);
+    opacity:.8;
+  }
+
+  100%{
+    transform:scale(1) rotateY(0deg);
+    opacity:1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="oracle-wrap">
+  <div class="cosmic-card oracle-card" id="oracleCard">
+    <div class="sparkle s1">✦</div>
+    <div class="sparkle s2">✧</div>
+    <div class="sparkle s3">✦</div>
+    <div class="sparkle s4">✧</div>
+
+    <div class="deck-label">Aurora Cosmic Oracle</div>
+    <div class="symbol" id="symbol">🌙</div>
+    <div class="card-title" id="title">Moonbeam Signal</div>
+    <div class="card-keyword" id="keyword">Begin Here</div>
+    <div class="message" id="message">
+      A small light still counts. Let today begin with one honest spark.
+    </div>
+    <div class="stardust-action" id="action">
+      Scatter stardust: send one kind message, even if it is only to yourself.
+    </div>
+    <div class="footer">create • educate • advocate</div>
+  </div>
+
+  <button class="draw-button" onclick="drawCard()">Draw Card</button>
+</div>
+
+<script>
+const deck = [
+  {
+    symbol:"🌙",
+    title:"Moonbeam Signal",
+    keyword:"Begin Here",
+    message:"A small light still counts. Let today begin with one honest spark.",
+    action:"Scatter stardust: send one kind message, even if it is only to yourself."
+  },
+  {
+    symbol:"✨",
+    title:"Stardust Offering",
+    keyword:"Generosity",
+    message:"Your magic does not need to be loud to matter. Tiny offerings still shift the room.",
+    action:"Scatter stardust: share a resource, compliment, or helpful link with someone."
+  },
+  {
+    symbol:"🌌",
+    title:"Aurora Veil",
+    keyword:"Perspective",
+    message:"What looks chaotic up close may be beautiful from another angle.",
+    action:"Scatter stardust: pause before reacting and ask, ‘What else could be true?’"
+  },
+  {
+    symbol:"🕯️",
+    title:"Lantern Keeper",
+    keyword:"Guidance",
+    message:"You are not responsible for carrying everyone, but you may light the path.",
+    action:"Scatter stardust: offer guidance without taking over."
+  },
+  {
+    symbol:"🦋",
+    title:"Soft Transformation",
+    keyword:"Change",
+    message:"Growth does not have to be violent. You may become gently.",
+    action:"Scatter stardust: honor one small change you have already made."
+  },
+  {
+    symbol:"☕",
+    title:"Sacred Pause",
+    keyword:"Rest",
+    message:"Rest is not a delay in the work. It is part of the work.",
+    action:"Scatter stardust: take a real pause before your next task."
+  },
+  {
+    symbol:"🌊",
+    title:"Emotional Tide",
+    keyword:"Feeling",
+    message:"Feelings are weather, not verdicts. Let them move through without naming them failure.",
+    action:"Scatter stardust: validate someone’s feelings without fixing them."
+  },
+  {
+    symbol:"🪐",
+    title:"Orbit Check",
+    keyword:"Boundaries",
+    message:"Not everything belongs in your orbit. Distance can be sacred.",
+    action:"Scatter stardust: name one boundary that protects your peace."
+  },
+  {
+    symbol:"🌱",
+    title:"Seed of Better",
+    keyword:"Hope",
+    message:"Better worlds are grown in small, stubborn acts.",
+    action:"Scatter stardust: do one tiny thing that future-you will thank you for."
+  },
+  {
+    symbol:"🧭",
+    title:"North Star Choice",
+    keyword:"Values",
+    message:"When the path gets foggy, return to what you want your choices to stand for.",
+    action:"Scatter stardust: choose the option that best matches your values."
+  },
+  {
+    symbol:"🧵",
+    title:"Thread of Care",
+    keyword:"Community",
+    message:"Care is a thread. Every time you practice it, the web gets stronger.",
+    action:"Scatter stardust: check in on someone without needing a perfect reason."
+  },
+  {
+    symbol:"🔥",
+    title:"Tiny Flame",
+    keyword:"Courage",
+    message:"Courage does not always roar. Sometimes it whispers, ‘try again, but softer.’",
+    action:"Scatter stardust: take one brave step at your actual capacity."
+  },
+  {
+    symbol:"🌕",
+    title:"Full Moon Mirror",
+    keyword:"Truth",
+    message:"The truth does not need to punish you. It can simply illuminate the next step.",
+    action:"Scatter stardust: be honest without being cruel."
+  },
+  {
+    symbol:"🌑",
+    title:"New Moon Room",
+    keyword:"Reset",
+    message:"Blank space is not emptiness. It is an invitation.",
+    action:"Scatter stardust: clear one small space: digital, physical, or emotional."
+  },
+  {
+    symbol:"💧",
+    title:"Water the Human",
+    keyword:"Care",
+    message:"Your body is not a machine for producing worth. It is a living altar.",
+    action:"Scatter stardust: drink water, eat something, or unclench your jaw."
+  },
+  {
+    symbol:"🪞",
+    title:"Gentle Mirror",
+    keyword:"Self-Compassion",
+    message:"Speak to yourself like someone you are trying to keep alive and loved.",
+    action:"Scatter stardust: replace one harsh thought with a kinder truth."
+  },
+  {
+    symbol:"📚",
+    title:"Living Library",
+    keyword:"Learning",
+    message:"You are allowed to learn out loud. Curiosity is sacred.",
+    action:"Scatter stardust: share one thing you learned without pretending to know it all."
+  },
+  {
+    symbol:"🕊️",
+    title:"Peace Practice",
+    keyword:"Repair",
+    message:"Peace is not passive. It is practiced in what we repair, refuse, and rebuild.",
+    action:"Scatter stardust: make one repair where it is safe and honest to do so."
+  },
+  {
+    symbol:"🦉",
+    title:"Night Wisdom",
+    keyword:"Discernment",
+    message:"Not every voice deserves access to your nervous system.",
+    action:"Scatter stardust: mute, pause, unfollow, or step back where needed."
+  },
+  {
+    symbol:"🌻",
+    title:"Sunward Spell",
+    keyword:"Joy",
+    message:"Joy is not denial. Joy is fuel for surviving and changing the world.",
+    action:"Scatter stardust: choose one small delight on purpose."
+  },
+  {
+    symbol:"🛸",
+    title:"Cosmic Detour",
+    keyword:"Play",
+    message:"The scenic route may reveal the medicine you missed while rushing.",
+    action:"Scatter stardust: let yourself be playful for five minutes."
+  },
+  {
+    symbol:"🧡",
+    title:"Tender Revolution",
+    keyword:"Kindness",
+    message:"Kindness is not weakness. It is a refusal to become what harmed you.",
+    action:"Scatter stardust: choose tenderness without abandoning truth."
+  },
+  {
+    symbol:"⚖️",
+    title:"Justice Star",
+    keyword:"Advocacy",
+    message:"Care becomes power when it reaches beyond the self.",
+    action:"Scatter stardust: amplify a voice, cause, or community that needs support."
+  },
+  {
+    symbol:"🧿",
+    title:"Protected Spark",
+    keyword:"Energy",
+    message:"Your light deserves protection, not constant exposure.",
+    action:"Scatter stardust: save your energy for what is aligned."
+  },
+  {
+    symbol:"🫶",
+    title:"The Open Hand",
+    keyword:"Mutual Aid",
+    message:"We survive better when care moves in circles instead of hierarchies.",
+    action:"Scatter stardust: give, receive, or request support without shame."
+  },
+  {
+    symbol:"🌠",
+    title:"Wish With Feet",
+    keyword:"Action",
+    message:"A wish becomes magic when it grows legs.",
+    action:"Scatter stardust: turn one hope into one doable action."
+  },
+  {
+    symbol:"🪄",
+    title:"Practical Magic",
+    keyword:"Ritual",
+    message:"Magic lives in repetition, attention, and intention.",
+    action:"Scatter stardust: make one ordinary task feel sacred."
+  },
+  {
+    symbol:"🐚",
+    title:"Quiet Shell",
+    keyword:"Listening",
+    message:"Listening can be an offering. Silence can be a sanctuary.",
+    action:"Scatter stardust: listen to understand, not to prepare your response."
+  },
+  {
+    symbol:"🦝",
+    title:"Trash Panda Alchemy",
+    keyword:"Resourcefulness",
+    message:"You can make something useful from what others overlooked.",
+    action:"Scatter stardust: repurpose one thing: an idea, object, or moment."
+  },
+  {
+    symbol:"🪶",
+    title:"Lighten the Load",
+    keyword:"Release",
+    message:"You do not have to carry what was never yours to hold.",
+    action:"Scatter stardust: put down one unnecessary obligation."
+  },
+  {
+    symbol:"🌉",
+    title:"Bridge Builder",
+    keyword:"Connection",
+    message:"You do not need to agree on everything to build a moment of humanity.",
+    action:"Scatter stardust: find one honest point of connection."
+  },
+  {
+    symbol:"🔭",
+    title:"The Observatory",
+    keyword:"Awareness",
+    message:"Zoom out. There is more sky than storm.",
+    action:"Scatter stardust: look at the bigger pattern before choosing your next move."
+  },
+  {
+    symbol:"💫",
+    title:"Moonbeam Ripple",
+    keyword:"Impact",
+    message:"You may never see every ripple your kindness creates. Create it anyway.",
+    action:"Scatter stardust: do one good thing without needing credit."
+  }
+];
+
+function drawCard(){
+  const card = document.getElementById("oracleCard");
+  const chosen = deck[Math.floor(Math.random() * deck.length)];
+
+  card.classList.remove("card-changing");
+  void card.offsetWidth;
+  card.classList.add("card-changing");
+
+  setTimeout(() => {
+  document.getElementById("symbol").textContent = chosen.symbol;
+  document.getElementById("title").textContent = chosen.title;
+  document.getElementById("keyword").textContent = chosen.keyword;
+  document.getElementById("message").textContent = chosen.message;
+  document.getElementById("action").textContent = chosen.action;
+
+  fetch("/card-draw", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      deck: "Oracle",
+      symbol: chosen.symbol,
+      title: chosen.title,
+      keyword: chosen.keyword,
+      message: chosen.message,
+      action: chosen.action
+    })
+  }).catch(err => console.error("Oracle board save failed:", err));
+}, 180);
+}
+
+/* Optional: auto-draw a fresh card when the overlay loads */
+drawCard();
+
+/* Optional: auto-refresh every 10 minutes */
+setInterval(drawCard, 10 * 60 * 1000);
+</script>
+
+</body>
+</html>

@@ -121,6 +121,8 @@ const QUOTES_DATA = path.join(DATA_DIR, "quotes.json");
 const SPOTIFY_AUTH_DATA = path.join(DATA_DIR, "spotify-auth.json");
 const SPOTIFY_STATE_DATA = path.join(DATA_DIR, "spotify-state.json");
 const SPOTIFY_AUTO_DATA = path.join(DATA_DIR, "spotify-auto.json");
+const CARD_DRAWS_DATA = path.join(DATA_DIR, "card-draws.json");
+const GRATITUDE_JAR_DATA = path.join(DATA_DIR, "gratitude-jar.json");
 
 /* -------------------------
    HELPERS
@@ -866,12 +868,116 @@ app.get("/weather", async (req, res) => {
   }
 });
 
+app.get("/neighborhood-weather", async (req, res) => {
+  try {
+    const pointUrl = "https://api.weather.gov/points/44.9483,-93.3480";
+
+    const pointResponse = await fetch(pointUrl, {
+      headers: {
+        "User-Agent": "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
+      }
+    });
+
+    if (!pointResponse.ok) {
+      throw new Error(`NWS points HTTP ${pointResponse.status}`);
+    }
+
+    const pointData = await pointResponse.json();
+    const stationsUrl = pointData?.properties?.observationStations;
+
+    if (!stationsUrl) {
+      throw new Error("NWS observationStations URL missing");
+    }
+
+    const stationsResponse = await fetch(stationsUrl, {
+      headers: {
+        "User-Agent": "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
+      }
+    });
+
+    if (!stationsResponse.ok) {
+      throw new Error(`NWS stations HTTP ${stationsResponse.status}`);
+    }
+
+    const stationsData = await stationsResponse.json();
+    const firstStation = stationsData?.features?.[0]?.properties?.stationIdentifier;
+
+    if (!firstStation) {
+      throw new Error("No NWS station found");
+    }
+
+    const obsUrl = `https://api.weather.gov/stations/${firstStation}/observations/latest`;
+
+    const obsResponse = await fetch(obsUrl, {
+      headers: {
+        "User-Agent": "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
+      }
+    });
+
+    if (!obsResponse.ok) {
+      throw new Error(`NWS observations HTTP ${obsResponse.status}`);
+    }
+
+    const obsData = await obsResponse.json();
+    const p = obsData?.properties || {};
+
+    const cToF = (c) =>
+      typeof c === "number" ? Math.round((c * 9) / 5 + 32) : null;
+
+    const kmhToMph = (kmh) =>
+  typeof kmh === "number" ? Math.round(kmh * 0.621371) : null;
+
+    const paToInHg = (pa) =>
+      typeof pa === "number" ? Number((pa * 0.0002953).toFixed(2)) : null;
+
+    res.json({
+      source: "nws-neighborhood",
+      station: firstStation,
+      fetchedAt: new Date().toISOString(),
+      observationTime: p.timestamp || null,
+      current: {
+        temp: cToF(p.temperature?.value),
+        feelsLike: cToF(p.heatIndex?.value ?? p.windChill?.value),
+        humidity: p.relativeHumidity?.value
+          ? Math.round(p.relativeHumidity.value)
+          : null,
+        windSpeed: kmhToMph(p.windSpeed?.value),
+windGust: kmhToMph(p.windGust?.value),
+        pressure: paToInHg(p.barometricPressure?.value),
+        description: p.textDescription || "Neighborhood weather"
+      },
+      raw: obsData
+    });
+
+  } catch (err) {
+    console.error("Neighborhood weather fetch error:", err.message);
+
+    res.status(500).json({
+      error: "Neighborhood weather fetch failed",
+      details: err.message
+    });
+  }
+});
+
 app.get("/moonphase", (req, res) => {
   try {
-    const data = readJsonFile(path.join(DATA_DIR, "moon-phase.json"), {});
-    res.json({
-      phase: data.phase || ""
-    });
+    let lp = 2551443;
+    let new_moon = new Date("2024-01-11T11:57:00Z").getTime();
+    let phase = ((Date.now() - new_moon) / 1000) % lp;
+    let percent = phase / lp;
+
+    let phaseName = "";
+
+    if (percent < 0.02 || percent > 0.98) phaseName = "New Moon";
+    else if (percent < 0.23) phaseName = "Waxing Crescent";
+    else if (percent < 0.27) phaseName = "First Quarter";
+    else if (percent < 0.48) phaseName = "Waxing Gibbous";
+    else if (percent < 0.52) phaseName = "Full Moon";
+    else if (percent < 0.73) phaseName = "Waning Gibbous";
+    else if (percent < 0.77) phaseName = "Last Quarter";
+    else phaseName = "Waning Crescent";
+
+    res.json({ phase: phaseName });
   } catch (err) {
     console.error("Moonphase route error:", err);
     res.status(500).json({ error: "Moonphase fetch failed" });
@@ -1077,6 +1183,7 @@ app.get("/set-tarot", (req, res) => {
   }
 });
 
+
 /* -------------------------
    DATA GET ROUTES
 ------------------------- */
@@ -1161,6 +1268,45 @@ app.post("/save/aurora-quests", (req, res) => {
     res
       .status(500)
       .json({ success: false, error: "Failed to save aurora-quests" });
+  }
+});
+
+app.post("/api/gratitude-jar", (req, res) => {
+  try {
+    const newEntry = req.body || {};
+
+    const text = String(newEntry.text || "").trim();
+    if (!text) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing gratitude text"
+      });
+    }
+
+    const entries = readJsonFile(GRATITUDE_JAR_DATA, []);
+
+    const safeEntries = Array.isArray(entries) ? entries : [];
+
+    safeEntries.push({
+      text,
+      type: String(newEntry.type || "cozy"),
+      date: newEntry.date || new Date().toISOString().slice(0, 10),
+      createdAt: newEntry.createdAt || new Date().toISOString()
+    });
+
+    writeJsonFile(GRATITUDE_JAR_DATA, safeEntries);
+
+    res.json({
+      success: true,
+      total: safeEntries.length
+    });
+
+  } catch (err) {
+    console.error("Gratitude jar save error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Failed to save gratitude entry"
+    });
   }
 });
 
@@ -1755,6 +1901,93 @@ app.get("/addCeHours", (req, res) => {
   }
 });
 
+let twitchTokenCache = {
+  token: null,
+  expiresAt: 0
+};
+
+async function getTwitchAppToken() {
+  const now = Date.now();
+
+  if (twitchTokenCache.token && twitchTokenCache.expiresAt > now) {
+    return twitchTokenCache.token;
+  }
+
+  const response = await fetch("https://id.twitch.tv/oauth2/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: process.env.TWITCH_CLIENT_ID,
+      client_secret: process.env.TWITCH_CLIENT_SECRET,
+      grant_type: "client_credentials"
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`Twitch token error: ${response.status}`);
+  }
+
+  const data = await response.json();
+
+  twitchTokenCache = {
+    token: data.access_token,
+    expiresAt: now + (data.expires_in - 60) * 1000
+  };
+
+  return data.access_token;
+}
+
+app.get("/top8-status", async (req, res) => {
+  try {
+    const users = [
+      "auroramoontarot",
+      "danelah"
+    ];
+
+    const token = await getTwitchAppToken();
+
+    const params = new URLSearchParams();
+    users.forEach(user => params.append("user_login", user));
+
+    const response = await fetch(`https://api.twitch.tv/helix/streams?${params}`, {
+      headers: {
+        "Client-ID": process.env.TWITCH_CLIENT_ID,
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Twitch streams error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const liveMap = {};
+
+    users.forEach(user => {
+      liveMap[user] = {
+        live: false,
+        title: "",
+        game: "",
+        viewerCount: 0
+      };
+    });
+
+    data.data.forEach(stream => {
+      liveMap[stream.user_login.toLowerCase()] = {
+        live: true,
+        title: stream.title,
+        game: stream.game_name,
+        viewerCount: stream.viewer_count
+      };
+    });
+
+    res.json(liveMap);
+  } catch (error) {
+    console.error("Top 8 status error:", error);
+    res.status(500).json({ error: "Could not fetch Twitch status" });
+  }
+});
+
 /* -------------------------
    WATCHING
 ------------------------- */
@@ -2228,6 +2461,214 @@ app.post("/spotify/auto", (req, res) => {
 });
 
 /* -------------------------
+   CARD DRAW STREAM / BOARD
+------------------------- */
+
+let cardClients = [];
+
+app.get("/cardstream", (req, res) => {
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache, no-transform",
+    "Connection": "keep-alive"
+  });
+
+  const existing = readJsonFile(CARD_DRAWS_DATA, { draws: [] });
+
+  res.write(`data: ${JSON.stringify({
+    type: "init",
+    draws: Array.isArray(existing.draws) ? existing.draws : []
+  })}\n\n`);
+
+  cardClients.push(res);
+
+  req.on("close", () => {
+    cardClients = cardClients.filter(client => client !== res);
+  });
+});
+
+function broadcastCard(payload) {
+  const data = `data: ${JSON.stringify(payload)}\n\n`;
+
+  cardClients.forEach(client => {
+    try {
+      client.write(data);
+    } catch (err) {
+      console.error("Cardstream write failed:", err.message);
+    }
+  });
+}
+
+app.get("/card-draws", (req, res) => {
+  try {
+    const data = readJsonFile(CARD_DRAWS_DATA, { draws: [] });
+    res.json({
+      draws: Array.isArray(data.draws) ? data.draws : []
+    });
+  } catch (err) {
+    console.error("Card draws load error:", err);
+    res.status(500).json({ success: false, error: "Failed to load card draws" });
+  }
+});
+
+app.post("/card-draw", (req, res) => {
+  try {
+    const existing = readJsonFile(CARD_DRAWS_DATA, { draws: [] });
+    const draws = Array.isArray(existing.draws) ? existing.draws : [];
+
+    const draw = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      deck: String(req.body?.deck || "Unknown").trim(),
+      title: String(req.body?.title || "").trim(),
+      keyword: String(req.body?.keyword || "").trim(),
+      message: String(req.body?.message || "").trim(),
+      action: String(req.body?.action || "").trim(),
+      symbol: String(req.body?.symbol || "").trim(),
+      position: String(req.body?.position || "").trim(),
+      spread: String(req.body?.spread || "").trim(),
+      time: new Date().toISOString()
+    };
+
+    if (!draw.title) {
+      return res.status(400).json({ success: false, error: "Missing card title" });
+    }
+
+    draws.unshift(draw);
+
+    const updated = {
+      updatedAt: new Date().toISOString(),
+      draws: draws.slice(0, 40)
+    };
+
+    writeJsonFile(CARD_DRAWS_DATA, updated);
+    broadcastCard({ type: "new", draw });
+
+    res.json({ success: true, draw });
+  } catch (err) {
+    console.error("Card draw error:", err);
+    res.status(500).json({ success: false, error: "Failed to save card draw" });
+  }
+});
+
+app.post("/clear-card-board", (req, res) => {
+  try {
+    const updated = {
+      updatedAt: new Date().toISOString(),
+      draws: []
+    };
+
+    writeJsonFile(CARD_DRAWS_DATA, updated);
+    broadcastCard({ type: "clear" });
+
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    console.error("Clear card board error:", err);
+    res.status(500).json({ success: false, error: "Failed to clear card board" });
+  }
+});
+
+/* -------------------------
+   MOONBEAM PAGER
+------------------------- */
+
+let pagerState = {
+  mode: "recharge",
+  custom: ""
+};
+
+/* GET CURRENT STATUS */
+
+app.get("/pager/status", (req, res) => {
+
+  res.json(pagerState);
+
+});
+
+/* SET MODE */
+
+app.post("/pager/mode", (req, res) => {
+
+  try {
+
+    pagerState.mode = req.body.mode || "recharge";
+
+    console.log("📟 Pager mode:", pagerState.mode);
+
+    res.json({
+      success: true,
+      state: pagerState
+    });
+
+  } catch (err) {
+
+    console.error("Pager mode error:", err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+
+});
+
+/* CUSTOM MESSAGE */
+
+app.post("/pager/custom", (req, res) => {
+
+  try {
+
+    pagerState.custom = req.body.message || "";
+
+    console.log("✨ Pager custom:", pagerState.custom);
+
+    res.json({
+      success: true,
+      state: pagerState
+    });
+
+  } catch (err) {
+
+    console.error("Pager custom error:", err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+
+});
+
+/* CLEAR PAGER */
+
+app.post("/pager/clear", (req, res) => {
+
+  try {
+
+    pagerState = {
+      mode: "recharge",
+      custom: ""
+    };
+
+    console.log("🧹 Pager cleared");
+
+    res.json({
+      success: true,
+      state: pagerState
+    });
+
+  } catch (err) {
+
+    console.error("Pager clear error:", err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+  }
+
+});
+
+/* -------------------------
    404
 ------------------------- */
 
@@ -2235,6 +2676,16 @@ app.use((req, res) => {
   res.status(404).send("Not found");
 });
 
+process.on("unhandledRejection", (err) => {
+  console.error("Unhandled Promise Rejection:", err);
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught Exception:", err);
+});
+
+console.log("🌌 Starting Aurora Moon systems...");
+
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🌙 MoonSpace server running on port ${PORT}`);
 });

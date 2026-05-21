@@ -189,20 +189,19 @@ setInterval(loadHabitEnergy, 60000);
 function moonPhase(){
 
 let lp=2551443;
-let new_moon=new Date(1970,0,7,20,35,0);
+let new_moon=new Date("2024-01-11T11:57:00Z").getTime();
 let phase=((Date.now()-new_moon)/1000)%lp;
 let percent=phase/lp;
 
-if(percent<.03||percent>.97)return "🌑 New Moon";
-if(percent<.22)return "🌒 Waxing Crescent";
-if(percent<.28)return "🌓 First Quarter";
-if(percent<.47)return "🌔 Waxing Gibbous";
-if(percent<.53)return "🌕 Full Moon";
-if(percent<.72)return "🌖 Waning Gibbous";
-if(percent<.78)return "🌗 Last Quarter";
+if(percent<.02||percent>.98)return "🌑 New Moon";
+if(percent<.23)return "🌒 Waxing Crescent";
+if(percent<.27)return "🌓 First Quarter";
+if(percent<.48)return "🌔 Waxing Gibbous";
+if(percent<.52)return "🌕 Full Moon";
+if(percent<.73)return "🌖 Waning Gibbous";
+if(percent<.77)return "🌗 Last Quarter";
 
 return "🌘 Waning Crescent";
-
 }
 
 document.getElementById("moon").innerText=moonPhase();

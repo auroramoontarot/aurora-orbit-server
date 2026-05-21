@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Aurora Moon Pokémon Stats</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --lavender: #7f87ff;
+  --teal: #00a9ba;
+  --ice: #cbecf5;
+  --soft: #c6c7f8;
+  --dark: rgba(18, 16, 48, 0.74);
+  --panel: rgba(203, 236, 245, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  font-family: "Quicksand", sans-serif;
+  color: var(--ice);
+  overflow: hidden;
+}
+
+.overlay {
+  width: 720px;
+  padding: 18px;
+  border-radius: 26px;
+  background: var(--dark);
+  border: 1px solid rgba(203, 236, 245, 0.28);
+  box-shadow:
+    0 0 26px rgba(0, 169, 186, 0.35),
+    inset 0 0 20px rgba(127, 135, 255, 0.16);
+  backdrop-filter: blur(14px);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 700;
+  text-shadow: 0 0 12px rgba(0, 169, 186, 0.85);
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--soft);
+  margin-top: 3px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.section {
+  border-radius: 22px;
+  padding: 14px;
+  background: rgba(203, 236, 245, 0.07);
+  border: 1px solid rgba(203, 236, 245, 0.17);
+  box-shadow: inset 0 0 16px rgba(127, 135, 255, 0.12);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-size: 19px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: white;
+}
+
+.stats {
+  display: grid;
+  gap: 9px;
+}
+
+.stat {
+  position: relative;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid rgba(203, 236, 245, 0.14);
+  overflow: hidden;
+}
+
+.stat::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.08),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: shimmer 5s infinite;
+}
+
+.label {
+  font-size: 12px;
+  color: var(--soft);
+  position: relative;
+  z-index: 1;
+}
+
+.value {
+  font-size: 25px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 0 10px rgba(127, 135, 255, 0.9);
+  position: relative;
+  z-index: 1;
+}
+
+/* Pokéball */
+.pokeball {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, white 0 18%, #222 19% 25%, transparent 26%),
+    linear-gradient(to bottom, #ff5a73 0 46%, #222 47% 53%, white 54% 100%);
+  box-shadow: 0 0 10px rgba(255, 90, 115, 0.7);
+}
+
+/* Card icon */
+.card-icon {
+  width: 18px;
+  height: 24px;
+  border-radius: 5px;
+  background:
+    linear-gradient(135deg, rgba(127,135,255,0.95), rgba(0,169,186,0.95));
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow: 0 0 10px rgba(127,135,255,0.75);
+  transform: rotate(-8deg);
+  position: relative;
+}
+
+.card-icon::after {
+  content: "✦";
+  position: absolute;
+  font-size: 10px;
+  color: white;
+  top: 5px;
+  left: 5px;
+}
+
+.footer {
+  margin-top: 13px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--soft);
+  animation: pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  35%, 100% { transform: translateX(100%); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+  <div class="header">
+    <div class="title">Aurora Moon Pokémon Stats ✨</div>
+    <div class="subtitle">Moonbeam field research + shiny cardboard chaos</div>
+  </div>
+
+  <div class="columns">
+
+    <div class="section">
+      <div class="section-title">
+        <span class="pokeball"></span>
+        Pokémon GO
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Pokémon Caught</div>
+          <div class="value" id="caught">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="label">PokéStops Spun</div>
+          <div class="value" id="stops">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="label">Raids Won</div>
+          <div class="value" id="raids">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="label">Eggs Hatched</div>
+          <div class="value" id="eggs">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <span class="card-icon"></span>
+        Pokémon TCG
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="label">Packs Opened</div>
+          <div class="value" id="packs">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="label">Rare Cards</div>
+          <div class="value" id="rare">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="label">EX Cards</div>
+          <div class="value" id="excards">0</div>
+        </div>
+
+        <div class="stat">
+          <div class="label">Current Mission</div>
+          <div class="value" id="mission">✨</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Scatter Stardust • Catch Shinies • Hydrate 💜
+  </div>
+</div>
+
+<script>
+async function loadStats() {
+  try {
+    const response = await fetch("/data/aurora-moon-data.json");
+    const data = await response.json();
+
+    document.getElementById("caught").textContent = data.pokemon_caught ?? 0;
+    document.getElementById("stops").textContent = data.pokestops_spun ?? 0;
+    document.getElementById("raids").textContent = data.raids_won ?? 0;
+    document.getElementById("eggs").textContent = data.eggs_hatched ?? 0;
+
+    document.getElementById("packs").textContent = data.packs_opened ?? 0;
+    document.getElementById("rare").textContent = data.rare_cards ?? 0;
+    document.getElementById("excards").textContent = data.ex_cards ?? 0;
+
+    const missions = [
+      "Shiny Hunt",
+      "Moonbeam Research",
+      "Pack Magic",
+      " Stardust Run",
+      "Cozy Catching"
+    ];
+
+    document.getElementById("mission").textContent =
+      missions[Math.floor(Math.random() * missions.length)];
+
+  } catch (err) {
+    console.error("Failed to load Pokémon stats:", err);
+  }
+}
+
+loadStats();
+setInterval(loadStats, 60000);
+</script>
+
+</body>
+</html>

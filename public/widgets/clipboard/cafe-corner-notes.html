@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aurora Café Corner Notes</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html, body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand', sans-serif;
+}
+
+body{
+  position:relative;
+  pointer-events:none;
+}
+
+/* =========================
+   WALL CLOCK
+========================= */
+
+.wall-clock{
+  position:absolute;
+  top:26px;
+  left:510px;
+  width:132px;
+  height:132px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255,255,255,.16), transparent 30%),
+    radial-gradient(circle at center, rgba(203,236,245,.12), rgba(12,16,30,.88) 72%);
+  border:2px solid rgba(203,236,245,.18);
+  box-shadow:
+    0 10px 20px rgba(0,0,0,.24),
+    0 0 20px rgba(127,135,255,.10),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 0 18px rgba(0,169,186,.10);
+}
+
+.wall-clock::before{
+  content:"";
+  position:absolute;
+  inset:10px;
+  border-radius:50%;
+  border:1px solid rgba(203,236,245,.10);
+}
+
+.clock-center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#cbecf5;
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 10px rgba(203,236,245,.55);
+  z-index:3;
+}
+
+.hand{
+  position:absolute;
+  left:50%;
+  bottom:50%;
+  transform-origin:bottom center;
+  border-radius:999px;
+}
+
+.hand.hour{
+  width:4px;
+  height:28px;
+  background:#c6c7f8;
+  margin-left:-2px;
+  box-shadow:0 0 6px rgba(198,199,248,.35);
+}
+
+.hand.minute{
+  width:3px;
+  height:40px;
+  background:#cbecf5;
+  margin-left:-1.5px;
+  box-shadow:0 0 6px rgba(203,236,245,.35);
+}
+
+.hand.second{
+  width:2px;
+  height:46px;
+  background:#00a9ba;
+  margin-left:-1px;
+  box-shadow:0 0 8px rgba(0,169,186,.45);
+}
+
+.clock-tick{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:2px;
+  height:10px;
+  background:rgba(203,236,245,.38);
+  transform-origin:center -48px;
+  border-radius:999px;
+}
+
+.clock-digital{
+  position:absolute;
+  left:50%;
+  bottom:-24px;
+  transform:translateX(-50%);
+  min-width:120px;
+  text-align:center;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.08em;
+  color:#cbecf5;
+  text-shadow:
+    0 0 10px rgba(127,135,255,.18),
+    0 0 18px rgba(0,169,186,.10);
+}
+
+/* =========================
+   LOWER RIGHT ROW
+========================= */
+
+.corner-row{
+  position:absolute;
+  right:28px;
+  bottom:28px;
+  display:flex;
+  flex-direction:row;
+  align-items:flex-end;
+  gap:14px;
+}
+
+/* =========================
+   MINI CLIPBOARD
+========================= */
+
+.mini-clipboard{
+  position:relative;
+  width:150px;
+  aspect-ratio:900 / 1600;
+  transform:rotate(1.2deg);
+  filter:
+    drop-shadow(0 8px 14px rgba(0,0,0,.22))
+    drop-shadow(0 0 10px rgba(127,135,255,.14));
+  flex:0 0 auto;
+}
+
+.mini-clipboard img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  user-select:none;
+  pointer-events:none;
+}
+
+.mini-paper{
+  position:absolute;
+  top:21%;
+  left:16%;
+  width:68%;
+  height:60%;
+  padding:6% 5%;
+  overflow:hidden;
+  color:#575390;
+}
+
+.mini-title{
+  text-align:center;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#6a6fd3;
+  margin-bottom:6px;
+}
+
+.mini-theme{
+  text-align:center;
+  font-size:7px;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:#7a78a7;
+  margin-bottom:5px;
+  opacity:.88;
+}
+
+.mini-list{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  font-size:8px;
+  line-height:1.25;
+}
+
+.mini-item{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  transition:.25s ease;
+}
+
+.mini-item.done{
+  color:#278e87;
+}
+
+.mini-progress{
+  margin-top:7px;
+  font-size:7px;
+  color:#7a78a7;
+  text-align:center;
+  letter-spacing:.08em;
+}
+
+/* =========================
+   STYLED WALL CALENDAR
+========================= */
+
+.wall-calendar{
+  position:relative;
+  width:200px;
+  transform:rotate(-0.8deg);
+  padding:12px 12px 14px;
+  border-radius:18px;
+  background:
+    radial-gradient(circle at top right, rgba(127,135,255,.18), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(0,169,186,.16), transparent 36%),
+    linear-gradient(180deg, rgba(25,30,48,.92), rgba(12,16,30,.86));
+  border:1px solid rgba(203,236,245,.12);
+  box-shadow:
+    0 12px 24px rgba(0,0,0,.22),
+    0 0 18px rgba(127,135,255,.10),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter:blur(8px);
+  flex:0 0 auto;
+}
+
+.wall-calendar::before{
+  content:"";
+  position:absolute;
+  top:8px;
+  left:14px;
+  right:14px;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(203,236,245,.14), transparent);
+  opacity:.9;
+}
+
+.calendar-top{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:10px;
+}
+
+.calendar-badge{
+  font-size:9px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:rgba(203,236,245,.58);
+  margin-bottom:4px;
+}
+
+.mini-calendar-header{
+  text-align:center;
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  color:#c6c7f8;
+  text-shadow:
+    0 0 10px rgba(127,135,255,.18),
+    0 0 16px rgba(0,169,186,.08);
+}
+
+.calendar-divider{
+  margin:10px 0 8px;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(203,236,245,.10), transparent);
+}
+
+.mini-calendar-weekdays,
+.mini-calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  gap:5px;
+}
+
+.mini-calendar-weekdays span{
+  text-align:center;
+  font-size:9px;
+  font-weight:700;
+  color:rgba(203,236,245,.58);
+  letter-spacing:.05em;
+}
+
+.mini-calendar-grid span{
+  text-align:center;
+  font-size:10px;
+  padding:5px 0;
+  border-radius:999px;
+  color:#cbecf5;
+  transition:all .25s ease;
+}
+
+.mini-calendar-grid .muted{
+  opacity:.16;
+}
+
+.mini-calendar-grid .today{
+  background:linear-gradient(180deg, rgba(127,135,255,.96), rgba(0,169,186,.90));
+  color:#fff;
+  box-shadow:
+    0 0 10px rgba(127,135,255,.28),
+    0 0 18px rgba(0,169,186,.18);
+  font-weight:700;
+}
+
+.calendar-footer{
+  margin-top:10px;
+  text-align:center;
+  font-size:10px;
+  color:rgba(203,236,245,.62);
+  letter-spacing:.06em;
+}
+
+@media (max-width: 900px){
+  .corner-row{
+    right:18px;
+    bottom:18px;
+    gap:10px;
+  }
+
+  .mini-clipboard{
+    width:128px;
+  }
+
+  .wall-calendar{
+    width:176px;
+  }
+
+  .wall-clock{
+    width:110px;
+    height:110px;
+  }
+}
+</style>
+</head>
+<body>
+
+  <!-- LOWER RIGHT CORNER ROW -->
+  <div class="corner-row">
+
+    <!-- MINI CLIPBOARD -->
+    <div class="mini-clipboard">
+      <img src="/widgets/clipboard/clipboard.png" alt="Clipboard">
+      <div class="mini-paper">
+        <div class="mini-title">Today</div>
+        <div class="mini-theme" id="miniClipboardTheme">Loading theme...</div>
+
+        <div class="mini-list" id="miniClipboardList">
+          <div class="mini-item">☐ Loading…</div>
+        </div>
+
+        <div class="mini-progress" id="miniClipboardProgress">Orbit --%</div>
+      </div>
+    </div>
+
+    <!-- WALL CALENDAR -->
+    <div class="wall-calendar">
+      <div class="calendar-top">
+        <div class="calendar-badge">Aurora Local</div>
+        <div class="mini-calendar-header" id="calendarMonth">Loading...</div>
+      </div>
+
+      <div class="calendar-divider"></div>
+
+      <div class="mini-calendar-weekdays">
+        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+      </div>
+
+      <div class="mini-calendar-grid" id="calendarGrid"></div>
+
+      <div class="calendar-footer" id="calendarFooter">Moonbeam planning board</div>
+    </div>
+
+  </div>
+
+<script>
+const taskGroups = [
+  {
+    theme: "Care + Body",
+    tasks: [
+      { key: "walk", label: "Walk Koda" },
+      { key: "yoga", label: "Zen Yoga" },
+      { key: "strength", label: "Strength Training" }
+    ]
+  },
+  {
+    theme: "Home + Grounding",
+    tasks: [
+      { key: "chores", label: "Chores" },
+      { key: "brain", label: "Brain Games" },
+      { key: "write", label: "Creative Writing" },
+      { key: "stitch", label: "Knits + Stitches" }
+    ]
+  },
+  {
+    theme: "Nature + World",
+    tasks: [
+      { key: "bird", label: "Bird Log" },
+      { key: "nature", label: "Nature Project" },
+      { key: "park", label: "Park Patrol" },
+      { key: "basin", label: "Basin Patrol" },
+      { key: "pipe", label: "Warp Pipe Patrol" }
+    ]
+  },
+  {
+    theme: "Magic + Work",
+    tasks: [
+      { key: "tarot", label: "Tarot Reading" }
+    ]
+  }
+];
+
+function renderMiniCalendar() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const today = now.getDate();
+
+  const header = document.getElementById("calendarMonth");
+  const grid = document.getElementById("calendarGrid");
+  const footer = document.getElementById("calendarFooter");
+  if (!header || !grid || !footer) return;
+
+  header.textContent = now.toLocaleDateString([], {
+    month: "long",
+    year: "numeric"
+  });
+
+  footer.textContent = now.toLocaleDateString([], {
+    weekday: "long",
+    month: "long",
+    day: "numeric"
+  });
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  grid.innerHTML = "";
+
+  for (let i = 0; i < firstDay; i++) {
+    const blank = document.createElement("span");
+    blank.className = "muted";
+    blank.textContent = "";
+    grid.appendChild(blank);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const cell = document.createElement("span");
+    cell.textContent = day;
+    if (day === today) cell.classList.add("today");
+    grid.appendChild(cell);
+  }
+}
+
+function buildClockTicks() {
+  const clock = document.querySelector(".wall-clock");
+  if (!clock) return;
+
+  for (let i = 0; i < 12; i++) {
+    const tick = document.createElement("div");
+    tick.className = "clock-tick";
+    tick.style.transform = `translate(-50%, -50%) rotate(${i * 30}deg)`;
+    clock.appendChild(tick);
+  }
+}
+
+function updateWallClock() {
+  const now = new Date();
+  const hour = now.getHours() % 12;
+  const minute = now.getMinutes();
+  const second = now.getSeconds();
+
+  const hourDeg = (hour + minute / 60) * 30;
+  const minuteDeg = (minute + second / 60) * 6;
+  const secondDeg = second * 6;
+
+  const hourHand = document.getElementById("hourHand");
+  const minuteHand = document.getElementById("minuteHand");
+  const secondHand = document.getElementById("secondHand");
+  const digital = document.getElementById("clockDigital");
+
+  if (hourHand) hourHand.style.transform = `rotate(${hourDeg}deg)`;
+  if (minuteHand) minuteHand.style.transform = `rotate(${minuteDeg}deg)`;
+  if (secondHand) secondHand.style.transform = `rotate(${secondDeg}deg)`;
+
+  if (digital) {
+    digital.textContent = now.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    });
+  }
+}
+
+async function updateMiniClipboard() {
+  const list = document.getElementById("miniClipboardList");
+  const progress = document.getElementById("miniClipboardProgress");
+  const theme = document.getElementById("miniClipboardTheme");
+  if (!list || !progress || !theme) return;
+
+  try {
+    const res = await fetch("/data/aurora-habits?nocache=" + Date.now());
+    if (!res.ok) throw new Error("Failed to load aurora habits");
+    const data = await res.json();
+
+    let total = 0;
+    let done = 0;
+
+    for (const group of taskGroups) {
+      for (const task of group.tasks) {
+        total++;
+        if (data[task.key]) done++;
+      }
+    }
+
+    const percent = total ? Math.floor((done / total) * 100) : 0;
+
+    const groupsWithStatus = taskGroups.map(group => {
+      const tasks = group.tasks.map(task => ({
+        ...task,
+        done: !!data[task.key]
+      }));
+      const unfinishedCount = tasks.filter(t => !t.done).length;
+      return { ...group, tasks, unfinishedCount };
+    });
+
+    const chosenGroup =
+      groupsWithStatus.find(group => group.unfinishedCount > 0) ||
+      groupsWithStatus[0];
+
+    const unfinished = chosenGroup.tasks.filter(task => !task.done);
+    const finished = chosenGroup.tasks.filter(task => task.done);
+    const visible = [...unfinished, ...finished].slice(0, 6);
+
+    theme.textContent = chosenGroup.theme;
+
+    list.innerHTML = visible.map(task => `
+      <div class="mini-item ${task.done ? "done" : ""}">
+        ${task.done ? "☑" : "☐"} ${task.label}
+      </div>
+    `).join("");
+
+    progress.textContent = `Orbit ${percent}%`;
+  } catch (err) {
+    console.error("Mini clipboard load failed:", err);
+    theme.textContent = "Today";
+    list.innerHTML = `
+      <div class="mini-item">☐ Walk Koda</div>
+      <div class="mini-item">☐ Zen Yoga</div>
+      <div class="mini-item">☐ Bird Log</div>
+      <div class="mini-item">☐ Nature Project</div>
+      <div class="mini-item">☐ Tarot Reading</div>
+      <div class="mini-item">☐ Brain Games</div>
+    `;
+    progress.textContent = "Orbit --%";
+  }
+}
+
+buildClockTicks();
+renderMiniCalendar();
+updateWallClock();
+updateMiniClipboard();
+
+setInterval(updateWallClock, 1000);
+setInterval(renderMiniCalendar, 60 * 60 * 1000);
+setInterval(updateMiniClipboard, 30 * 1000);
+</script>
+
+</body>
+</html>

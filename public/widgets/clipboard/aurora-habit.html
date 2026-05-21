@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html, body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand', sans-serif;
+}
+
+body{
+  position:relative;
+}
+
+/* FULLSCREEN POP CONTAINER */
+.overlay-pop{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .45s ease;
+}
+
+.overlay-pop.show{
+  opacity:1;
+}
+
+/* ART FRAME */
+.clipboard-frame{
+  position:relative;
+  width:min(46vw, 430px);
+  aspect-ratio:900 / 1600;
+  transform:scale(1);
+  transition:transform .45s ease, filter .45s ease;
+  filter:drop-shadow(0 18px 26px rgba(0,0,0,.24))
+         drop-shadow(0 0 18px rgba(127,135,255,.12));
+}
+
+.overlay-pop.show .clipboard-frame{
+  transform:scale(1.02);
+}
+
+.clipboard-art{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+}
+
+/*
+  PAPER AREA
+  Tuned to your actual clipboard art.
+  Adjust only these if needed:
+  top / left / width / height
+*/
+.paper{
+  position:absolute;
+  top:20.8%;
+  left:15.8%;
+  width:68.2%;
+  height:60.5%;
+  padding:3.5% 4%;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  color:#534f8f;
+}
+
+/* TYPOGRAPHY */
+.title{
+  text-align:center;
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:.06em;
+  color:#6a6fd3;
+  margin-bottom:4px;
+}
+
+.subtitle{
+  text-align:center;
+  font-size:10px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#7c7ab0;
+  opacity:.82;
+  margin-bottom:12px;
+}
+
+.topline{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:10px;
+}
+
+.energy{
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.06em;
+  color:#5d59a3;
+  background:rgba(127,135,255,.08);
+  border:1px solid rgba(127,135,255,.12);
+  border-radius:999px;
+  padding:6px 10px;
+}
+
+.progress-mini{
+  font-size:11px;
+  color:#7270a6;
+  font-weight:700;
+}
+
+/* GROUPS */
+.groups{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px 12px;
+  flex:1;
+  min-height:0;
+}
+
+.group{
+  min-width:0;
+}
+
+.group-title{
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:#7a78a7;
+  margin-bottom:5px;
+  padding-bottom:3px;
+  border-bottom:1px dashed rgba(92,95,168,.18);
+}
+
+.habit{
+  position:relative;
+  padding:2px 0 2px 18px;
+  font-size:11.5px;
+  line-height:1.35;
+  color:#4e4a72;
+  transition:.25s ease;
+}
+
+.habit::before{
+  content:"☐";
+  position:absolute;
+  left:0;
+  top:1px;
+  color:#7f87ff;
+  font-size:12px;
+}
+
+.done{
+  color:#278e87;
+}
+
+.done::before{
+  content:"☑";
+  color:#00a9ba;
+}
+
+.done .habit-label{
+  text-decoration:line-through;
+  text-decoration-thickness:1.5px;
+  text-decoration-color:rgba(0,169,186,.35);
+}
+
+.doneGlow{
+  text-shadow:0 0 8px rgba(0,169,186,.16);
+}
+
+/* PROGRESS */
+.progress{
+  margin-top:8px;
+  padding-top:8px;
+  border-top:1px dashed rgba(92,95,168,.18);
+}
+
+.progress-label{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.12em;
+  color:#6b68a2;
+  margin-bottom:5px;
+}
+
+.progress-bar{
+  width:100%;
+  height:8px;
+  background:rgba(127,135,255,.10);
+  border-radius:999px;
+  overflow:hidden;
+  box-shadow:inset 0 0 6px rgba(0,0,0,.08);
+}
+
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#7f87ff,#00a9ba,#7fffd4);
+  box-shadow:0 0 10px rgba(0,169,186,.25);
+  transition:width .6s ease;
+}
+
+.progress-note{
+  margin-top:5px;
+  font-size:10px;
+  color:#7a78a7;
+  opacity:.88;
+}
+
+/* SPARKLES */
+.sparkle{
+  position:absolute;
+  pointer-events:none;
+  font-size:10px;
+  opacity:0;
+  animation:sparkleBurst .9s ease-out forwards;
+}
+
+@keyframes sparkleBurst{
+  0%{
+    opacity:1;
+    transform:translate(0,0) scale(.6);
+  }
+  100%{
+    opacity:0;
+    transform:translate(var(--x),var(--y)) scale(1.2);
+  }
+}
+
+/* SMALLER SOURCES */
+@media (max-width: 900px){
+  .clipboard-frame{
+    width:min(58vw, 430px);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay-pop" id="overlayPop">
+  <div class="clipboard-frame">
+    <img class="clipboard-art" src="/widgets/clipboard/clipboard.png" alt="Clipboard">
+    
+    <div class="paper">
+      <div class="title">Aurora Orbit</div>
+      <div class="subtitle">today’s clipboard</div>
+
+      <div class="topline">
+        <div class="energy" id="energy">SPOON ENERGY ●●●○○</div>
+        <div class="progress-mini" id="progressMini">0%</div>
+      </div>
+
+      <div class="groups">
+        <div class="group">
+          <div class="group-title">Care + Body</div>
+          <div class="habit" id="walk"><span class="habit-label">Walk Koda</span></div>
+          <div class="habit" id="yoga"><span class="habit-label">Zen Yoga</span></div>
+          <div class="habit" id="strength"><span class="habit-label">Strength Training</span></div>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Home + Grounding</div>
+          <div class="habit" id="chores"><span class="habit-label">Chores</span></div>
+          <div class="habit" id="brain"><span class="habit-label">Brain Games</span></div>
+          <div class="habit" id="write"><span class="habit-label">Creative Writing</span></div>
+          <div class="habit" id="stitch"><span class="habit-label">Knits + Stitches</span></div>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Nature + World</div>
+          <div class="habit" id="bird"><span class="habit-label">Bird Log</span></div>
+          <div class="habit" id="nature"><span class="habit-label">Nature Project</span></div>
+          <div class="habit" id="park"><span class="habit-label">Park Patrol</span></div>
+          <div class="habit" id="basin"><span class="habit-label">Basin Patrol</span></div>
+          <div class="habit" id="pipe"><span class="habit-label">Warp Pipe Patrol</span></div>
+        </div>
+
+        <div class="group">
+          <div class="group-title">Magic + Work</div>
+          <div class="habit" id="tarot"><span class="habit-label">Tarot Reading</span></div>
+        </div>
+      </div>
+
+      <div class="progress">
+        <div class="progress-label" id="progressText">DAY PROGRESS</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-note" id="progressNote">Scatter stardust one check at a time.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let lastDoneMap = {};
+let hideTimer = null;
+let firstLoad = true;
+
+async function updateHabits(){
+  try{
+    const res = await fetch("/data/aurora-habits?nocache=" + Date.now());
+    const data = await res.json();
+
+    const energyVal = Number(data.energy || 0);
+    const spoons = "●".repeat(energyVal) + "○".repeat(Math.max(0, 5 - energyVal));
+    document.getElementById("energy").innerText = "SPOON ENERGY " + spoons;
+
+    let total = 0;
+    let done = 0;
+    let changedToDone = false;
+
+    for (const key in data) {
+      if (key === "energy") continue;
+
+      const el = document.getElementById(key);
+      if (!el) continue;
+
+      total++;
+
+      const isDone = !!data[key];
+      const wasDone = !!lastDoneMap[key];
+
+      if (isDone) {
+        done++;
+
+        if (!el.classList.contains("done")) {
+          el.classList.add("done");
+          el.classList.add("doneGlow");
+        }
+
+        if (!firstLoad && !wasDone) {
+          changedToDone = true;
+          spawnSparkles(el);
+        }
+      } else {
+        el.classList.remove("done");
+        el.classList.remove("doneGlow");
+      }
+
+      lastDoneMap[key] = isDone;
+    }
+
+    const percent = total ? Math.floor((done / total) * 100) : 0;
+
+    document.getElementById("progressMini").innerText = percent + "%";
+    document.getElementById("progressText").innerText = "DAY PROGRESS " + percent + "%";
+    document.getElementById("progressFill").style.width = percent + "%";
+
+    let note = "Scatter stardust one check at a time.";
+    if (percent >= 100) note = "Orbit complete ✨";
+    else if (percent >= 75) note = "You’re glowing, Moonbeam.";
+    else if (percent >= 40) note = "Steady little wins still count.";
+    else if (percent > 0) note = "Soft progress is still progress.";
+
+    document.getElementById("progressNote").innerText = note;
+
+    if (changedToDone) {
+      showClipboardPop();
+    }
+
+    firstLoad = false;
+
+  } catch(e){
+    console.log("habit load error", e);
+  }
+}
+
+function showClipboardPop(){
+  const pop = document.getElementById("overlayPop");
+  if (!pop) return;
+
+  pop.classList.add("show");
+
+  clearTimeout(hideTimer);
+  hideTimer = setTimeout(() => {
+    pop.classList.remove("show");
+  }, 2200);
+}
+
+function spawnSparkles(el){
+  const rect = el.getBoundingClientRect();
+
+  for(let i = 0; i < 5; i++){
+    const s = document.createElement("div");
+    s.className = "sparkle";
+    s.innerText = "✦";
+
+    const x = (Math.random() * 50 - 25) + "px";
+    const y = (Math.random() * 30 - 15) + "px";
+
+    s.style.setProperty("--x", x);
+    s.style.setProperty("--y", y);
+
+    s.style.left = rect.left + rect.width / 2 + "px";
+    s.style.top = rect.top + rect.height / 2 + "px";
+
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 900);
+  }
+}
+
+updateHabits();
+setInterval(updateHabits, 3000);
+</script>
+
+</body>
+</html>

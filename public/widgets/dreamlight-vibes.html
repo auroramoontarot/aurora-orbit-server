@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Dreamlight Valley Vibes</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --lavender:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+  --deep:rgba(18,16,48,.74);
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:transparent;
+  font-family:"Quicksand", sans-serif;
+  color:var(--ice);
+  overflow:hidden;
+}
+
+.overlay {
+  width:620px;
+  padding:22px;
+  border-radius:28px;
+  background:
+    radial-gradient(circle at top left, rgba(127,135,255,.28), transparent 38%),
+    radial-gradient(circle at bottom right, rgba(0,169,186,.24), transparent 40%),
+    var(--deep);
+  border:1px solid rgba(203,236,245,.28);
+  box-shadow:
+    0 0 28px rgba(0,169,186,.35),
+    inset 0 0 22px rgba(127,135,255,.16);
+  backdrop-filter:blur(14px);
+  text-align:center;
+}
+
+.badge {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 13px;
+  border-radius:999px;
+  background:rgba(203,236,245,.1);
+  border:1px solid rgba(203,236,245,.18);
+  font-size:13px;
+  color:var(--soft);
+  margin-bottom:12px;
+}
+
+.title {
+  font-size:30px;
+  font-weight:700;
+  color:white;
+  text-shadow:0 0 14px rgba(0,169,186,.85);
+}
+
+.subtitle {
+  margin-top:5px;
+  font-size:14px;
+  color:var(--soft);
+}
+
+.village {
+  margin:18px auto;
+  width:100%;
+  min-height:145px;
+  border-radius:24px;
+  background:
+    linear-gradient(135deg, rgba(127,135,255,.16), rgba(0,169,186,.10)),
+    rgba(203,236,245,.07);
+  border:1px solid rgba(203,236,245,.18);
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+}
+
+.village::before {
+  content:"✦  ✧  ✦  ✧  ✦";
+  position:absolute;
+  top:14px;
+  left:0;
+  width:100%;
+  font-size:22px;
+  color:rgba(203,236,245,.35);
+  letter-spacing:28px;
+  animation:twinkle 3.5s ease-in-out infinite;
+}
+
+.saying {
+  position:relative;
+  z-index:1;
+  font-size:28px;
+  font-weight:700;
+  line-height:1.25;
+  color:white;
+  text-shadow:0 0 12px rgba(127,135,255,.8);
+}
+
+.row {
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+}
+
+.mini {
+  padding:11px 10px;
+  border-radius:18px;
+  background:rgba(203,236,245,.08);
+  border:1px solid rgba(203,236,245,.14);
+}
+
+.icon {
+  font-size:24px;
+}
+
+.label {
+  margin-top:3px;
+  font-size:12px;
+  color:var(--soft);
+}
+
+.footer {
+  margin-top:14px;
+  font-size:13px;
+  color:var(--soft);
+  animation:pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%,100% { opacity:.35; transform:translateY(0); }
+  50% { opacity:.8; transform:translateY(3px); }
+}
+
+@keyframes pulse {
+  0%,100% { opacity:.72; }
+  50% { opacity:1; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+  <div class="badge">🏰 Café TV • Valley Check-In</div>
+
+  <div class="title">Dreamlight Valley Vibes</div>
+  <div class="subtitle">Cozy quests, critter chaos, and corgi joy</div>
+
+  <div class="village">
+    <div class="saying" id="saying">Loading magic...</div>
+  </div>
+
+  <div class="row">
+    <div class="mini">
+      <div class="icon">🐾</div>
+      <div class="label">Corgi secured</div>
+    </div>
+
+    <div class="mini">
+      <div class="icon">🌙</div>
+      <div class="label">Moonbeam mode</div>
+    </div>
+
+    <div class="mini">
+      <div class="icon">✨</div>
+      <div class="label">Dreamlight cozy</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Hydrate • Harvest • Pet the Corgi 💜
+  </div>
+</div>
+
+<script>
+const sayings = [
+  "Corgi acquired. Village blessed.",
+  "Running on Dreamlight and snacks.",
+  "Today’s quest: vibe gently.",
+  "Just one more harvest... probably.",
+  "Cozy chaos has entered the valley.",
+  "Moonbeam magic: fully activated.",
+  "Critter friendship is self-care.",
+  "Decorating instead of questing is valid.",
+  "The valley is healing. So are we.",
+  "Pet the corgi. Scatter stardust."
+];
+
+function updateSaying() {
+  const saying = sayings[Math.floor(Math.random() * sayings.length)];
+  document.getElementById("saying").textContent = saying;
+}
+
+updateSaying();
+setInterval(updateSaying, 15000);
+</script>
+
+</body>
+</html>

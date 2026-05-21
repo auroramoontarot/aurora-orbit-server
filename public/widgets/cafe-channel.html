@@ -16,6 +16,7 @@
       --panel:rgba(12,16,30,0.88);
       --screen-top:#232846;
       --screen-bottom:#121529;
+      --danger:#ff6b8f;
     }
 
     *{ box-sizing:border-box; }
@@ -53,13 +54,14 @@
       transform:rotate(1.4deg);
       transform-origin:center center;
       background:
-        radial-gradient(circle at 20% 10%, rgba(127,135,255,0.08), transparent 26%),
-        radial-gradient(circle at 80% 12%, rgba(0,169,186,0.08), transparent 26%),
+        radial-gradient(circle at 20% 10%, rgba(127,135,255,0.10), transparent 26%),
+        radial-gradient(circle at 80% 12%, rgba(0,169,186,0.10), transparent 26%),
         linear-gradient(180deg, var(--screen-top) 0%, var(--screen-bottom) 100%);
       border:1px solid rgba(255,255,255,0.05);
       box-shadow:
-        0 0 20px rgba(0,0,0,0.18),
-        inset 0 0 30px rgba(0,0,0,0.28);
+        0 0 24px rgba(0,0,0,0.22),
+        0 0 24px rgba(127,135,255,0.08),
+        inset 0 0 36px rgba(0,0,0,0.30);
       overflow:hidden;
       animation: screenPulse 18s ease-in-out infinite;
     }
@@ -74,8 +76,8 @@
       position:absolute;
       inset:0;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.045), transparent 24%),
-        radial-gradient(circle at center, transparent 58%, rgba(0,0,0,0.24) 100%);
+        linear-gradient(180deg, rgba(255,255,255,0.05), transparent 24%),
+        radial-gradient(circle at center, transparent 56%, rgba(0,0,0,0.28) 100%);
       pointer-events:none;
       z-index:3;
     }
@@ -87,12 +89,12 @@
       background:
         repeating-linear-gradient(
           to bottom,
-          rgba(255,255,255,0.02) 0px,
-          rgba(255,255,255,0.02) 1px,
+          rgba(255,255,255,0.018) 0px,
+          rgba(255,255,255,0.018) 1px,
           transparent 2px,
-          transparent 4px
+          transparent 5px
         );
-      opacity:.14;
+      opacity:.10;
       pointer-events:none;
       z-index:3;
       mix-blend-mode:screen;
@@ -104,12 +106,24 @@
         quickFlicker 140ms ease-in-out 1;
     }
 
+    .screen.channel-switch{
+      animation:
+        screenPulse 18s ease-in-out infinite,
+        channelSwitch 220ms ease-in-out 1;
+    }
+
     @keyframes quickFlicker {
       0%   { filter: brightness(1.08); }
       25%  { filter: brightness(0.96); }
       50%  { filter: brightness(1.05); }
       75%  { filter: brightness(0.98); }
       100% { filter: brightness(1.03); }
+    }
+
+    @keyframes channelSwitch{
+      0%   { filter: brightness(1.08); transform:rotate(1.4deg) scale(1.002); }
+      40%  { filter: brightness(0.92); transform:rotate(1.4deg) scale(.998); }
+      100% { filter: brightness(1.02); transform:rotate(1.4deg) scale(1); }
     }
 
     .channel-id{
@@ -121,6 +135,57 @@
       letter-spacing:1px;
       color:rgba(203,236,245,0.72);
       z-index:4;
+    }
+
+    .live-bug{
+      position:absolute;
+      top:12px;
+      left:16px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(12,16,30,0.72);
+      border:1px solid rgba(255,255,255,0.06);
+      z-index:4;
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:1px;
+      color:#fff;
+      text-transform:uppercase;
+      box-shadow:0 0 10px rgba(255,107,143,.14);
+    }
+
+    .live-dot{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:var(--danger);
+      box-shadow:0 0 8px rgba(255,107,143,.75);
+      animation: livePulse 1.8s ease-in-out infinite;
+      flex-shrink:0;
+    }
+
+    @keyframes livePulse{
+      0%, 100% { opacity:1; transform:scale(1); }
+      50% { opacity:.55; transform:scale(.85); }
+    }
+
+    .station-bug{
+      position:absolute;
+      bottom:12px;
+      right:16px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(12,16,30,0.68);
+      border:1px solid rgba(255,255,255,0.06);
+      z-index:4;
+      font-size:9px;
+      font-weight:700;
+      letter-spacing:1px;
+      color:var(--soft);
+      text-transform:uppercase;
     }
 
     .channel{
@@ -373,17 +438,134 @@
       line-height:1.3;
     }
 
+    .bottom-stamp{
+      position:absolute;
+      bottom:10px;
+      left:16px;
+      z-index:4;
+      font-size:9px;
+      letter-spacing:1px;
+      color:rgba(203,236,245,0.54);
+      text-transform:uppercase;
+    }
+
     @keyframes featureFade{
       from{ opacity:0; transform:translateY(6px); }
       to{ opacity:1; transform:translateY(0); }
     }
 
+    .dino-card{
+      padding:8px 9px !important;
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      min-height:0;
+    }
+
+    img.dino-image,
+    #dino-image{
+      display:block;
+      width:78%;
+      aspect-ratio: 5 / 4;
+      margin:0 auto;
+      object-fit:cover;
+      object-position:center;
+      border-radius:8px;
+      border:1px solid rgba(203,236,245,0.14);
+      box-shadow:0 0 10px rgba(0,169,186,0.10);
+    }
+
+    .dino-title{
+      font-size:11px;
+      font-weight:700;
+      line-height:1.15;
+      color:#fff;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .dino-text{
+      font-size:8px;
+      line-height:1.2;
+      color:var(--text);
+      opacity:0.92;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+
+    .dino-meta{
+      font-size:7px;
+      line-height:1.1;
+      color:var(--soft);
+      opacity:.78;
+      text-transform:uppercase;
+      letter-spacing:.8px;
+    }
+
+    .fossil-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:2px;
+      min-width:0;
+    }
+
+    .fossil-icons{
+      display:flex;
+      align-items:center;
+      gap:3px;
+      min-width:0;
+      flex-wrap:nowrap;
+      overflow:hidden;
+    }
+
+    .fossil{
+      font-size:11px;
+      line-height:1;
+      opacity:.88;
+      filter: drop-shadow(0 0 4px rgba(127,135,255,.18));
+    }
+
+    .fossil-count{
+      flex-shrink:0;
+      font-size:7px;
+      line-height:1;
+      color:var(--soft);
+      opacity:.82;
+      text-transform:uppercase;
+      letter-spacing:.8px;
+      white-space:nowrap;
+    }
+
+    #dino-card{
+      display:none;
+    }
+
+    .feature-dino-image{
+      display:block;
+      width:100%;
+      max-height:145px;
+      margin:0 auto 8px;
+      object-fit:contain;
+      object-position:center;
+      background:rgba(12,16,30,0.45);
+      border-radius:8px;
+      border:1px solid rgba(203,236,245,0.12);
+      box-shadow:0 0 10px rgba(0,169,186,0.08);
+    }
   </style>
 </head>
 <body>
   <div class="screen-wrap">
     <div class="screen" id="screen">
+      <div class="live-bug"><span class="live-dot"></span>Live</div>
       <div class="channel-id">CH 13</div>
+      <div class="station-bug">Aurora Local</div>
+      <div class="bottom-stamp" id="bottomStamp">Moonbeam broadcast</div>
 
       <div class="channel">
         <div class="topbar">
@@ -411,6 +593,19 @@
               <div class="label">Today</div>
               <div class="schedule-list" id="scheduleList">
                 <div class="schedule-item"><span class="time">--:--</span><span class="title">Loading schedule</span></div>
+              </div>
+            </div>
+
+            <div class="card dino-card" id="dino-card">
+              <div class="label">Ava’s Dino of the Day</div>
+              <img id="dino-image" class="dino-image" src="" alt="Dino of the Day">
+              <div class="dino-title" id="dino-title">Loading today’s dino...</div>
+              <div class="dino-text" id="dino-text">Gathering fossil records...</div>
+              <div class="dino-meta" id="dino-meta">Moonbeam Museum</div>
+
+              <div class="fossil-row">
+                <div class="fossil-icons" id="fossil-icons">🦴</div>
+                <div class="fossil-count" id="fossil-count">1 exhibit</div>
               </div>
             </div>
 
@@ -447,9 +642,15 @@
   <script>
     const API_BASE = "http://localhost:3000";
 
-    const RSS_FEED_URLS = [
-      "https://scatterstardust.com/feed/"
+    const cafeFeeds = [
+      "https://scatterstardust.com/feed/",
+      "https://auroramoontarot.substack.com/feed",
+      "https://www.nasa.gov/rss/dyn/breaking_news.rss",
+      "https://www.minnpost.com/feed/",
+      "https://www.mprnews.org/topic/all-news/rss"
     ];
+
+    const DINO_TAG_ID = "786131785";
 
     const cozyTickerMessages = [
       "11th House Coffee + Collab",
@@ -496,23 +697,46 @@
         aurora: "Aurora KP: --",
         iss: "ISS check pending",
         note: "Best viewing: creek-facing calm and clear windows."
+      },
+      world: {
+        lines: [
+          "🧹 Cleanups: --",
+          "🗑 Bags: --",
+          "🤝 Volunteer: --h"
+        ],
+        ticker: "Aurora World telemetry standing by"
       }
     };
 
     let featureIndex = 0;
+const featureModes = [
+  "headlines",
+  "spoonie",
+  "weather",
+  "sky",
+  "media",
+  "world",
+  "dino",
+  "moonspace",
+  "cowork"
+];
     let latestFeatureData = {
       weather: fallbackData.weather,
       headlines: fallbackData.headlines,
       media: fallbackData.media,
-      nightSky: fallbackData.nightSky
+      nightSky: fallbackData.nightSky,
+      world: fallbackData.world
     };
-
-    const featureModes = ["headlines", "spoonie", "weather", "sky", "media"];
 
     function updateClock() {
       const now = new Date();
       document.getElementById("clock").textContent =
         now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+      const stamp = document.getElementById("bottomStamp");
+      if (stamp) {
+        stamp.textContent = `Aurora local • ${now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}`;
+      }
     }
 
     function safeText(value, fallback = "--") {
@@ -526,6 +750,7 @@
         .replace(/&amp;/g, "&")
         .replace(/&quot;/g, '"')
         .replace(/&#39;/g, "'")
+        .replace(/&#8217;/g, "'")
         .replace(/&apos;/g, "'")
         .replace(/&lt;/g, "<")
         .replace(/&gt;/g, ">")
@@ -533,24 +758,24 @@
         .trim();
     }
 
-    async function fetchFeed(url) {
-      const proxyUrl = `${API_BASE}/rss?feed=${encodeURIComponent(url)}`;
-      const res = await fetch(proxyUrl, { cache: "no-store" });
-      if (!res.ok) throw new Error(`Feed fetch failed: ${url} -> HTTP ${res.status}`);
-      const xml = await res.text();
-
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(xml, "text/xml");
-
-      return Array.from(doc.querySelectorAll("item"))
-        .map(item => cleanFeedText(item.querySelector("title")?.textContent || ""))
-        .filter(Boolean);
+    function pluralize(word, count) {
+      return count === 1 ? word : `${word}s`;
     }
 
-    async function fetchJson(url) {
-      const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
-      return res.json();
+    function buildFossilMeter(count = 1) {
+      const fossilEl = document.getElementById("fossil-icons");
+      const countEl = document.getElementById("fossil-count");
+
+      const safeCount = Math.max(1, Number(count) || 1);
+
+      const iconCount = Math.min(8, Math.max(1, Math.ceil(safeCount / 2)));
+      const iconCycle = ["🦴", "🪨", "🦴", "🪵", "🦴", "🪨", "🦴", "✨"];
+
+      fossilEl.innerHTML = Array.from({ length: iconCount }, (_, i) => {
+        return `<span class="fossil">${iconCycle[i % iconCycle.length]}</span>`;
+      }).join("");
+
+      countEl.textContent = `${safeCount} ${pluralize("exhibit", safeCount)}`;
     }
 
     function renderWeather(weather) {
@@ -585,9 +810,35 @@
         return;
       }
 
-      list.innerHTML = headlines.slice(0, 3).map(item => `
+      list.innerHTML = headlines.slice(0, 5).map(item => `
         <div class="headline-item">${item}</div>
       `).join("");
+    }
+
+    async function fetchFeed(feed) {
+      try {
+        const res = await fetch(`${API_BASE}/rss?url=${encodeURIComponent(feed)}`, {
+          cache: "no-store"
+        });
+
+        if (!res.ok) throw new Error(`RSS route failed for ${feed}`);
+
+        const items = await res.json();
+
+        return (items || [])
+          .map(item => {
+            if (typeof item === "string") return cleanFeedText(item);
+            if (item && typeof item === "object") {
+              return cleanFeedText(item.title || item.text || item.name || "");
+            }
+            return "";
+          })
+          .filter(Boolean)
+          .filter(title => title.length > 8);
+      } catch (err) {
+        console.log("Feed failed completely:", feed, err);
+        return [];
+      }
     }
 
     function buildSpoonieSummary(weather = {}) {
@@ -670,7 +921,7 @@
 
       body.innerHTML = `
         <div class="feature-view headline-list">
-          ${(headlines || []).slice(0, 3).map(item => `
+          ${(headlines || []).slice(0, 5).map(item => `
             <div class="headline-item">${item}</div>
           `).join("") || `<div class="headline-item">No fresh headlines just now.</div>`}
         </div>
@@ -744,28 +995,263 @@
       `;
     }
 
-    function rotateFeatureCard() {
-      const mode = featureModes[featureIndex % featureModes.length];
+    function renderFeatureWorld(world) {
+      const body = document.getElementById("featureBody");
+      const label = document.getElementById("featureLabel");
+      label.textContent = "Aurora World";
 
-      if (mode === "headlines") {
-        renderFeatureHeadlines(latestFeatureData.headlines);
-      } else if (mode === "spoonie") {
-        renderFeatureSpoonie(latestFeatureData.weather);
-      } else if (mode === "weather") {
-        renderFeatureWeather(latestFeatureData.weather);
-      } else if (mode === "sky") {
-        renderFeatureNightSky(latestFeatureData.nightSky);
-      } else if (mode === "media") {
-        renderFeatureMedia(latestFeatureData.media);
-      }
+      body.innerHTML = `
+        <div class="feature-view">
+          ${(world?.lines || fallbackData.world.lines).map(line => `
+            <div class="feature-line">${line}</div>
+          `).join("")}
+          <div class="feature-subtle">Live world telemetry</div>
+        </div>
+      `;
+    }
 
-      featureIndex++;
+    function renderFeatureDino() {
+      const body = document.getElementById("featureBody");
+      const label = document.getElementById("featureLabel");
+
+      const title = document.getElementById("dino-title")?.textContent || "Ava’s Dino of the Day";
+      const text = document.getElementById("dino-text")?.textContent || "Fresh fossil records arriving soon.";
+      const img = document.getElementById("dino-image")?.src || "";
+      const meta = document.getElementById("dino-meta")?.textContent || "Moonbeam Museum";
+      const fossils = document.getElementById("fossil-icons")?.innerHTML || "🦴";
+      const fossilCount = document.getElementById("fossil-count")?.textContent || "1 exhibit";
+
+      label.textContent = "Dino Spotlight";
+
+      body.innerHTML = `
+        <div class="feature-view">
+          ${img ? `<img src="${img}" alt="${title}" class="feature-dino-image">` : ""}
+          <div class="feature-note"><strong>${title}</strong></div>
+          <div class="feature-line">${text}</div>
+          <div class="feature-subtle">${meta}</div>
+          <div class="feature-subtle">${fossils} ${fossilCount}</div>
+        </div>
+      `;
+    }
+
+  /*
+    ============================================
+    MOONSPACE + CO-WORKING ADDITIONS
+    ============================================
+  */
+
+
+  /*
+    ============================================
+    MOONSPACE DATA
+    ============================================
+  */
+
+  const moonspaceMessages = [
+    {
+      title: "MoonSpace",
+      lines: [
+        "🌙 Move gently today.",
+        "✨ Small progress still counts.",
+        "🪐 Cosmic pacing encouraged."
+      ],
+      subtle: "Scatter stardust softly."
+    },
+
+    {
+      title: "MoonSpace",
+      lines: [
+        "🌌 The creek feels calm tonight.",
+        "☕ Warm drinks recommended.",
+        "💫 Rest is productive too."
+      ],
+      subtle: "Aurora Moon Haven frequency."
+    },
+
+    {
+      title: "MoonSpace",
+      lines: [
+        "🌕 Moonbeam energy remains high.",
+        "🧃 Hydration check encouraged.",
+        "✨ Cozy focus > perfection."
+      ],
+      subtle: "Soft skies over the café."
+    },
+
+    {
+      title: "MoonSpace",
+      lines: [
+        "🌠 Stardust levels stable.",
+        "📚 Quiet study energy detected.",
+        "🪴 Tiny wins matter."
+      ],
+      subtle: "Gentleness on the menu today."
+    }
+  ];
+
+  /*
+    ============================================
+    CO-WORKING DATA
+    ============================================
+  */
+
+  const coworkMessages = [
+    {
+      title: "Co-Working Café",
+      lines: [
+        "☕ Focus Sprint active",
+        "💻 Moonbeams quietly creating",
+        "✨ Cozy productivity online"
+      ],
+      subtle: "Aurora co-working in progress."
+    },
+
+    {
+      title: "Co-Working Café",
+      lines: [
+        "🧃 Hydration reminder",
+        "🪑 Stretch your shoulders",
+        "🌙 Slow productivity still counts"
+      ],
+      subtle: "Gentle pace supported here."
+    },
+
+    {
+      title: "Co-Working Café",
+      lines: [
+        "🎮 Cozy tasks in motion",
+        "📚 Café study tables occupied",
+        "💫 Scatter stardust while working"
+      ],
+      subtle: "Moonbeam productivity frequency."
+    },
+
+    {
+      title: "Co-Working Café",
+      lines: [
+        "📝 Tiny tasks > frozen tasks",
+        "☁️ Low-pressure productivity zone",
+        "✨ Existing is enough today"
+      ],
+      subtle: "Soft work energy detected."
+    }
+  ];
+
+  /*
+    ============================================
+    MOONSPACE RENDERER
+    ============================================
+  */
+
+  function renderFeatureMoonSpace() {
+    const body = document.getElementById("featureBody");
+    const label = document.getElementById("featureLabel");
+
+    const random =
+      moonspaceMessages[
+        Math.floor(Math.random() * moonspaceMessages.length)
+      ];
+
+    label.textContent = random.title;
+
+    body.innerHTML = `
+      <div class="feature-view">
+        ${random.lines.map(line => `
+          <div class="feature-line">${line}</div>
+        `).join("")}
+
+        <div class="feature-subtle">
+          ${random.subtle}
+        </div>
+      </div>
+    `;
+  }
+
+  /*
+    ============================================
+    CO-WORKING RENDERER
+    ============================================
+  */
+
+  function renderFeatureCowork() {
+    const body = document.getElementById("featureBody");
+    const label = document.getElementById("featureLabel");
+
+    const random =
+      coworkMessages[
+        Math.floor(Math.random() * coworkMessages.length)
+      ];
+
+    label.textContent = random.title;
+
+    body.innerHTML = `
+      <div class="feature-view">
+        ${random.lines.map(line => `
+          <div class="feature-line">${line}</div>
+        `).join("")}
+
+        <div class="feature-subtle">
+          ${random.subtle}
+        </div>
+      </div>
+    `;
+  }
+
+  /*
+    ============================================
+    UPDATE rotateFeatureCard()
+    ============================================
+  */
+
+  function rotateFeatureCard() {
+    const mode = featureModes[featureIndex % featureModes.length];
+
+    if (mode === "headlines") {
+      renderFeatureHeadlines(latestFeatureData.headlines);
+
+    } else if (mode === "spoonie") {
+      renderFeatureSpoonie(latestFeatureData.weather);
+
+    } else if (mode === "weather") {
+      renderFeatureWeather(latestFeatureData.weather);
+
+    } else if (mode === "sky") {
+      renderFeatureNightSky(latestFeatureData.nightSky);
+
+    } else if (mode === "media") {
+      renderFeatureMedia(latestFeatureData.media);
+
+    } else if (mode === "world") {
+      renderFeatureWorld(latestFeatureData.world);
+
+    } else if (mode === "dino") {
+      renderFeatureDino();
+
+    } else if (mode === "moonspace") {
+      renderFeatureMoonSpace();
+
+    } else if (mode === "cowork") {
+      renderFeatureCowork();
+    }
+
+    featureIndex++;
+
+    triggerChannelSwitch();
+  }
+
+    function triggerChannelSwitch() {
+      const screen = document.getElementById("screen");
+      screen.classList.remove("channel-switch");
+      void screen.offsetWidth;
+      screen.classList.add("channel-switch");
+      setTimeout(() => screen.classList.remove("channel-switch"), 240);
     }
 
     function buildTicker(headlines) {
       const reading = latestFeatureData.media?.reading || "";
       const watching = latestFeatureData.media?.watching || "";
       const sky = latestFeatureData.nightSky?.aurora || "";
+      const worldTicker = latestFeatureData.world?.ticker || "";
 
       const pick = () => cozyTickerMessages[Math.floor(Math.random() * cozyTickerMessages.length)];
 
@@ -773,6 +1259,7 @@
         reading ? `Reading: ${reading}` : pick(),
         watching ? `Watching: ${watching}` : pick(),
         sky || pick(),
+        worldTicker || pick(),
         ...(headlines || []).slice(0, 2),
         "Aurora Moon Café now brewing"
       ];
@@ -792,6 +1279,12 @@
         triggerFlicker();
         scheduleRandomFlicker();
       }, next);
+    }
+
+    async function fetchJson(url) {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${url} -> HTTP ${res.status}`);
+      return res.json();
     }
 
     async function fetchWeather() {
@@ -870,12 +1363,14 @@
     }
 
     async function fetchHeadlines() {
-      const settled = await Promise.allSettled(RSS_FEED_URLS.map(fetchFeed));
-      const combined = [];
+      const results = await Promise.allSettled(cafeFeeds.map(fetchFeed));
 
-      for (const result of settled) {
-        if (result.status === "fulfilled") combined.push(...result.value);
-      }
+      const combined = [];
+      results.forEach(result => {
+        if (result.status === "fulfilled") {
+          combined.push(...result.value);
+        }
+      });
 
       const unique = [];
       const seen = new Set();
@@ -893,10 +1388,16 @@
 
     async function fetchMedia() {
       try {
-        const data = await fetchJson(`${API_BASE}/media`);
+        const data = await fetchJson(`${API_BASE}/media-status?nocache=${Date.now()}`);
+
         const media = {
-          reading: data?.book || data?.reading || data?.currentBook || fallbackData.media.reading,
-          watching: data?.tv || data?.watching || data?.movie || fallbackData.media.watching
+          reading: data?.book?.title
+            ? `${data.book.title}${data.book.author ? " — " + data.book.author : ""}`
+            : fallbackData.media.reading,
+
+          watching: data?.watching?.title
+            ? `${data.watching.title}${data.watching.detail ? " — " + data.watching.detail : ""}`
+            : fallbackData.media.watching
         };
 
         document.getElementById("reading").textContent = media.reading || "—";
@@ -949,13 +1450,147 @@
       };
     }
 
+    async function fetchWorldTelemetry() {
+      try {
+        const data = await fetchJson(`${API_BASE}/data/aurora-moon-data.json?nocache=${Date.now()}`);
+
+        const totalCleanups =
+          Number(data?.park_cleanups || 0) +
+          Number(data?.hydrant_clear || 0) +
+          Number(data?.drain_clear || 0);
+
+        const views = [
+          [
+            `🧹 Cleanups: ${totalCleanups}`,
+            `🗑 Bags: ${Number(data?.trash_bags || 0)}`,
+            `🤝 Volunteer: ${Number(data?.volunteer_hours || 0)}h`
+          ],
+          [
+            `🌿 Projects: ${Number(data?.nature_projects || 0)}`,
+            `🐦 Lifebirds: ${Number(data?.lifebirds || 0)}`,
+            `🎓 CE: ${Number(data?.ce_hours || 0)}h`
+          ],
+          [
+            `🎮 Pokémon: ${Number(data?.pokemon_caught || 0)}`,
+            `🌀 Stops: ${Number(data?.pokestops_spun || 0)}`,
+            `🥚 Eggs: ${Number(data?.eggs_hatched || 0)}`
+          ],
+          [
+            `🃏 Packs: ${Number(data?.packs_opened || 0)}`,
+            `✨ Rare: ${Number(data?.rare_cards || 0)}`,
+            `💥 EX: ${Number(data?.ex_cards || 0)}`
+          ]
+        ];
+
+        const randomView = views[Math.floor(Math.random() * views.length)];
+
+        const ticker = [
+          `Cleanups ${totalCleanups}`,
+          `Volunteer ${Number(data?.volunteer_hours || 0)}h`,
+          `Lifebirds ${Number(data?.lifebirds || 0)}`,
+          `Pokémon ${Number(data?.pokemon_caught || 0)}`,
+          `Rare ${Number(data?.rare_cards || 0)}`
+        ].join(" • ");
+
+        return {
+          lines: randomView,
+          ticker
+        };
+      } catch (err) {
+        console.error("World telemetry load failed:", err);
+        return fallbackData.world;
+      }
+    }
+
+    async function loadDinoOfTheDay() {
+      const titleEl = document.getElementById("dino-title");
+      const textEl = document.getElementById("dino-text");
+      const imageEl = document.getElementById("dino-image");
+      const metaEl = document.getElementById("dino-meta");
+
+      try {
+        if (!DINO_TAG_ID) {
+          throw new Error("Set DINO_TAG_ID first.");
+        }
+
+        const [postsRes, tagRes] = await Promise.all([
+          fetch(
+            `https://scatterstardust.com/wp-json/wp/v2/posts?_embed&per_page=1&tags=${encodeURIComponent(DINO_TAG_ID)}`,
+            { cache: "no-store" }
+          ),
+          fetch(
+            `https://scatterstardust.com/wp-json/wp/v2/tags/${encodeURIComponent(DINO_TAG_ID)}`,
+            { cache: "no-store" }
+          )
+        ]);
+
+        if (!postsRes.ok) throw new Error("Failed to fetch dino post");
+
+        const posts = await postsRes.json();
+        if (!posts.length) throw new Error("No dino posts found");
+
+        let tagCount = 1;
+        if (tagRes.ok) {
+          const tagData = await tagRes.json();
+          tagCount = Number(tagData?.count || 1);
+        }
+        buildFossilMeter(tagCount);
+
+        const post = posts[0];
+
+        const title = post.title?.rendered
+          ? cleanFeedText(post.title.rendered)
+          : "Ava’s Dino of the Day";
+
+        const excerpt = post.excerpt?.rendered
+          ? cleanFeedText(post.excerpt.rendered)
+          : "A fresh dino discovery is on display today.";
+
+        const date = post.date
+          ? new Date(post.date).toLocaleDateString([], { month: "short", day: "numeric" })
+          : "Latest exhibit";
+
+        let imageUrl = "";
+        const media = post._embedded?.["wp:featuredmedia"]?.[0];
+        if (media?.source_url) {
+          imageUrl = media.source_url;
+        }
+
+        titleEl.textContent = title;
+        textEl.textContent = excerpt || "A fresh dino discovery is on display today.";
+        metaEl.textContent = `Moonbeam Museum • ${date}`;
+
+        if (imageUrl) {
+          imageEl.src = imageUrl;
+          imageEl.style.display = "block";
+        } else {
+          imageEl.style.display = "none";
+        }
+      } catch (err) {
+        console.log("Dino card failed:", err);
+        titleEl.textContent = "Ava’s Dino of the Day";
+        textEl.textContent = "The fossil case is resting right now. Check back soon.";
+        metaEl.textContent = "Moonbeam Museum";
+        imageEl.style.display = "none";
+        buildFossilMeter(1);
+      }
+    }
+
     async function loadLiveData() {
-      const [weatherResult, scheduleResult, headlinesResult, mediaResult, nightSkyResult] = await Promise.allSettled([
+      const [
+        weatherResult,
+        scheduleResult,
+        headlinesResult,
+        mediaResult,
+        nightSkyResult,
+        worldResult
+      ] = await Promise.allSettled([
         fetchWeather(),
         fetchSchedule(),
         fetchHeadlines(),
         fetchMedia(),
-        fetchNightSky()
+        fetchNightSky(),
+        fetchWorldTelemetry()
       ]);
 
       const weather = weatherResult.status === "fulfilled" ? weatherResult.value : fallbackData.weather;
@@ -963,17 +1598,20 @@
       const headlines = headlinesResult.status === "fulfilled" ? headlinesResult.value : fallbackData.headlines;
       const media = mediaResult.status === "fulfilled" ? mediaResult.value : fallbackData.media;
       const nightSky = nightSkyResult.status === "fulfilled" ? nightSkyResult.value : fallbackData.nightSky;
+      const world = worldResult.status === "fulfilled" ? worldResult.value : fallbackData.world;
 
       if (weatherResult.status === "rejected") console.error("Weather load failed:", weatherResult.reason);
       if (scheduleResult.status === "rejected") console.error("Schedule load failed:", scheduleResult.reason);
       if (headlinesResult.status === "rejected") console.error("Headlines load failed:", headlinesResult.reason);
       if (mediaResult.status === "rejected") console.error("Media load failed:", mediaResult.reason);
       if (nightSkyResult.status === "rejected") console.error("Night sky load failed:", nightSkyResult.reason);
+      if (worldResult.status === "rejected") console.error("World telemetry load failed:", worldResult.reason);
 
       latestFeatureData.weather = weather;
       latestFeatureData.headlines = headlines;
       latestFeatureData.media = media;
       latestFeatureData.nightSky = nightSky;
+      latestFeatureData.world = world;
 
       renderWeather(weather);
       renderSchedule(schedule);
@@ -985,8 +1623,12 @@
     updateClock();
     setInterval(updateClock, 1000);
 
+    buildFossilMeter(1);
     loadLiveData();
+    loadDinoOfTheDay();
+
     setInterval(loadLiveData, 5 * 60 * 1000);
+    setInterval(loadDinoOfTheDay, 30 * 60 * 1000);
     setInterval(rotateFeatureCard, 15000);
 
     setInterval(() => {
@@ -997,6 +1639,8 @@
     }, 20000);
 
     scheduleRandomFlicker();
+
+
   </script>
 </body>
 </html>

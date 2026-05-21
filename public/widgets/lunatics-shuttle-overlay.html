@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Luna-Tics Shuttle Overlay</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --lavender:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --accent:#c6c7f8;
+  --deep:#2b2772;
+  --gold:#f6b437;
+}
+
+*{ box-sizing:border-box; }
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand', sans-serif;
+  color:var(--ice);
+}
+
+.overlay{
+  position:relative;
+  width:100vw;
+  height:100vh;
+}
+
+/* MAIN SCENE */
+.scene{
+  position:absolute;
+  inset:0;
+  background-image:url("images/luna-tics-shuttle.png"); /* UPDATE PATH IF NEEDED */
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+}
+
+/* SOFT AURORA GLOW */
+.scene::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(198,199,248,.12), transparent 35%),
+    radial-gradient(circle at 50% 45%, rgba(127,135,255,.12), transparent 42%);
+}
+
+/* TOP TICKER */
+.top-bar{
+  position:absolute;
+  top:0;
+  width:100%;
+  height:78px;
+  display:flex;
+  align-items:center;
+  overflow:hidden;
+  background:rgba(203,236,245,.94);
+  border-top:8px solid rgba(127,135,255,.75);
+  border-bottom:3px solid rgba(127,135,255,.26);
+}
+
+.ticker{
+  white-space:nowrap;
+  padding-left:100%;
+  animation:scroll 42s linear infinite;
+  font-size:26px;
+  font-weight:700;
+  color:var(--deep);
+}
+
+@keyframes scroll{
+  0%{ transform:translateX(0); }
+  100%{ transform:translateX(-100%); }
+}
+
+.gold{ color:var(--gold); }
+
+/* RECORDING HUD */
+.recording-hud{
+  position:absolute;
+  top:138px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:10px 22px;
+  border-radius:22px;
+
+  background:rgba(30,24,81,.28);
+  backdrop-filter:blur(10px);
+
+  border:1px solid rgba(198,199,248,.26);
+
+  box-shadow:
+    0 0 12px rgba(127,135,255,.22),
+    0 0 24px rgba(0,169,186,.1);
+
+  text-align:center;
+
+  animation:pulse 4.5s ease-in-out infinite;
+}
+
+/* blinking dot */
+.recording-hud::before{
+  content:"";
+  display:inline-block;
+  width:8px;
+  height:8px;
+  margin-right:10px;
+  border-radius:50%;
+  background:var(--teal);
+  box-shadow:0 0 8px var(--teal);
+  animation:blink 1.2s infinite;
+  vertical-align:middle;
+}
+
+.recording-title{
+  display:inline-block;
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:1.2px;
+}
+
+.recording-sub{
+  margin-top:4px;
+  font-size:12px;
+  opacity:.8;
+}
+
+@keyframes pulse{
+  0%,100%{opacity:.75;}
+  50%{opacity:1;}
+}
+
+@keyframes blink{
+  0%,100%{opacity:1;}
+  50%{opacity:.3;}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+  <div class="scene"></div>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="ticker">
+      <span class="gold">☽ ✨</span>
+      LUNA-TICS PODCAST ✨ TUESDAYS 2PM CST ✨ !POD TO LEARN MORE 🌈 💜 SAFE SPACE ✨ TEXT 786-588-LUNA ✨
+      <span class="gold">☽ ✨</span>
+    </div>
+  </div>
+
+  <!-- RECORDING HUD -->
+  <div class="recording-hud">
+    <div class="recording-title">TRANSMISSION: LUNA-TICS</div>
+    <div class="recording-sub">Recording in progress · Hotline open 💬</div>
+  </div>
+
+</div>
+
+</body>
+</html>

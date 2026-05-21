@@ -1,47 +1,50 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
 
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+  --panel:rgba(18,24,42,0.88);
+  --panel-2:rgba(25,30,48,0.92);
+  --line:rgba(203,236,245,0.14);
+}
 
 body{
-margin:0;
-font-family:'Quicksand',sans-serif;
-background:radial-gradient(circle at top,#1a2238,#0c0f1a);
-color:#cbecf5;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+  margin:0;
+  font-family:'Quicksand',sans-serif;
+  background:radial-gradient(circle at top,#1a2238,#0c0f1a);
+  color:#cbecf5;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
 /* PANEL */
 
 .panel{
-width:420px;
-padding:20px;
-
-background:rgba(255,255,255,.05);
-backdrop-filter:blur(12px);
-
-border:1px solid rgba(255,255,255,.15);
-border-radius:16px;
-
-box-shadow:
-0 0 20px rgba(0,169,186,.25),
-inset 0 0 10px rgba(255,255,255,.05);
-
-max-height:90vh;
-overflow:auto;
+  width:420px;
+  padding:20px;
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:18px;
+  box-shadow:
+    0 0 20px rgba(0,169,186,.25),
+    inset 0 0 10px rgba(255,255,255,.05);
+  max-height:90vh;
+  overflow:auto;
 }
 
-/* HOLOGRAPHIC AURORA SCROLLBAR */
+/* SCROLLBAR */
 
 .panel{
   scrollbar-width: thin;
@@ -49,18 +52,18 @@ overflow:auto;
 }
 
 .panel::-webkit-scrollbar{
-  width: 10px;
+  width:10px;
 }
 
 .panel::-webkit-scrollbar-track{
-  background: rgba(255,255,255,.04);
-  border-radius: 999px;
+  background:rgba(255,255,255,.04);
+  border-radius:999px;
   box-shadow: inset 0 0 8px rgba(255,255,255,.04);
 }
 
 .panel::-webkit-scrollbar-thumb{
-  border-radius: 999px;
-  border: 2px solid rgba(12,15,26,.35);
+  border-radius:999px;
+  border:2px solid rgba(12,15,26,.35);
   background:
     linear-gradient(
       180deg,
@@ -91,251 +94,399 @@ overflow:auto;
 /* TITLE */
 
 .title{
-text-align:center;
-font-size:22px;
-letter-spacing:2px;
-margin-bottom:20px;
+  text-align:center;
+  font-size:22px;
+  letter-spacing:2px;
+  margin-bottom:20px;
+  color:var(--soft);
+  text-shadow:
+    0 0 8px rgba(127,135,255,.22),
+    0 0 16px rgba(0,169,186,.12);
 }
 
 /* CURRENT QUEST */
 
 .current{
-padding:10px;
-margin-bottom:20px;
-
-background:rgba(0,169,186,.15);
-border-radius:10px;
-
-font-weight:700;
-text-align:center;
+  padding:12px 14px;
+  margin-bottom:20px;
+  background:rgba(25,30,48,0.92);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:
+    0 0 14px rgba(127,135,255,0.10),
+    inset 0 1px 0 rgba(255,255,255,.03);
+  font-weight:700;
+  text-align:center;
+  color:#ffffff;
 }
 
 /* QUEUE */
 
 .queue{
-max-height:300px;
-overflow:auto;
+  max-height:300px;
+  overflow:auto;
 }
 
 /* QUEST ROW */
 
 .quest{
-display:flex;
-align-items:center;
-gap:10px;
-
-padding:8px;
-margin-bottom:6px;
-
-background:rgba(255,255,255,.04);
-border-radius:10px;
-
-cursor:grab;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  margin-bottom:8px;
+  background:rgba(25,30,48,0.82);
+  border:1px solid rgba(203,236,245,0.10);
+  border-radius:12px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+  cursor:grab;
 }
 
 .quest.dragging{
-opacity:.4;
+  opacity:.4;
 }
 
 .drag{
-opacity:.5;
-font-size:18px;
-cursor:grab;
+  opacity:.55;
+  font-size:18px;
+  cursor:grab;
 }
 
 .text{
-flex:1;
+  flex:1;
 }
 
+/* GLOBAL BUTTON STYLE */
+
 button{
-background:none;
-border:none;
-color:#cbecf5;
-cursor:pointer;
-font-size:16px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(180deg, rgba(127,135,255,0.95), rgba(0,169,186,0.88));
+  color:#ffffff;
+  font-family:inherit;
+  font-weight:700;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(127,135,255,0.18);
+  transition:
+    transform .15s ease,
+    filter .18s ease,
+    box-shadow .18s ease;
 }
 
 button:hover{
-color:#7fffd4;
+  filter:brightness(1.06);
+  transform:translateY(-1px);
+}
+
+button:active{
+  transform:translateY(0);
+}
+
+button.active{
+  box-shadow:
+    0 0 12px rgba(0,255,208,.35),
+    0 0 24px rgba(0,169,186,.28);
+}
+
+/* QUEST BUTTONS */
+
+.quest button{
+  min-width:34px;
+  min-height:34px;
+  padding:0 10px;
+  font-size:14px;
+  border-radius:10px;
+}
+
+/* INPUTS */
+
+input,
+select{
+  width:100%;
+  box-sizing:border-box;
+  padding:10px 12px;
+  border-radius:12px;
+  border:1px solid rgba(203,236,245,.18);
+  background:rgba(12,16,30,0.88);
+  color:#cbecf5;
+  font-size:15px;
+  font-family:inherit;
+  outline:none;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+}
+
+input::placeholder{
+  color:rgba(203,236,245,.55);
+}
+
+input:focus,
+select:focus{
+  border-color:rgba(127,135,255,.45);
+  box-shadow:
+    0 0 0 1px rgba(127,135,255,.25),
+    0 0 12px rgba(0,169,186,.12);
 }
 
 /* ADD QUEST */
 
 .add{
-margin-top:15px;
-display:flex;
-gap:6px;
-}
-
-input{
-flex:1;
-padding:8px;
-border:none;
-border-radius:8px;
-background:rgba(255,255,255,.08);
-color:#fff;
-font-size:16px;
+  margin-top:15px;
+  display:flex;
+  gap:8px;
 }
 
 .add button{
-background:#00a9ba;
-padding:8px 12px;
-border-radius:8px;
+  padding:10px 14px;
+  white-space:nowrap;
 }
+
+/* CONTROLS */
 
 .controls{
-margin-top:10px;
-display:flex;
-justify-content:space-between;
+  margin-top:10px;
+  display:flex;
+  gap:8px;
 }
 
-/* COSMIC CONTROLS */
-
-.cosmic-controls{
-margin-top:18px;
-padding-top:12px;
-border-top:1px solid rgba(255,255,255,.15);
+.controls button{
+  flex:1;
+  padding:10px 12px;
 }
 
-.section-title{
-font-size:14px;
-letter-spacing:1px;
-margin-bottom:8px;
-opacity:.8;
+/* CARDS */
+
+.cosmic-controls,
+.spotify-card{
+  margin-top:18px;
+  padding:14px;
+  background:rgba(25,30,48,0.92);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:
+    0 0 14px rgba(127,135,255,0.12),
+    inset 0 1px 0 rgba(255,255,255,.03);
 }
+
+.section-title,
+.spotify-card h3{
+  font-size:14px;
+  letter-spacing:1px;
+  margin-bottom:10px;
+  color:var(--soft);
+  opacity:.95;
+}
+
+/* BUTTON GROUPS */
 
 .cosmic-buttons{
-display:flex;
-flex-wrap:wrap;
-gap:6px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
 }
 
 .cosmic-buttons button{
-background:rgba(0,169,186,.25);
-padding:6px 10px;
-border-radius:8px;
-font-size:13px;
-}
-
-.cosmic-buttons button:hover{
-background:rgba(0,169,186,.5);
-}
-
-.cosmic-buttons button.active{
-background:#00a9ba;
-box-shadow:
-0 0 10px #00ffd0,
-0 0 20px rgba(0,169,186,.6);
-color:#7fffd4;
+  padding:8px 12px;
+  border-radius:10px;
+  font-size:13px;
 }
 
 /* WATCHING */
 
 .media-fields{
-display:flex;
-flex-direction:column;
-gap:8px;
-margin-top:8px;
-}
-
-.media-fields input{
-width:100%;
-box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:8px;
 }
 
 .media-row{
-display:flex;
-gap:6px;
-margin-top:8px;
+  display:flex;
+  gap:8px;
+  margin-top:8px;
 }
 
 .media-row button{
-background:rgba(0,169,186,.25);
-padding:8px 10px;
-border-radius:8px;
-font-size:13px;
-}
-
-.current-media{
-margin-top:10px;
-padding:10px;
-background:rgba(255,255,255,.04);
-border-radius:10px;
-font-size:14px;
-line-height:1.4;
-transition:
-opacity .6s ease,
-box-shadow .4s ease,
-transform .35s ease;
+  padding:10px 12px;
+  font-size:13px;
 }
 
 /* NATURE LOG */
 
 .log-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:6px;
-margin-top:8px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:8px;
 }
 
 .log-grid button{
-background:rgba(0,169,186,.25);
-padding:8px 10px;
-border-radius:8px;
-font-size:13px;
+  padding:10px 12px;
+  font-size:13px;
+  border-radius:10px;
 }
 
 .log-inputs{
-display:flex;
-flex-direction:column;
-gap:8px;
-margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:10px;
 }
 
 .log-input-row{
-display:flex;
-gap:6px;
-}
-
-.log-input-row input{
-flex:1;
-box-sizing:border-box;
+  display:flex;
+  gap:8px;
 }
 
 .log-input-row button{
-background:rgba(0,169,186,.25);
-padding:8px 10px;
-border-radius:8px;
-font-size:13px;
+  padding:10px 12px;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+/* STATUS BOXES */
+
+.current-media,
+.log-summary{
+  margin-top:10px;
+  padding:12px;
+  background:rgba(12,16,30,0.82);
+  border:1px solid rgba(203,236,245,0.10);
+  border-radius:12px;
+  font-size:13px;
+  line-height:1.5;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+}
+
+.current-media{
+  font-size:14px;
+  line-height:1.4;
+  transition:
+    opacity .6s ease,
+    box-shadow .4s ease,
+    transform .35s ease;
 }
 
 .log-summary{
-margin-top:10px;
-padding:10px;
-background:rgba(255,255,255,.04);
-border-radius:10px;
-font-size:13px;
-line-height:1.5;
-white-space:pre-line;
+  white-space:pre-line;
 }
 
 .small-note{
-margin-top:6px;
-font-size:12px;
-opacity:.75;
+  margin-top:6px;
+  font-size:12px;
+  opacity:.75;
+  color:var(--ice);
 }
 
-/* FIELD STATUS MAGIC */
+/* SPOTIFY */
+
+.spotify-row{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-bottom:10px;
+  flex-wrap:wrap;
+}
+
+.spotify-row label{
+  font-size:13px;
+  color:#cbecf5;
+}
+
+.spotify-row select{
+  min-width:220px;
+}
+
+.spotify-grid{
+  display:grid;
+  grid-template-columns:repeat(2, minmax(120px, 1fr));
+  gap:10px;
+  margin:10px 0 14px;
+}
+
+.spotify-grid button,
+.spotify-row button{
+  padding:10px 12px;
+}
+
+.spotify-grid button:last-child{
+  grid-column:1 / -1;
+}
+
+.spotify-now,
+.spotify-status{
+  font-size:13px;
+  line-height:1.35;
+  color:#cbecf5;
+}
+
+.spotify-status{
+  margin-top:8px;
+  color:#c6c7f8;
+  opacity:0.9;
+  min-height:18px;
+}
+
+#spotifyAutoBtn.active{
+  box-shadow:
+    0 0 12px rgba(0,255,208,.35),
+    0 0 24px rgba(0,169,186,.28);
+}
+
+/* AURORA WORLD */
+
+.compact-world{
+  margin-top:18px;
+  padding:14px;
+  background:
+    radial-gradient(circle at top right, rgba(127,135,255,.10), transparent 38%),
+    radial-gradient(circle at bottom left, rgba(0,169,186,.10), transparent 40%),
+    rgba(25,30,48,0.92);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:
+    0 0 14px rgba(127,135,255,0.12),
+    inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.compact-world h2{
+  margin:0 0 10px;
+  font-size:14px;
+  letter-spacing:1px;
+  color:var(--soft);
+  opacity:.95;
+}
+
+.world-stats-mini{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:6px 10px;
+  font-size:11px;
+  line-height:1.35;
+  color:var(--ice);
+}
+
+.world-stat{
+  padding:6px 8px;
+  border-radius:10px;
+  background:rgba(12,16,30,0.55);
+  border:1px solid rgba(203,236,245,.07);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.02);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* STATUS MAGIC */
 
 .status-glow{
-box-shadow:
-0 0 12px rgba(0,255,208,.35),
-0 0 24px rgba(0,169,186,.28);
-transform:translateY(-1px);
+  box-shadow:
+    0 0 12px rgba(0,255,208,.35),
+    0 0 24px rgba(0,169,186,.28);
+  transform:translateY(-1px);
 }
 
 .status-fade{
-opacity:.82;
+  opacity:.82;
 }
 
 @media (max-width: 700px){
@@ -360,7 +511,9 @@ opacity:.82;
     margin-bottom:16px;
   }
 
-  .cosmic-buttons{
+  .cosmic-buttons,
+  .log-grid,
+  .spotify-grid{
     gap:8px;
   }
 
@@ -369,12 +522,15 @@ opacity:.82;
   .media-row button,
   .add button,
   .controls button,
-  .log-input-row button{
+  .log-input-row button,
+  .spotify-grid button,
+  .spotify-row button{
     min-height:44px;
     font-size:15px;
   }
 
-  input{
+  input,
+  select{
     min-height:44px;
     font-size:16px;
   }
@@ -390,332 +546,302 @@ opacity:.82;
   .controls button{
     flex:1;
   }
-}
 
-.spotify-card{
-  margin-top: 14px;
-  padding: 14px;
-  border-radius: 14px;
-  background: rgba(25, 30, 48, 0.92);
-  border: 1px solid rgba(203,236,245,0.14);
-  box-shadow: 0 0 14px rgba(127,135,255,0.12);
+  .world-stats-mini{
+    grid-template-columns:1fr;
+  }
 }
-
-.spotify-card h3{
-  margin: 0 0 12px;
-  font-size: 18px;
-  color: #c6c7f8;
-}
-
-.spotify-row{
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.spotify-row label{
-  font-size: 13px;
-  color: #cbecf5;
-}
-
-.spotify-row select{
-  min-width: 220px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(203,236,245,0.18);
-  background: rgba(12,16,30,0.88);
-  color: #cbecf5;
-}
-
-.spotify-grid{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(120px, 1fr));
-  gap: 10px;
-  margin: 10px 0 14px;
-}
-
-.spotify-grid button,
-.spotify-row button{
-  padding: 10px 12px;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(127,135,255,0.95), rgba(0,169,186,0.88));
-  color: white;
-  font-family: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(127,135,255,0.18);
-}
-
-.spotify-grid button:hover,
-.spotify-row button:hover{
-  filter: brightness(1.06);
-}
-
-.spotify-now,
-.spotify-status{
-  font-size: 13px;
-  line-height: 1.35;
-  color: #cbecf5;
-}
-
-.spotify-status{
-  margin-top: 8px;
-  color: #c6c7f8;
-  opacity: 0.9;
-}
-
-.spotify-grid button:last-child{
-  grid-column: 1 / -1;
-}
-
 </style>
-
 </head>
 
 <body>
-
 <div class="panel">
 
-<div class="title">
-🌙 Aurora Mission Control
-</div>
-
-<div class="current" id="currentQuest">
-Loading mission...
-</div>
-
-<div class="queue" id="queue"></div>
-
-<div class="add">
-<input id="newQuest" placeholder="Add new quest...">
-<button onclick="addQuest()">Add</button>
-</div>
-
-<div class="controls">
-<button onclick="completeQuest()">✅ Complete</button>
-<button onclick="skipQuest()">⏭ Skip</button>
-</div>
-
-<div class="control-card spotify-card">
-  <h3>Spotify Vibes</h3>
-
-  <div class="spotify-row">
-    <button onclick="spotifyLogin()">Connect Spotify</button>
-    <button onclick="loadSpotifyDevices()">Refresh Devices</button>
+  <div class="title">
+    🌙 Aurora Mission Control
   </div>
 
-  <div class="spotify-row">
-    <label for="spotifyDevice">Device</label>
-    <select id="spotifyDevice">
-      <option value="">Active device</option>
-    </select>
+  <div class="current" id="currentQuest">
+    Loading mission...
   </div>
 
-<div class="spotify-grid">
-  <button onclick="playSpotifyMode('cottage')">🌿 Cottage</button>
-  <button onclick="playSpotifyMode('reiki')">🔮 Reiki</button>
-  <button onclick="playSpotifyMode('stardust')">✨ Stardust</button>
-  <button onclick="playSpotifyMode('night')">🌙 Night</button>
-  <button onclick="toggleSpotifyAuto()" id="spotifyAutoBtn">🤖 Auto</button>
-</div>
+  <div class="queue" id="queue"></div>
 
-  <div class="spotify-now">
-    <strong>Now Playing:</strong>
-    <span id="spotifyNowPlaying">Checking Spotify…</span>
+  <div class="add">
+    <input id="newQuest" placeholder="Add new quest...">
+    <button onclick="addQuest()">Add</button>
   </div>
 
-  <div class="spotify-status" id="spotifyStatus">Ready to brew a vibe.</div>
-</div>
+  <div class="controls">
+    <button onclick="completeQuest()">✅ Complete</button>
+    <button onclick="skipQuest()">⏭ Skip</button>
+  </div>
 
 <div class="cosmic-controls">
+  <div class="section-title">📟 Moonbeam Pager</div>
 
-<div class="section-title">📺 Now Watching</div>
-
-<div class="media-fields">
-<input id="watchTitle" placeholder="Show / stream / movie title...">
-<input id="watchDetail" placeholder="Episode / Live / detail...">
+  <div class="cosmic-buttons">
+    <button onclick="setPagerMode(this,'recharge')">🌙 Recharge</button>
+    <button onclick="setPagerMode(this,'brb')">☕ BRB</button>
+    <button onclick="setPagerMode(this,'coding')">💻 Coding</button>
+    <button onclick="setPagerMode(this,'tarot')">🔮 Tarot</button>
+    <button onclick="setPagerMode(this,'sleep')">😴 Sleep</button>
+    <button onclick="setPagerMode(this,'cafe')">☕ Cafe</button>
+  </div>
+</div>
+<div class="media-fields" style="margin-top:10px;">
+  <input
+    id="pagerCustomStatus"
+    placeholder="Custom pager message..."
+  >
 </div>
 
 <div class="media-row">
-<button onclick="updateWatching()">Update Watching</button>
-<button onclick="clearWatching()">Clear</button>
+  <button onclick="sendPagerCustom()">
+    ✨ Set Custom
+  </button>
+
+  <button onclick="clearPager()">
+    🧹 Clear
+  </button>
 </div>
 
-<div class="current-media" id="currentWatching">
-Current watching: —
+<div class="current-media" id="pagerStatus">
+  Pager ready for transmissions ✦
 </div>
+  <div class="section compact-world">
+    <h2>🌍 Aurora World</h2>
 
-</div>
+    <div id="worldStatsMini" class="world-stats-mini">
+      Loading world telemetry...
+    </div>
+
+    <div class="small-note">
+      Shared orbit stats
+    </div>
+  </div>
+
+  <div class="spotify-card">
+    <h3>Spotify Vibes</h3>
+
+    <div class="spotify-row">
+      <button onclick="spotifyLogin()">Connect Spotify</button>
+      <button onclick="loadSpotifyDevices()">Refresh Devices</button>
+    </div>
+
+    <div class="spotify-row">
+      <label for="spotifyDevice">Device</label>
+      <select id="spotifyDevice">
+        <option value="">Active device</option>
+      </select>
+    </div>
+
+    <div class="spotify-grid">
+      <button onclick="playSpotifyMode('cottage')">🌿 Cottage</button>
+      <button onclick="playSpotifyMode('reiki')">🔮 Reiki</button>
+      <button onclick="playSpotifyMode('stardust')">✨ Stardust</button>
+      <button onclick="playSpotifyMode('night')">🌙 Night</button>
+      <button onclick="toggleSpotifyAuto()" id="spotifyAutoBtn">🤖 Auto</button>
+    </div>
+
+    <div class="spotify-now">
+      <strong>Now Playing:</strong>
+      <span id="spotifyNowPlaying">Checking Spotify…</span>
+    </div>
+
+    <div class="spotify-status" id="spotifyStatus">Ready to brew a vibe.</div>
+  </div>
+
+  <div class="cosmic-controls">
+    <div class="section-title">📺 Now Watching</div>
+
+    <div class="media-fields">
+      <input id="watchTitle" placeholder="Show / stream / movie title...">
+      <input id="watchDetail" placeholder="Episode / Live / detail...">
+    </div>
+
+    <div class="media-row">
+      <button onclick="updateWatching()">Update Watching</button>
+      <button onclick="clearWatching()">Clear</button>
+    </div>
+
+    <div class="current-media" id="currentWatching">
+      Current watching: —
+    </div>
+  </div>
+
+  <div class="cosmic-controls">
+    <div class="section-title">🌌 Cosmic Sky + Field Log</div>
+
+    <div class="cosmic-buttons">
+      <button onclick="setAura('ninetales')">❄️ Ninetales</button>
+      <button onclick="setAura('sylveon')">🎀 Sylveon</button>
+      <button onclick="setAura('rapidash')">🦄 Rapidash</button>
+      <button onclick="setAura('clear')">🌌 Clear</button>
+    </div>
+
+    <div class="section-title" style="margin-top:12px;">🎮 Pokémon Encounters</div>
+
+    <div class="cosmic-buttons">
+      <button onclick="logPokemonCatch()">🐾 Encounter</button>
+      <button onclick="logPokestopSpin()">🌀 PokéStop</button>
+      <button onclick="logRaidWin()">⚔️ Raid Victory</button>
+      <button onclick="logEggHatch()">🥚 Hatch</button>
+    </div>
+
+    <div class="section-title" style="margin-top:12px;">📦 TCG Pulls</div>
+
+    <div class="cosmic-buttons">
+      <button onclick="logPackOpen('normal')">📦 Standard</button>
+      <button onclick="logPackOpen('rare')">✨ Rare Pull</button>
+      <button onclick="logPackOpen('ex')">⭐ EX Pull</button>
+    </div>
+
+    <div class="current-media status-fade" id="pokemonStatus">
+      🌙 The field is quiet… awaiting your next discovery.
+    </div>
+  </div>
+
+  <div class="cosmic-controls">
+    <div class="section-title">🌙 Daily Habits</div>
+
+    <div class="cosmic-buttons">
+      <button onclick="toggleHabit(this,'walk')">🐕 Walk Koda</button>
+      <button onclick="toggleHabit(this,'yoga')">🧘 Zen Yoga</button>
+      <button onclick="toggleHabit(this,'bird')">🐦 Bird Log</button>
+      <button onclick="toggleHabit(this,'chores')">🧹 Chores</button>
+      <button onclick="toggleHabit(this,'nature')">🌿 Nature Project</button>
+      <button onclick="toggleHabit(this,'park')">🏞 Park Patrol</button>
+      <button onclick="toggleHabit(this,'basin')">💧 Basin Patrol</button>
+      <button onclick="toggleHabit(this,'pipe')">🍄 Warp Pipe Patrol</button>
+      <button onclick="toggleHabit(this,'tarot')">🔮 Tarot Reading</button>
+      <button onclick="toggleHabit(this,'write')">✍ Creative Writing</button>
+      <button onclick="toggleHabit(this,'stitch')">🧶 Knits + Stitches</button>
+      <button onclick="toggleHabit(this,'brain')">🧠 Brain Games</button>
+      <button onclick="toggleHabit(this,'strength')">💪 Strength Training</button>
+    </div>
+
+    <div class="section-title">✨ Spoon Energy</div>
+
+    <div class="cosmic-buttons">
+      <button onclick="setEnergy(this,1)">1</button>
+      <button onclick="setEnergy(this,2)">2</button>
+      <button onclick="setEnergy(this,3)">3</button>
+      <button onclick="setEnergy(this,4)">4</button>
+      <button onclick="setEnergy(this,5)">5</button>
+    </div>
+  </div>
+
+  <div class="cosmic-controls">
+    <div class="section-title">🌿 Nature + Volunteer Log</div>
+
+    <div class="log-grid">
+      <button onclick="incrementMoonData('lifebirds',1)">🦉 +1 Lifebird</button>
+      <button onclick="incrementMoonData('nature_projects',1)">🌿 +1 Nature Project</button>
+      <button onclick="incrementMoonData('ava_adventures',1)">👧 +1 Ava Adventure</button>
+      <button onclick="incrementMoonData('park_cleanups',1)">🏞 +1 Park Patrol</button>
+      <button onclick="incrementMoonData('trash_bags',1)">🗑 +1 Trash Bag</button>
+      <button onclick="incrementMoonData('hydrant_clear',1)">🚰 +1 Warp Clear</button>
+      <button onclick="incrementMoonData('drain_clear',1)">💧 +1 Basin Clear</button>
+      <button onclick="incrementMoonData('volunteer_sessions',1)">🤝 +1 Volunteer Session</button>
+    </div>
+
+    <div class="log-inputs">
+      <div class="log-input-row">
+        <input id="trashBagsInput" type="number" step="1" min="1" placeholder="Add trash bags...">
+        <button onclick="addCount('trash_bags','trashBagsInput')">Add Bags</button>
+      </div>
+
+      <div class="log-input-row">
+        <input id="basinClearInput" type="number" step="1" min="1" placeholder="Add basin clears...">
+        <button onclick="addCount('drain_clear','basinClearInput')">Add Basin</button>
+      </div>
+
+      <div class="log-input-row">
+        <input id="warpClearInput" type="number" step="1" min="1" placeholder="Add warp clears...">
+        <button onclick="addCount('hydrant_clear','warpClearInput')">Add Warp</button>
+      </div>
+
+      <div class="log-input-row">
+        <input id="ceHoursInput" type="number" step="0.25" min="0" placeholder="Add CE hours...">
+        <button onclick="addHours('ce_hours','ceHoursInput')">Add CE</button>
+      </div>
+
+      <div class="log-input-row">
+        <input id="volunteerHoursInput" type="number" step="0.25" min="0" placeholder="Add volunteer hours...">
+        <button onclick="addHours('volunteer_hours','volunteerHoursInput')">Add Volunteer</button>
+      </div>
+    </div>
+
+    <div class="small-note">
+      Quick stream logging lives here. Chat commands can still be your fast public log.
+    </div>
+
+    <div class="log-summary" id="moonDataSummary">
+      Loading nature totals...
+    </div>
+  </div>
+
+  <div class="cosmic-controls">
+    <div class="section-title">🪶 Nature Import Helper</div>
+
+    <div class="log-inputs">
+      <div class="log-input-row">
+        <input id="ebirdImportInput" type="number" step="1" min="0" placeholder="Add eBird lifebirds...">
+        <button onclick="importNatureCount('lifebirds','ebirdImportInput')">Import eBird</button>
+      </div>
+
+      <div class="log-input-row">
+        <input id="inatImportInput" type="number" step="1" min="0" placeholder="Add iNaturalist finds...">
+        <button onclick="importNatureCount('nature_projects','inatImportInput')">Import iNat</button>
+      </div>
+
+      <div class="log-input-row">
+        <input id="merlinImportInput" type="number" step="1" min="0" placeholder="Add Merlin IDs...">
+        <button onclick="importNatureCount('merlin_calls','merlinImportInput')">Import Merlin</button>
+      </div>
+    </div>
+
+    <div class="small-note">
+      Use this for quick manual sync from eBird or iNaturalist without changing your stream workflow.
+    </div>
+  </div>
 
 <div class="cosmic-controls">
-
-  <div class="section-title">🌌 Cosmic Sky + Field Log</div>
+  <div class="section-title">🔮 Tarot + Oracle Board</div>
 
   <div class="cosmic-buttons">
-    <button onclick="setAura('ninetales')">❄️ Ninetales</button>
-    <button onclick="setAura('sylveon')">🎀 Sylveon</button>
-    <button onclick="setAura('rapidash')">🦄 Rapidash</button>
-    <button onclick="setAura('clear')">🌌 Clear</button>
+    <button onclick="openTarotWidget()">🌙 Open Tarot</button>
+    <button onclick="openOracleWidget()">✨ Open Oracle</button>
+    <button onclick="openReadingBoard()">📜 Open Board</button>
+    <button onclick="clearReadingBoard()">🧹 Clear Board</button>
   </div>
 
-  <div class="section-title" style="margin-top:12px;">🎮 Pokémon Encounters</div>
-
-  <div class="cosmic-buttons">
-    <button onclick="logPokemonCatch()">🐾 Encounter</button>
-    <button onclick="logPokestopSpin()">🌀 PokéStop</button>
-    <button onclick="logRaidWin()">⚔️ Raid Victory</button>
-    <button onclick="logEggHatch()">🥚 Hatch</button>
+  <div class="current-media" id="readingBoardStatus">
+    Loading latest reading...
   </div>
+</div>
 
-  <div class="section-title" style="margin-top:12px;">📦 TCG Pulls</div>
+  <div class="cosmic-controls">
+    <div class="section-title">🔄 Daily Reset</div>
 
-  <div class="cosmic-buttons">
-    <button onclick="logPackOpen('normal')">📦 Standard</button>
-    <button onclick="logPackOpen('rare')">✨ Rare Pull</button>
-    <button onclick="logPackOpen('ex')">⭐ EX Pull</button>
+    <div class="cosmic-buttons">
+      <button onclick="resetDay()">Reset Day</button>
+    </div>
   </div>
-
-  <div class="current-media status-fade" id="pokemonStatus">
-    🌙 The field is quiet… awaiting your next discovery.
-  </div>
-
-</div>
-
-<div class="cosmic-controls">
-
-<div class="section-title">🌙 Daily Habits</div>
-
-<div class="cosmic-buttons">
-<button onclick="toggleHabit(this,'walk')">🐕 Walk Koda</button>
-<button onclick="toggleHabit(this,'yoga')">🧘 Zen Yoga</button>
-<button onclick="toggleHabit(this,'bird')">🐦 Bird Log</button>
-
-<button onclick="toggleHabit(this,'chores')">🧹 Chores</button>
-<button onclick="toggleHabit(this,'nature')">🌿 Nature Project</button>
-
-<button onclick="toggleHabit(this,'park')">🏞 Park Patrol</button>
-<button onclick="toggleHabit(this,'basin')">💧 Basin Patrol</button>
-<button onclick="toggleHabit(this,'pipe')">🍄 Warp Pipe Patrol</button>
-
-<button onclick="toggleHabit(this,'tarot')">🔮 Tarot Reading</button>
-<button onclick="toggleHabit(this,'write')">✍ Creative Writing</button>
-
-<button onclick="toggleHabit(this,'stitch')">🧶 Knits + Stitches</button>
-<button onclick="toggleHabit(this,'brain')">🧠 Brain Games</button>
-<button onclick="toggleHabit(this,'strength')">💪 Strength Training</button>
-</div>
-
-<div class="section-title">✨ Spoon Energy</div>
-
-<div class="cosmic-buttons">
-<button onclick="setEnergy(this,1)">1</button>
-<button onclick="setEnergy(this,2)">2</button>
-<button onclick="setEnergy(this,3)">3</button>
-<button onclick="setEnergy(this,4)">4</button>
-<button onclick="setEnergy(this,5)">5</button>
-</div>
-
-</div>
-
-<div class="cosmic-controls">
-
-<div class="section-title">🌿 Nature + Volunteer Log</div>
-
-<div class="log-grid">
-<button onclick="incrementMoonData('lifebirds',1)">🦉 +1 Lifebird</button>
-<button onclick="incrementMoonData('nature_projects',1)">🌿 +1 Nature Project</button>
-<button onclick="incrementMoonData('ava_adventures',1)">👧 +1 Ava Adventure</button>
-<button onclick="incrementMoonData('park_cleanups',1)">🏞 +1 Park Patrol</button>
-<button onclick="incrementMoonData('trash_bags',1)">🗑 +1 Trash Bag</button>
-<button onclick="incrementMoonData('hydrant_clear',1)">🚰 +1 Warp Clear</button>
-<button onclick="incrementMoonData('drain_clear',1)">💧 +1 Basin Clear</button>
-<button onclick="incrementMoonData('volunteer_sessions',1)">🤝 +1 Volunteer Session</button>
-</div>
-
-<div class="log-inputs">
-
-<div class="log-input-row">
-<input id="trashBagsInput" type="number" step="1" min="1" placeholder="Add trash bags...">
-<button onclick="addCount('trash_bags','trashBagsInput')">Add Bags</button>
-</div>
-
-<div class="log-input-row">
-<input id="basinClearInput" type="number" step="1" min="1" placeholder="Add basin clears...">
-<button onclick="addCount('drain_clear','basinClearInput')">Add Basin</button>
-</div>
-
-<div class="log-input-row">
-<input id="warpClearInput" type="number" step="1" min="1" placeholder="Add warp clears...">
-<button onclick="addCount('hydrant_clear','warpClearInput')">Add Warp</button>
-</div>
-
-<div class="log-input-row">
-<input id="ceHoursInput" type="number" step="0.25" min="0" placeholder="Add CE hours...">
-<button onclick="addHours('ce_hours','ceHoursInput')">Add CE</button>
-</div>
-
-<div class="log-input-row">
-<input id="volunteerHoursInput" type="number" step="0.25" min="0" placeholder="Add volunteer hours...">
-<button onclick="addHours('volunteer_hours','volunteerHoursInput')">Add Volunteer</button>
-</div>
-
-</div>
-
-<div class="small-note">
-Quick stream logging lives here. Chat commands can still be your fast public log.
-</div>
-
-<div class="log-summary" id="moonDataSummary">
-Loading nature totals...
-</div>
-
-</div>
-
-<div class="cosmic-controls">
-
-<div class="section-title">🪶 Nature Import Helper</div>
-
-<div class="log-inputs">
-
-<div class="log-input-row">
-<input id="ebirdImportInput" type="number" step="1" min="0" placeholder="Add eBird lifebirds...">
-<button onclick="importNatureCount('lifebirds','ebirdImportInput')">Import eBird</button>
-</div>
-
-<div class="log-input-row">
-<input id="inatImportInput" type="number" step="1" min="0" placeholder="Add iNaturalist finds...">
-<button onclick="importNatureCount('nature_projects','inatImportInput')">Import iNat</button>
-</div>
-
-<div class="log-input-row">
-<input id="merlinImportInput" type="number" step="1" min="0" placeholder="Add Merlin IDs...">
-<button onclick="importNatureCount('merlin_calls','merlinImportInput')">Import Merlin</button>
-</div>
-
-</div>
-
-<div class="small-note">
-Use this for quick manual sync from eBird or iNaturalist without changing your stream workflow.
-</div>
-
-</div>
-
-<div class="cosmic-controls">
-
-<div class="section-title">🔄 Daily Reset</div>
-
-<div class="cosmic-buttons">
-<button onclick="resetDay()">Reset Day</button>
-</div>
-
-</div>
 
 </div>
 
 <script>
+const API_BASE = window.location.origin;
+
+let pokemonStatusTimer = null;
+let spotifyAutoMode = false;
+let lastAutoModeApplied = "";
+
+/* -------------------------
+   SPOTIFY
+------------------------- */
 
 function setSpotifyStatus(text) {
   const el = document.getElementById("spotifyStatus");
@@ -725,6 +851,62 @@ function setSpotifyStatus(text) {
 function spotifyLogin() {
   window.open(`${API_BASE}/spotify/login`, "_blank", "width=700,height=800");
   setSpotifyStatus("Spotify login opened.");
+}
+
+function auraForSpotifyMode(mode){
+  const map = {
+    cottage: "clear",
+    reiki: "sylveon",
+    stardust: "rapidash",
+    night: "ninetales"
+  };
+  return map[mode] || "clear";
+}
+
+async function syncAuraToSpotifyMode(mode){
+  try{
+    const aura = auraForSpotifyMode(mode);
+    await fetch(`${API_BASE}/aura?name=${encodeURIComponent(aura)}`);
+  }catch(err){
+    console.error("Aura sync failed:", err);
+  }
+}
+
+async function saveSpotifyAutoState() {
+  try {
+    await fetch(`${API_BASE}/spotify/auto`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        enabled: spotifyAutoMode,
+        lastMode: lastAutoModeApplied
+      })
+    });
+  } catch (err) {
+    console.error("Save spotify auto state failed:", err);
+  }
+}
+
+async function loadSpotifyAutoState() {
+  try {
+    const res = await fetch(`${API_BASE}/spotify/auto?nocache=${Date.now()}`);
+    const data = await res.json();
+
+    spotifyAutoMode = !!data.enabled;
+    lastAutoModeApplied = String(data.lastMode || "");
+
+    const btn = document.getElementById("spotifyAutoBtn");
+    if (btn) btn.classList.toggle("active", spotifyAutoMode);
+
+    if (spotifyAutoMode) {
+      setSpotifyStatus("Auto vibes restored.");
+      runSpotifyAutoCheck(true);
+    }
+  } catch (err) {
+    console.error("Load spotify auto state failed:", err);
+  }
 }
 
 async function loadSpotifyDevices() {
@@ -761,10 +943,13 @@ async function loadSpotifyDevices() {
   }
 }
 
-async function playSpotifyMode(mode) {
+async function playSpotifyMode(mode, silent = false) {
   try {
     const deviceId = document.getElementById("spotifyDevice")?.value || "";
-    setSpotifyStatus(`Switching vibe to ${mode}...`);
+
+    if (!silent) {
+      setSpotifyStatus(`Switching vibe to ${mode}...`);
+    }
 
     const url = deviceId
       ? `${API_BASE}/spotify/play/${mode}?device_id=${encodeURIComponent(deviceId)}`
@@ -781,7 +966,14 @@ async function playSpotifyMode(mode) {
       throw new Error(data.error || "Spotify switch failed");
     }
 
-    setSpotifyStatus(`Now brewing: ${mode}.`);
+    await syncAuraToSpotifyMode(mode);
+
+    if (!silent) {
+      setSpotifyStatus(`Now brewing: ${mode}. Aura synced.`);
+    } else {
+      setSpotifyStatus(`Auto mode set vibe: ${mode}. Aura synced.`);
+    }
+
     setTimeout(loadSpotifyNowPlaying, 1200);
   } catch (err) {
     console.error(err);
@@ -815,570 +1007,552 @@ async function loadSpotifyNowPlaying() {
   }
 }
 
-loadSpotifyDevices();
-loadSpotifyNowPlaying();
-setInterval(loadSpotifyNowPlaying, 15000);
+function getAutoSpotifyMode() {
+  const now = new Date();
+  const hour = now.getHours() + now.getMinutes() / 60;
 
-const API_BASE = window.location.origin;
-
-let pokemonStatusTimer = null;
-
-/* LOAD QUEST DATA */
-
-async function load(){
-
-try{
-
-const res = await fetch(`${API_BASE}/quest`);
-const data = await res.json();
-
-document.getElementById("currentQuest").innerText =
-data.current || "✨ All missions complete ✨";
-
-renderQueue(data.queue || []);
-
-}catch(err){
-
-console.error("Quest load failed:",err);
-document.getElementById("currentQuest").innerText = "Mission control offline";
-renderQueue([]);
-
+  if (hour >= 5 && hour < 10) return "cottage";
+  if (hour >= 10 && hour < 17) return "stardust";
+  if (hour >= 17 && hour < 21) return "reiki";
+  return "night";
 }
 
-}
+function toggleSpotifyAuto() {
+  spotifyAutoMode = !spotifyAutoMode;
 
-/* RENDER QUEUE */
+  const btn = document.getElementById("spotifyAutoBtn");
+  if (btn) btn.classList.toggle("active", spotifyAutoMode);
 
-function renderQueue(queue){
+  setSpotifyStatus(
+    spotifyAutoMode
+      ? "Auto vibes enabled."
+      : "Auto vibes disabled."
+  );
 
-const container = document.getElementById("queue");
-container.innerHTML = "";
+  saveSpotifyAutoState();
 
-queue.forEach((task,index)=>{
-
-const row = document.createElement("div");
-row.className="quest";
-row.draggable=true;
-
-row.innerHTML=`
-<span class="drag">☰</span>
-<span class="text">${task}</span>
-<button onclick="editQuest(${index})">✏</button>
-`;
-
-container.appendChild(row);
-
-});
-
-enableDrag();
-
-}
-
-/* DRAG SYSTEM */
-
-function enableDrag(){
-
-const items=document.querySelectorAll(".quest");
-
-let dragged;
-
-items.forEach(item=>{
-
-item.addEventListener("dragstart",()=>{
-dragged=item;
-item.classList.add("dragging");
-});
-
-item.addEventListener("dragend",()=>{
-item.classList.remove("dragging");
-saveOrder();
-});
-
-item.addEventListener("dragover",(e)=>{
-e.preventDefault();
-
-const container=item.parentNode;
-
-const after=
-e.clientY >
-item.getBoundingClientRect().top +
-item.offsetHeight/2;
-
-if(after){
-container.insertBefore(dragged,item.nextSibling);
-}else{
-container.insertBefore(dragged,item);
-}
-
-});
-
-});
-
-}
-
-/* SAVE ORDER */
-
-async function saveOrder(){
-
-const items=document.querySelectorAll(".quest .text");
-
-const newQueue=[];
-
-items.forEach(el=>{
-newQueue.push(el.innerText);
-});
-
-await fetch(`${API_BASE}/reorderquests`,{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({queue:newQueue})
-});
-
-}
-
-/* ADD QUEST */
-
-async function addQuest(){
-
-const input=document.getElementById("newQuest");
-const text=input.value.trim();
-
-if(!text) return;
-
-await fetch(`${API_BASE}/newtask?task=${encodeURIComponent(text)}`);
-
-input.value="";
-load();
-
-}
-
-/* COMPLETE */
-
-async function completeQuest(){
-
-await fetch(`${API_BASE}/donetask`);
-load();
-
-}
-
-/* SKIP */
-
-async function skipQuest(){
-
-await fetch(`${API_BASE}/nexttask`);
-load();
-
-}
-
-/* EDIT */
-
-async function editQuest(i){
-
-const text=prompt("Edit quest:");
-
-if(!text) return;
-
-await fetch(`${API_BASE}/editquest?index=${i}&text=${encodeURIComponent(text)}`);
-
-load();
-
-}
-
-/* INITIAL LOAD */
-
-load();
-loadHabitState();
-loadWatchingState();
-loadMoonDataState();
-
-/* AURA */
-
-async function setAura(name){
-
-await fetch(`${API_BASE}/aura?name=${name}`);
-
-}
-
-/* ENTER KEY FOR QUEST INPUT */
-
-document
-.getElementById("newQuest")
-.addEventListener("keypress",function(e){
-
-if(e.key==="Enter"){
-
-addQuest();
-
-}
-
-});
-
-/* HABIT SYSTEM */
-
-async function toggleHabit(btn,name){
-
-console.log("Sending habit toggle:",name);
-
-try{
-
-let res = await fetch(`${API_BASE}/habit?name=${name}`);
-
-console.log("Server response:",res.status);
-
-btn.classList.toggle("active");
-
-}catch(err){
-
-console.error("Habit request failed:",err);
-
-}
-
-}
-
-async function setEnergy(btn,val){
-
-await fetch(`${API_BASE}/energy?value=${val}`);
-
-document
-.querySelectorAll(".cosmic-buttons button")
-.forEach(b=>{
-  const onclick = b.getAttribute("onclick") || "";
-  if(onclick.includes("setEnergy(")){
-    b.classList.remove("active");
+  if (spotifyAutoMode) {
+    runSpotifyAutoCheck(true);
   }
-});
-
-btn.classList.add("active");
-
 }
 
-async function resetDay(){
+async function runSpotifyAutoCheck(force = false) {
+  if (!spotifyAutoMode) return;
 
-if(!confirm("Reset all habits and energy for the day?")) return;
+  const mode = getAutoSpotifyMode();
 
-await fetch(`${API_BASE}/resetday`);
+  if (!force && mode === lastAutoModeApplied) return;
 
-location.reload();
-
+  lastAutoModeApplied = mode;
+  await saveSpotifyAutoState();
+  await playSpotifyMode(mode, true);
 }
 
-/* POKEMON / FIELD STATUS */
+/* -------------------------
+   QUESTS
+------------------------- */
 
-function updatePokemonStatus(message){
+async function load() {
+  try {
+    const res = await fetch(`${API_BASE}/quest`);
+    const data = await res.json();
+
+    document.getElementById("currentQuest").innerText =
+      data.current || "✨ All missions complete ✨";
+
+    renderQueue(data.queue || []);
+  } catch (err) {
+    console.error("Quest load failed:", err);
+    document.getElementById("currentQuest").innerText = "Mission control offline";
+    renderQueue([]);
+  }
+}
+
+function renderQueue(queue) {
+  const container = document.getElementById("queue");
+  container.innerHTML = "";
+
+  queue.forEach((task, index) => {
+    const row = document.createElement("div");
+    row.className = "quest";
+    row.draggable = true;
+
+    row.innerHTML = `
+      <span class="drag">☰</span>
+      <span class="text">${task}</span>
+      <button onclick="editQuest(${index})">✏</button>
+    `;
+
+    container.appendChild(row);
+  });
+
+  enableDrag();
+}
+
+function enableDrag() {
+  const items = document.querySelectorAll(".quest");
+  let dragged;
+
+  items.forEach(item => {
+    item.addEventListener("dragstart", () => {
+      dragged = item;
+      item.classList.add("dragging");
+    });
+
+    item.addEventListener("dragend", () => {
+      item.classList.remove("dragging");
+      saveOrder();
+    });
+
+    item.addEventListener("dragover", (e) => {
+      e.preventDefault();
+
+      const container = item.parentNode;
+      const after =
+        e.clientY >
+        item.getBoundingClientRect().top +
+        item.offsetHeight / 2;
+
+      if (after) {
+        container.insertBefore(dragged, item.nextSibling);
+      } else {
+        container.insertBefore(dragged, item);
+      }
+    });
+  });
+}
+
+async function saveOrder() {
+  const items = document.querySelectorAll(".quest .text");
+  const newQueue = [];
+
+  items.forEach(el => {
+    newQueue.push(el.innerText);
+  });
+
+  await fetch(`${API_BASE}/reorderquests`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ queue: newQueue })
+  });
+}
+
+async function addQuest() {
+  const input = document.getElementById("newQuest");
+  const text = input.value.trim();
+  if (!text) return;
+
+  await fetch(`${API_BASE}/newtask?task=${encodeURIComponent(text)}`);
+  input.value = "";
+  load();
+}
+
+async function completeQuest() {
+  await fetch(`${API_BASE}/donetask`);
+  load();
+}
+
+async function skipQuest() {
+  await fetch(`${API_BASE}/nexttask`);
+  load();
+}
+
+async function editQuest(i) {
+  const text = prompt("Edit quest:");
+  if (!text) return;
+
+  await fetch(`${API_BASE}/editquest?index=${i}&text=${encodeURIComponent(text)}`);
+  load();
+}
+
+/* -------------------------
+   MOONBEAM PAGER
+------------------------- */
+
+let currentPagerMode = "recharge";
+
+async function setPagerMode(button, mode){
+
+  currentPagerMode = mode;
+
+  document
+    .querySelectorAll(".cosmic-controls .cosmic-buttons button")
+    .forEach(btn=>{
+      if(btn.innerText.includes("Recharge") ||
+         btn.innerText.includes("BRB") ||
+         btn.innerText.includes("Coding") ||
+         btn.innerText.includes("Tarot") ||
+         btn.innerText.includes("Sleep") ||
+         btn.innerText.includes("Cafe")){
+        btn.classList.remove("active");
+      }
+    });
+
+  button.classList.add("active");
+
+  try{
+
+    await fetch(`${API_BASE}/pager/mode`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        mode
+      })
+    });
+
+    document.getElementById("pagerStatus").innerHTML =
+      `📟 Pager mode set to <strong>${mode}</strong> ✦`;
+
+  }catch(err){
+
+    console.error(err);
+
+    document.getElementById("pagerStatus").innerText =
+      "Pager transmission failed.";
+  }
+}
+
+async function sendPagerCustom(){
+
+  const input =
+    document.getElementById("pagerCustomStatus");
+
+  const text = input.value.trim();
+
+  if(!text) return;
+
+  try{
+
+    await fetch(`${API_BASE}/pager/custom`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({
+        message:text
+      })
+    });
+
+    document.getElementById("pagerStatus").innerHTML =
+      `✨ Custom pager message updated`;
+
+    input.value = "";
+
+  }catch(err){
+
+    console.error(err);
+
+    document.getElementById("pagerStatus").innerText =
+      "Custom pager update failed.";
+  }
+}
+
+async function clearPager(){
+
+  try{
+
+    await fetch(`${API_BASE}/pager/clear`,{
+      method:"POST"
+    });
+
+    document.getElementById("pagerStatus").innerHTML =
+      `🧹 Pager reset to idle mode`;
+
+  }catch(err){
+
+    console.error(err);
+  }
+}
+
+/* -------------------------
+   AURA / HABITS
+------------------------- */
+
+async function setAura(name) {
+  await fetch(`${API_BASE}/aura?name=${name}`);
+}
+
+async function toggleHabit(btn, name) {
+  try {
+    let res = await fetch(`${API_BASE}/habit?name=${name}`);
+    console.log("Habit response:", res.status);
+    btn.classList.toggle("active");
+  } catch (err) {
+    console.error("Habit request failed:", err);
+  }
+}
+
+async function setEnergy(btn, val) {
+  await fetch(`${API_BASE}/energy?value=${val}`);
+
+  document
+    .querySelectorAll(".cosmic-buttons button")
+    .forEach(b => {
+      const onclick = b.getAttribute("onclick") || "";
+      if (onclick.includes("setEnergy(")) {
+        b.classList.remove("active");
+      }
+    });
+
+  btn.classList.add("active");
+}
+
+async function resetDay() {
+  if (!confirm("Reset all habits and energy for the day?")) return;
+  await fetch(`${API_BASE}/resetday`);
+  location.reload();
+}
+
+async function loadHabitState() {
+  try {
+    const res = await fetch(`${API_BASE}/data/aurora-habits`);
+    const data = await res.json();
+
+    document.querySelectorAll(".cosmic-buttons button").forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+    document.querySelectorAll(".cosmic-buttons button").forEach(btn => {
+      const onclick = btn.getAttribute("onclick") || "";
+
+      if (onclick.includes("toggleHabit")) {
+        const match = onclick.match(/toggleHabit\(this,'([^']+)'\)/);
+        if (match) {
+          const habitName = match[1];
+          if (data[habitName]) btn.classList.add("active");
+        }
+      }
+    });
+
+    document.querySelectorAll(".cosmic-buttons button").forEach(btn => {
+      const onclick = btn.getAttribute("onclick") || "";
+
+      if (onclick.includes("setEnergy")) {
+        const match = onclick.match(/setEnergy\(this,(\d+)\)/);
+        if (match) {
+          const val = Number(match[1]);
+          if (Number(data.energy) === val) btn.classList.add("active");
+        }
+      }
+    });
+  } catch (err) {
+    console.error("Habit state load failed:", err);
+  }
+}
+
+/* -------------------------
+   WATCHING
+------------------------- */
+
+async function updateWatching() {
+  const title = document.getElementById("watchTitle").value.trim();
+  const detail = document.getElementById("watchDetail").value.trim();
+
+  try {
+    await fetch(`${API_BASE}/watching?title=${encodeURIComponent(title)}&detail=${encodeURIComponent(detail)}`);
+    loadWatchingState();
+  } catch (err) {
+    console.error("Watching update failed:", err);
+  }
+}
+
+async function clearWatching() {
+  document.getElementById("watchTitle").value = "";
+  document.getElementById("watchDetail").value = "";
+
+  try {
+    await fetch(`${API_BASE}/watching?title=&detail=`);
+    loadWatchingState();
+  } catch (err) {
+    console.error("Watching clear failed:", err);
+  }
+}
+
+async function loadWatchingState() {
+  try {
+    const res = await fetch(`${API_BASE}/media-status?nocache=${Date.now()}`);
+    const data = await res.json();
+
+    const current = document.getElementById("currentWatching");
+
+    if (data.watching && data.watching.title) {
+      document.getElementById("watchTitle").value = data.watching.title || "";
+      document.getElementById("watchDetail").value = data.watching.detail || "";
+
+      current.innerText =
+        data.watching.detail
+          ? `Current watching: ${data.watching.title} — ${data.watching.detail}`
+          : `Current watching: ${data.watching.title}`;
+    } else {
+      document.getElementById("watchTitle").value = "";
+      document.getElementById("watchDetail").value = "";
+      current.innerText = "Current watching: —";
+    }
+  } catch (err) {
+    console.error("Watching state load failed:", err);
+    document.getElementById("currentWatching").innerText = "Current watching: —";
+  }
+}
+
+/* -------------------------
+   FIELD STATUS
+------------------------- */
+
+function updatePokemonStatus(message) {
   const el = document.getElementById("pokemonStatus");
-  if(!el) return;
+  if (!el) return;
 
   clearTimeout(pokemonStatusTimer);
 
-  el.classList.remove("status-glow","status-fade");
+  el.classList.remove("status-glow", "status-fade");
   void el.offsetWidth;
 
   el.innerText = message;
   el.classList.add("status-glow");
   el.classList.remove("status-fade");
 
-  pokemonStatusTimer = setTimeout(()=>{
+  pokemonStatusTimer = setTimeout(() => {
     el.classList.remove("status-glow");
     el.classList.add("status-fade");
   }, 6500);
 }
 
-async function logPokemonCatch(){
-  try{
+async function logPokemonCatch() {
+  try {
     await fetch(`${API_BASE}/pokemonCatch`);
     updatePokemonStatus("🐾 A wild encounter has been recorded in the Haven!");
-  }catch(err){
+  } catch (err) {
     console.error("Pokemon catch failed:", err);
     updatePokemonStatus("🌫 The encounter slipped through the signal...");
   }
 }
 
-async function logPokestopSpin(){
-  try{
+async function logPokestopSpin() {
+  try {
     await fetch(`${API_BASE}/pokestopSpin`);
     updatePokemonStatus("🌀 The PokéStop shimmered and shared its gifts.");
-  }catch(err){
+  } catch (err) {
     console.error("Pokestop spin failed:", err);
     updatePokemonStatus("🌫 The stop faded before it could respond.");
   }
 }
 
-async function logRaidWin(){
-  try{
+async function logRaidWin() {
+  try {
     await fetch(`${API_BASE}/raidWin`);
     updatePokemonStatus("⚔️ Raid complete! The energy settles across the sky.");
-  }catch(err){
+  } catch (err) {
     console.error("Raid win failed:", err);
     updatePokemonStatus("🌫 The raid echoes… but no signal returned.");
   }
 }
 
-async function logEggHatch(){
-  try{
+async function logEggHatch() {
+  try {
     await fetch(`${API_BASE}/eggHatch`);
     updatePokemonStatus("🥚 A new life has emerged into the Haven!");
-  }catch(err){
+  } catch (err) {
     console.error("Egg hatch failed:", err);
     updatePokemonStatus("🌫 The egg stirs… but remains unseen.");
   }
 }
 
-async function logPackOpen(rarity){
-  try{
+async function logPackOpen(rarity) {
+  try {
     await fetch(`${API_BASE}/packOpen?rarity=${encodeURIComponent(rarity)}`);
 
-    if(rarity === "normal"){
+    if (rarity === "normal") {
       updatePokemonStatus("📦 A pack opened… the cards whisper softly.");
-    }else if(rarity === "rare"){
+    } else if (rarity === "rare") {
       updatePokemonStatus("✨ A rare pull! Stardust shimmers through the deck.");
-    }else if(rarity === "ex"){
+    } else if (rarity === "ex") {
       updatePokemonStatus("⭐ EX energy surges! A powerful card revealed!");
     }
-  }catch(err){
+  } catch (err) {
     console.error("Pack open failed:", err);
     updatePokemonStatus("🌫 The pack dissolved into stardust before opening...");
   }
 }
 
-/* LOAD HABIT + ENERGY STATE */
+/* -------------------------
+   MOON DATA
+------------------------- */
 
-async function loadHabitState(){
+async function getMoonData() {
+  const res = await fetch(`${API_BASE}/data/aurora-moon-data?nocache=${Date.now()}`);
+  if (!res.ok) throw new Error("Failed to load aurora moon data");
+  return await res.json();
+}
 
-try{
+async function saveMoonData(updated) {
+  const res = await fetch(`${API_BASE}/save/aurora-moon-data`, {
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify(updated)
+  });
 
-const res = await fetch(`${API_BASE}/data/aurora-habits`);
-const data = await res.json();
+  if (!res.ok) throw new Error("Failed to save aurora moon data");
+  return await res.json();
+}
 
-document.querySelectorAll(".cosmic-buttons button").forEach(btn=>{
-  btn.classList.remove("active");
-});
-
-document.querySelectorAll(".cosmic-buttons button").forEach(btn=>{
-  const onclick = btn.getAttribute("onclick") || "";
-
-  if(onclick.includes("toggleHabit")){
-    const match = onclick.match(/toggleHabit\(this,'([^']+)'\)/);
-    if(match){
-      const habitName = match[1];
-      if(data[habitName]){
-        btn.classList.add("active");
-      }
-    }
+async function incrementMoonData(field, amount = 1) {
+  try {
+    const data = await getMoonData();
+    data[field] = Number(data[field] || 0) + amount;
+    await saveMoonData(data);
+    loadMoonDataState();
+    loadWorldStatsMini();
+  } catch (err) {
+    console.error("Moon data increment failed:", err);
   }
-});
+}
 
-document.querySelectorAll(".cosmic-buttons button").forEach(btn=>{
-  const onclick = btn.getAttribute("onclick") || "";
+async function addCount(field, inputId) {
+  const input = document.getElementById(inputId);
+  const value = Number(input.value);
+  if (!Number.isFinite(value) || value <= 0) return;
 
-  if(onclick.includes("setEnergy")){
-    const match = onclick.match(/setEnergy\(this,(\d+)\)/);
-    if(match){
-      const val = Number(match[1]);
-      if(Number(data.energy) === val){
-        btn.classList.add("active");
-      }
-    }
+  try {
+    const data = await getMoonData();
+    data[field] = Number(data[field] || 0) + value;
+    await saveMoonData(data);
+    input.value = "";
+    loadMoonDataState();
+    loadWorldStatsMini();
+  } catch (err) {
+    console.error("Count add failed:", err);
   }
-});
-
-}catch(err){
-
-console.error("Habit state load failed:",err);
-
 }
 
+async function addHours(field, inputId) {
+  const input = document.getElementById(inputId);
+  const value = Number(input.value);
+  if (!Number.isFinite(value) || value <= 0) return;
+
+  try {
+    const data = await getMoonData();
+    data[field] = Number(data[field] || 0) + value;
+    await saveMoonData(data);
+    input.value = "";
+    loadMoonDataState();
+    loadWorldStatsMini();
+  } catch (err) {
+    console.error("Hour add failed:", err);
+  }
 }
 
-/* WATCHING */
-
-async function updateWatching(){
-
-const title = document.getElementById("watchTitle").value.trim();
-const detail = document.getElementById("watchDetail").value.trim();
-
-try{
-
-await fetch(`${API_BASE}/watching?title=${encodeURIComponent(title)}&detail=${encodeURIComponent(detail)}`);
-loadWatchingState();
-
-}catch(err){
-
-console.error("Watching update failed:",err);
-
-}
-
-}
-
-async function clearWatching(){
-
-document.getElementById("watchTitle").value = "";
-document.getElementById("watchDetail").value = "";
-
-try{
-
-await fetch(`${API_BASE}/watching?title=&detail=`);
-loadWatchingState();
-
-}catch(err){
-
-console.error("Watching clear failed:",err);
-
-}
-
-}
-
-async function loadWatchingState(){
-
-try{
-
-const res = await fetch(`${API_BASE}/media-status?nocache=${Date.now()}`);
-const data = await res.json();
-
-const current = document.getElementById("currentWatching");
-
-if(data.watching && data.watching.title){
-
-document.getElementById("watchTitle").value = data.watching.title || "";
-document.getElementById("watchDetail").value = data.watching.detail || "";
-
-current.innerText =
-data.watching.detail
-? `Current watching: ${data.watching.title} — ${data.watching.detail}`
-: `Current watching: ${data.watching.title}`;
-
-}else{
-
-document.getElementById("watchTitle").value = "";
-document.getElementById("watchDetail").value = "";
-current.innerText = "Current watching: —";
-
-}
-
-}catch(err){
-
-console.error("Watching state load failed:",err);
-document.getElementById("currentWatching").innerText = "Current watching: —";
-
-}
-
-}
-
-document.getElementById("watchTitle").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-updateWatching();
-}
-});
-
-document.getElementById("watchDetail").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-updateWatching();
-}
-});
-
-/* NATURE + VOLUNTEER LOG */
-
-async function getMoonData(){
-
-const res = await fetch(`${API_BASE}/data/aurora-moon-data?nocache=${Date.now()}`);
-if(!res.ok) throw new Error("Failed to load aurora moon data");
-return await res.json();
-
-}
-
-async function saveMoonData(updated){
-
-const res = await fetch(`${API_BASE}/save/aurora-moon-data`,{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify(updated)
-});
-
-if(!res.ok) throw new Error("Failed to save aurora moon data");
-return await res.json();
-
-}
-
-async function incrementMoonData(field,amount=1){
-
-try{
-
-const data = await getMoonData();
-data[field] = Number(data[field] || 0) + amount;
-
-await saveMoonData(data);
-loadMoonDataState();
-
-}catch(err){
-
-console.error("Moon data increment failed:",err);
-
-}
-
-}
-
-async function addCount(field,inputId){
-
-const input = document.getElementById(inputId);
-const value = Number(input.value);
-
-if(!Number.isFinite(value) || value <= 0) return;
-
-try{
-
-const data = await getMoonData();
-data[field] = Number(data[field] || 0) + value;
-
-await saveMoonData(data);
-
-input.value = "";
-loadMoonDataState();
-
-}catch(err){
-
-console.error("Count add failed:",err);
-
-}
-
-}
-
-async function addHours(field,inputId){
-
-const input = document.getElementById(inputId);
-const value = Number(input.value);
-
-if(!Number.isFinite(value) || value <= 0) return;
-
-try{
-
-const data = await getMoonData();
-data[field] = Number(data[field] || 0) + value;
-
-await saveMoonData(data);
-
-input.value = "";
-loadMoonDataState();
-
-}catch(err){
-
-console.error("Hour add failed:",err);
-
-}
-
-}
-
-async function loadMoonDataState(){
-
-try{
-
-const data = await getMoonData();
-
-const summary = document.getElementById("moonDataSummary");
-
-summary.innerText =
+async function loadMoonDataState() {
+  try {
+    const data = await getMoonData();
+
+    const summary = document.getElementById("moonDataSummary");
+    summary.innerText =
 `🦉 Lifebirds: ${Number(data.lifebirds || 0)}
 🪶 Merlin IDs: ${Number(data.merlin_calls || 0)}
 🌿 Nature Projects: ${Number(data.nature_projects || 0)}
@@ -1390,91 +1564,195 @@ summary.innerText =
 📚 CE Hours: ${Number(data.ce_hours || 0)}
 🤝 Volunteer Hours: ${Number(data.volunteer_hours || 0)}
 ✨ Volunteer Sessions: ${Number(data.volunteer_sessions || 0)}`;
-
-}catch(err){
-
-console.error("Moon data state load failed:",err);
-document.getElementById("moonDataSummary").innerText = "Nature totals offline";
-
+  } catch (err) {
+    console.error("Moon data state load failed:", err);
+    document.getElementById("moonDataSummary").innerText = "Nature totals offline";
+  }
 }
 
+async function importNatureCount(field, inputId) {
+  const input = document.getElementById(inputId);
+  const value = Number(input.value);
+  if (!Number.isFinite(value) || value <= 0) return;
+
+  try {
+    const data = await getMoonData();
+    data[field] = Number(data[field] || 0) + value;
+    await saveMoonData(data);
+    input.value = "";
+    loadMoonDataState();
+    loadWorldStatsMini();
+  } catch (err) {
+    console.error("Nature import failed:", err);
+  }
 }
 
-document.getElementById("trashBagsInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-addCount("trash_bags","trashBagsInput");
+/* -------------------------
+   AURORA WORLD
+------------------------- */
+
+async function loadWorldStatsMini() {
+  try {
+    const res = await fetch(`${API_BASE}/data/aurora-moon-data?nocache=${Date.now()}`);
+    if (!res.ok) throw new Error("Failed to fetch aurora world data");
+
+    const data = await res.json();
+
+    const totalCleanups =
+      Number(data.park_cleanups || 0) +
+      Number(data.hydrant_clear || 0) +
+      Number(data.drain_clear || 0);
+
+    const stats = [
+      `🧹 ${totalCleanups} cleanups`,
+      `🗑 ${Number(data.trash_bags || 0)} bags`,
+      `🤝 ${Number(data.volunteer_hours || 0)}h volunteer`,
+      `✨ ${Number(data.volunteer_sessions || 0)} sessions`,
+      `🌿 ${Number(data.nature_projects || 0)} projects`,
+      `🐦 ${Number(data.lifebirds || 0)} lifebirds`,
+      `🪶 ${Number(data.merlin_calls || 0)} Merlin`,
+      `📚 ${Number(data.ce_hours || 0)}h CE`,
+      `👧 ${Number(data.ava_adventures || 0)} Ava`,
+      `🎮 ${Number(data.pokemon_caught || 0)} caught`,
+      `🌀 ${Number(data.pokestops_spun || 0)} stops`,
+      `⚔️ ${Number(data.raids_won || 0)} raids`,
+      `🥚 ${Number(data.eggs_hatched || 0)} eggs`,
+      `🃏 ${Number(data.packs_opened || 0)} packs`,
+      `✨ ${Number(data.rare_cards || 0)} rare`,
+      `💥 ${Number(data.ex_cards || 0)} EX`
+    ];
+
+    document.getElementById("worldStatsMini").innerHTML =
+      stats.map(item => `<div class="world-stat">${item}</div>`).join("");
+  } catch (err) {
+    console.error("World stats mini failed:", err);
+    document.getElementById("worldStatsMini").innerText = "World telemetry offline.";
+  }
 }
-});
 
-document.getElementById("basinClearInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-addCount("drain_clear","basinClearInput");
+/* -------------------------
+   TAROT + ORACLE BOARD
+------------------------- */
+
+function openTarotWidget(){
+  window.open(`${API_BASE}/widgets/aurora-tarot.html`, "_blank");
 }
-});
 
-document.getElementById("warpClearInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-addCount("hydrant_clear","warpClearInput");
+function openOracleWidget(){
+  window.open(`${API_BASE}/widgets/aurora-oracle.html`, "_blank");
 }
-});
 
-document.getElementById("ceHoursInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-addHours("ce_hours","ceHoursInput");
+function openReadingBoard(){
+  window.open(`${API_BASE}/widgets/tarot-board.html`, "_blank");
 }
-});
 
-document.getElementById("volunteerHoursInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-addHours("volunteer_hours","volunteerHoursInput");
+async function loadReadingBoardStatus(){
+  const el = document.getElementById("readingBoardStatus");
+  if (!el) return;
+
+  try {
+    const res = await fetch(`${API_BASE}/card-draws?nocache=${Date.now()}`);
+    const data = await res.json();
+    const draws = Array.isArray(data.draws) ? data.draws : [];
+
+    if (!draws.length) {
+      el.innerHTML = "No tarot/oracle draws yet.";
+      return;
+    }
+
+    const latest = draws[0];
+
+    el.innerHTML = `
+      <strong>Latest:</strong> ${latest.symbol || "✨"} ${latest.title || "Unknown Card"}<br>
+      <span>${latest.deck || "Deck"} • ${latest.keyword || ""}</span><br>
+      <span>${latest.action || ""}</span>
+    `;
+  } catch (err) {
+    console.error("Reading board status failed:", err);
+    el.innerHTML = "Reading board offline.";
+  }
 }
-});
 
-async function importNatureCount(field,inputId){
+async function clearReadingBoard(){
+  if (!confirm("Clear the tarot/oracle reading board?")) return;
 
-const input = document.getElementById(inputId);
-const value = Number(input.value);
+  await fetch(`${API_BASE}/clear-card-board`, {
+    method: "POST"
+  });
 
-if(!Number.isFinite(value) || value <= 0) return;
+  loadReadingBoardStatus();
+}
 
-try{
+/* -------------------------
+   INITIAL LOADS
+------------------------- */
 
-const data = await getMoonData();
-data[field] = Number(data[field] || 0) + value;
-
-await saveMoonData(data);
-
-input.value = "";
+load();
+loadHabitState();
+loadWatchingState();
 loadMoonDataState();
+loadWorldStatsMini();
+loadSpotifyDevices();
+loadSpotifyNowPlaying();
+loadSpotifyAutoState();
+loadReadingBoardStatus();
 
-}catch(err){
+/* -------------------------
+   INTERVALS
+------------------------- */
 
-console.error("Nature import failed:",err);
+setInterval(loadSpotifyNowPlaying, 15000);
+setInterval(runSpotifyAutoCheck, 5 * 60 * 1000);
+setInterval(loadWorldStatsMini, 30000);
+setInterval(loadReadingBoardStatus, 10000);
 
-}
+/* -------------------------
+   ENTER KEYS
+------------------------- */
 
-}
-
-document.getElementById("ebirdImportInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-importNatureCount("lifebirds","ebirdImportInput");
-}
+document.getElementById("newQuest").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") addQuest();
 });
 
-document.getElementById("inatImportInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-importNatureCount("nature_projects","inatImportInput");
-}
+document.getElementById("watchTitle").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") updateWatching();
 });
 
-document.getElementById("merlinImportInput").addEventListener("keypress",function(e){
-if(e.key==="Enter"){
-importNatureCount("merlin_calls","merlinImportInput");
-}
+document.getElementById("watchDetail").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") updateWatching();
 });
 
+document.getElementById("trashBagsInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") addCount("trash_bags", "trashBagsInput");
+});
+
+document.getElementById("basinClearInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") addCount("drain_clear", "basinClearInput");
+});
+
+document.getElementById("warpClearInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") addCount("hydrant_clear", "warpClearInput");
+});
+
+document.getElementById("ceHoursInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") addHours("ce_hours", "ceHoursInput");
+});
+
+document.getElementById("volunteerHoursInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") addHours("volunteer_hours", "volunteerHoursInput");
+});
+
+document.getElementById("ebirdImportInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") importNatureCount("lifebirds", "ebirdImportInput");
+});
+
+document.getElementById("inatImportInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") importNatureCount("nature_projects", "inatImportInput");
+});
+
+document.getElementById("merlinImportInput").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") importNatureCount("merlin_calls", "merlinImportInput");
+});
 </script>
-
 </body>
-
 </html>

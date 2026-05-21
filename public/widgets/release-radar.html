@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moonbeam Release Radar</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --primary: #7f87ff;
+    --aurora: #00a9ba;
+    --ice: #cbecf5;
+    --soft: #c6c7f8;
+    --dark: rgba(20, 18, 55, 0.72);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'Quicksand', sans-serif;
+    color: var(--ice);
+  }
+
+  .release-radar {
+    position: absolute;
+    left: 40px;
+    bottom: 40px;
+    width: 420px;
+    padding: 22px 24px;
+    border-radius: 28px;
+    background:
+      linear-gradient(135deg, rgba(127,135,255,0.20), rgba(0,169,186,0.10)),
+      var(--dark);
+    border: 1px solid rgba(203,236,245,0.28);
+    box-shadow:
+      0 0 28px rgba(0,169,186,0.22),
+      inset 0 0 24px rgba(198,199,248,0.08);
+    backdrop-filter: blur(12px);
+  }
+
+  .topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .label {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--soft);
+    text-shadow: 0 0 10px rgba(127,135,255,0.8);
+  }
+
+  .sparkle {
+    font-size: 22px;
+    animation: twinkle 2.4s ease-in-out infinite;
+  }
+
+  .game-title {
+    font-size: 34px;
+    line-height: 1.05;
+    font-weight: 700;
+    color: #ffffff;
+    text-shadow:
+      0 0 12px rgba(203,236,245,0.7),
+      0 0 24px rgba(0,169,186,0.4);
+    margin-bottom: 10px;
+  }
+
+  .platform {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ice);
+    background: rgba(127,135,255,0.22);
+    border: 1px solid rgba(203,236,245,0.24);
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 16px;
+  }
+
+  .countdown {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .time-box {
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: 18px;
+    background: rgba(8, 12, 34, 0.48);
+    border: 1px solid rgba(203,236,245,0.14);
+  }
+
+  .number {
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--ice);
+  }
+
+  .unit {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--soft);
+  }
+
+  .vibe {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--soft);
+    text-align: center;
+    padding-top: 8px;
+    border-top: 1px solid rgba(203,236,245,0.16);
+  }
+
+  .released {
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0 0 18px rgba(0,169,186,0.8);
+    padding: 18px 0;
+  }
+
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.55;
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2) rotate(12deg);
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div class="release-radar">
+  <div class="topline">
+    <div class="label">Moonbeam Release Radar</div>
+    <div class="sparkle">✨</div>
+  </div>
+
+  <div class="game-title" id="gameTitle">Loading...</div>
+  <div class="platform" id="platform">Steam</div>
+
+  <div id="countdownArea" class="countdown">
+    <div class="time-box">
+      <div class="number" id="days">0</div>
+      <div class="unit">Days</div>
+    </div>
+    <div class="time-box">
+      <div class="number" id="hours">0</div>
+      <div class="unit">Hours</div>
+    </div>
+    <div class="time-box">
+      <div class="number" id="minutes">0</div>
+      <div class="unit">Min</div>
+    </div>
+    <div class="time-box">
+      <div class="number" id="seconds">0</div>
+      <div class="unit">Sec</div>
+    </div>
+  </div>
+
+  <div id="releasedMessage" class="released" style="display:none;">
+    Now available! 🌙
+  </div>
+
+  <div class="vibe" id="vibe">Wishlist magic incoming</div>
+</div>
+
+<script>
+/*
+  ✨ EDIT YOUR GAME LIST HERE ✨
+
+  Date format:
+  "YYYY-MM-DDT00:00:00"
+
+  Example:
+  "2026-06-12T00:00:00"
+
+  If you do not know the exact time, midnight is fine.
+*/
+
+const games = [
+  {
+    title: "Little Sim World",
+    date: "2026-06-12T00:00:00",
+    platform: "Steam",
+    vibe: "cozy chaos incoming"
+  },
+  {
+    title: "Haunted Chocolatier",
+    date: "2026-12-31T00:00:00",
+    platform: "Steam",
+    vibe: "moonbeam wishlist watch"
+  },
+  {
+    title: "Fantasy Life i",
+    date: "2026-05-21T00:00:00",
+    platform: "Steam / Switch",
+    vibe: "adventure snacks prepared"
+  }
+];
+
+// How often to rotate games, in milliseconds
+const ROTATE_EVERY = 12000;
+
+let currentIndex = 0;
+
+function getUpcomingGames() {
+  const now = new Date();
+
+  return games
+    .map(game => ({
+      ...game,
+      releaseDate: new Date(game.date)
+    }))
+    .filter(game => game.releaseDate >= now)
+    .sort((a, b) => a.releaseDate - b.releaseDate);
+}
+
+function updateDisplay() {
+  const upcomingGames = getUpcomingGames();
+
+  if (upcomingGames.length === 0) {
+    document.getElementById("gameTitle").textContent = "All caught up!";
+    document.getElementById("platform").textContent = "Moonbeam Library";
+    document.getElementById("countdownArea").style.display = "none";
+    document.getElementById("releasedMessage").style.display = "block";
+    document.getElementById("releasedMessage").textContent = "Time to play something cozy ✨";
+    document.getElementById("vibe").textContent = "release radar resting";
+    return;
+  }
+
+  if (currentIndex >= upcomingGames.length) {
+    currentIndex = 0;
+  }
+
+  const game = upcomingGames[currentIndex];
+  const now = new Date();
+  const diff = game.releaseDate - now;
+
+  document.getElementById("gameTitle").textContent = game.title;
+  document.getElementById("platform").textContent = game.platform;
+  document.getElementById("vibe").textContent = game.vibe;
+
+  if (diff <= 0) {
+    document.getElementById("countdownArea").style.display = "none";
+    document.getElementById("releasedMessage").style.display = "block";
+    document.getElementById("releasedMessage").textContent = "Now available! 🌙";
+    return;
+  }
+
+  document.getElementById("countdownArea").style.display = "grid";
+  document.getElementById("releasedMessage").style.display = "none";
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  const seconds = Math.floor((diff / 1000) % 60);
+
+  document.getElementById("days").textContent = days;
+  document.getElementById("hours").textContent = hours;
+  document.getElementById("minutes").textContent = minutes;
+  document.getElementById("seconds").textContent = seconds;
+}
+
+function rotateGame() {
+  const upcomingGames = getUpcomingGames();
+
+  if (upcomingGames.length > 0) {
+    currentIndex = (currentIndex + 1) % upcomingGames.length;
+  }
+
+  updateDisplay();
+}
+
+updateDisplay();
+setInterval(updateDisplay, 1000);
+setInterval(rotateGame, ROTATE_EVERY);
+</script>
+
+</body>
+</html>

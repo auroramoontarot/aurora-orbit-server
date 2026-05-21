@@ -76,26 +76,86 @@
       opacity:.7;
     }
     .thought-tail{
-      position:absolute;
-      left:84px;
-      bottom:-52px;
-      width:90px;
-      height:70px;
-    }
-    .thought-tail span{
-      position:absolute;
-      display:block;
-      border-radius:50%;
-      background:
-        radial-gradient(circle at top left, rgba(255,255,255,.9), transparent 30%),
-        linear-gradient(180deg, var(--bubble-soft) 0%, var(--bubble) 100%);
-      border:2px solid rgba(255,255,255,.78);
-      box-shadow:0 0 14px rgba(0,169,186,.10), inset 0 0 8px rgba(255,255,255,.35);
-    }
-    .thought-tail span:nth-child(1){ width:34px; height:34px; left:0; top:10px; }
-    .thought-tail span:nth-child(2){ width:24px; height:24px; left:28px; top:34px; }
-    .thought-tail span:nth-child(3){ width:14px; height:14px; left:52px; top:54px; }
+  position:absolute;
+  right:84px;
+  bottom:-52px;
+  width:120px;
+  height:70px;
+}
 
+/* rounded star thought bubbles */
+.thought-tail span{
+  position:absolute;
+  display:block;
+
+  width:100%;
+  height:100%;
+
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255,255,255,.95), transparent 32%),
+    linear-gradient(180deg, var(--bubble-soft) 0%, var(--bubble) 100%);
+
+  border:2px solid rgba(255,255,255,.78);
+  box-shadow:
+    0 0 14px rgba(0,169,186,.16),
+    inset 0 0 8px rgba(255,255,255,.35);
+
+  /* ⭐ softer rounded star */
+  clip-path: polygon(
+    50% 8%,
+    60% 32%,
+    85% 35%,
+    65% 55%,
+    72% 80%,
+    50% 65%,
+    28% 80%,
+    35% 55%,
+    15% 35%,
+    40% 32%
+  );
+
+  border-radius:6px; /* ← THIS softens the star points */
+
+  animation:starTailTwinkle 2.8s ease-in-out infinite;
+}
+
+/* largest star closest to bubble/right, smaller stars trail left */
+.thought-tail span:nth-child(1){
+  width:32px;
+  height:32px;
+  right:0;
+  top:8px;
+  animation-delay:0s;
+}
+
+.thought-tail span:nth-child(2){
+  width:22px;
+  height:22px;
+  right:38px;
+  top:34px;
+  animation-delay:.35s;
+}
+
+.thought-tail span:nth-child(3){
+  width:14px;
+  height:14px;
+  right:70px;
+  top:54px;
+  animation-delay:.7s;
+}
+
+@keyframes starTailTwinkle{
+  0%,100%{
+    opacity:.72;
+    transform:scale(.92) rotate(-6deg);
+    filter:drop-shadow(0 0 2px rgba(0,169,186,.25));
+  }
+  50%{
+    opacity:1;
+    transform:scale(1.08) rotate(6deg);
+    filter:drop-shadow(0 0 7px rgba(0,169,186,.45));
+  }
+}
     .label{
       display:inline-flex;
       align-items:center;

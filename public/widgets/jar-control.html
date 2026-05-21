@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>The Constellation Jar Control</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+  --dark:#2b2772;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:'Quicksand',sans-serif;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(127,135,255,.35), transparent 35%),
+    radial-gradient(circle at 80% 20%, rgba(0,169,186,.3), transparent 30%),
+    linear-gradient(160deg,#15133a,#2b2772 55%,#101628);
+  color:var(--ice);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
+}
+
+.panel{
+  width:min(760px, 95vw);
+  background:rgba(12,16,35,.72);
+  border:1px solid rgba(203,236,245,.22);
+  border-radius:28px;
+  padding:28px;
+  box-shadow:0 0 40px rgba(0,169,186,.22);
+  backdrop-filter:blur(14px);
+}
+
+h1{
+  margin:0 0 8px;
+  font-size:34px;
+  color:white;
+  text-shadow:0 0 18px rgba(127,135,255,.8);
+}
+
+.sub{
+  margin:0 0 24px;
+  color:var(--soft);
+  font-size:16px;
+}
+
+label{
+  display:block;
+  margin:16px 0 8px;
+  font-weight:700;
+}
+
+textarea, select{
+  width:100%;
+  border:none;
+  border-radius:18px;
+  padding:16px;
+  font-family:'Quicksand',sans-serif;
+  font-size:17px;
+  color:white;
+  background:rgba(255,255,255,.1);
+  outline:1px solid rgba(203,236,245,.18);
+}
+
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+
+button{
+  margin-top:20px;
+  width:100%;
+  border:none;
+  border-radius:22px;
+  padding:16px 18px;
+  font-family:'Quicksand',sans-serif;
+  font-size:19px;
+  font-weight:700;
+  color:white;
+  cursor:pointer;
+  background:linear-gradient(135deg,var(--lav),var(--teal));
+  box-shadow:0 0 24px rgba(127,135,255,.45);
+}
+
+button:hover{
+  filter:brightness(1.08);
+}
+
+.status{
+  margin-top:14px;
+  min-height:24px;
+  color:var(--soft);
+  text-align:center;
+}
+
+.recent{
+  margin-top:28px;
+  padding-top:18px;
+  border-top:1px solid rgba(203,236,245,.16);
+}
+
+.entry{
+  margin:12px 0;
+  padding:14px 16px;
+  border-radius:18px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(127,135,255,.16),
+      rgba(0,169,186,.12)
+    );
+
+  border:1px solid rgba(203,236,245,.12);
+
+  box-shadow:
+    0 0 18px rgba(127,135,255,.12);
+
+  backdrop-filter: blur(8px);
+
+  transition:.3s ease;
+}
+
+.entry:hover{
+  transform:translateY(-2px);
+  box-shadow:
+    0 0 24px rgba(127,135,255,.22);
+}
+
+.entry small{
+  color:var(--soft);
+}
+
+.count{
+  margin:12px 0 18px;
+  text-align:center;
+  font-size:14px;
+  letter-spacing:.08em;
+  color:rgba(203,236,245,.82);
+}
+
+</style>
+</head>
+
+<body>
+  <main class="panel">
+    <h1>☄ The Constellation Jar</h1>
+    <p class="sub">Scatter a tiny star from today into the constellation.</p>
+
+    <label for="text">✨ Today’s tiny joy</label>
+    <textarea id="text" placeholder="coffee tasted good… windows open weather… I made it through the day…"></textarea>
+
+    <label for="type">☄ Type of Stardust</label>
+ 
+      <select id="type">
+  <option value="tiny-joy">✨ Tiny Joy</option>
+  <option value="affirmation">🌙 Affirmation</option>
+  <option value="comfort">💜 Comfort Thought</option>
+  <option value="spoonie-win">🥄 Spoonie Win</option>
+  <option value="moonbeam">🌌 Moonbeam Moment</option>
+  <option value="tiny-victory">⭐ Tiny Victory</option>
+  <option value="cozy">☕ Cozy Moment</option>
+  <option value="chaos-goblin">🪐 Chaos Goblin</option>
+</select>
+
+    <button id="saveBtn">Scatter ✨</button>
+    <div class="status" id="status"></div>
+
+    <section class="recent">
+      <h2>Recent Stardust</h2>
+      <div id="recentList"></div>
+    </section>
+
+<div class="count" id="count">
+  0 stars collected ✨
+</div>
+
+  </main>
+
+<script>
+const DATA_URL = "/data/gratitude-jar.json";
+const SAVE_URL = "/api/gratitude-jar";
+
+const textEl = document.getElementById("text");
+const typeEl = document.getElementById("type");
+const statusEl = document.getElementById("status");
+const recentList = document.getElementById("recentList");
+const saveBtn = document.getElementById("saveBtn");
+
+const countEl = document.getElementById("count");
+
+async function loadEntries(){
+  try{
+    const res = await fetch(DATA_URL + "?t=" + Date.now());
+    const entries = await res.json();
+    renderRecent(entries);
+  }catch(err){
+    recentList.innerHTML = `<div class="entry">Couldn’t load jar yet.</div>`;
+  }
+}
+
+function renderRecent(entries){
+  recentList.innerHTML = "";
+
+countEl.textContent =
+  `${entries.length} stars collected ✨`;
+
+  if(!Array.isArray(entries) || entries.length === 0){
+    recentList.innerHTML = `<div class="entry">The jar is waiting for its first sparkle.</div>`;
+    return;
+  }
+
+  entries.slice(-6).reverse().forEach(item => {
+    const div = document.createElement("div");
+    div.className = "entry";
+    div.innerHTML = `
+      <strong>${escapeHtml(item.text)}</strong><br>
+      <small>${item.type || "stardust"} · ${item.date || ""}</small>
+    `;
+    recentList.appendChild(div);
+  });
+}
+
+saveBtn.addEventListener("click", async () => {
+  const text = textEl.value.trim();
+  const type = typeEl.value;
+
+  if(!text){
+    statusEl.textContent = "Add a tiny moment first 🌙";
+    return;
+  }
+
+  const entry = {
+    text,
+    type,
+    date: new Date().toISOString().slice(0,10),
+    createdAt: new Date().toISOString()
+  };
+
+  statusEl.textContent = "Adding stardust…";
+
+  try{
+    const res = await fetch(SAVE_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify(entry)
+    });
+
+    if(!res.ok) throw new Error("Save failed");
+
+    textEl.value = "";
+    statusEl.textContent = "Saved to the jar ✨";
+    loadEntries();
+  }catch(err){
+    statusEl.textContent = "Not saved yet — we still need the server save route.";
+    console.error(err);
+  }
+});
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[m]));
+}
+
+loadEntries();
+</script>
+</body>
+</html>

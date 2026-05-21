@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Moonbeam Pager</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --lav:#7f87ff;
+  --cyan:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+
+  --screen1:#d7fff2;
+  --screen2:#a9ead2;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand',sans-serif;
+}
+
+body{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* STARS */
+
+.star{
+  position:absolute;
+  color:white;
+  opacity:.18;
+  animation:float 7s ease-in-out infinite;
+  pointer-events:none;
+}
+
+@keyframes float{
+  0%{transform:translateY(0px);}
+  50%{transform:translateY(-10px);}
+  100%{transform:translateY(0px);}
+}
+
+/* WRAP */
+
+.wrap{
+  position:relative;
+  width:280px;
+  height:440px;
+  transform:scale(.92);
+  transform-origin:center;
+}
+
+/* ANTENNA */
+
+.antenna{
+  position:absolute;
+  top:-45px;
+  left:50%;
+  transform:translateX(-50%);
+  width:8px;
+  height:80px;
+  border-radius:20px;
+
+  background:linear-gradient(to bottom,#cbecf5,#7f87ff);
+
+  box-shadow:0 0 15px rgba(203,236,245,.8);
+}
+
+.antenna::before{
+  content:"";
+  position:absolute;
+  top:-12px;
+  left:50%;
+  transform:translateX(-50%);
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#cbecf5;
+  box-shadow:0 0 20px rgba(203,236,245,.9);
+}
+
+/* PAGER */
+
+.pager{
+  position:relative;
+  width:100%;
+  height:100%;
+  border-radius:42px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(203,236,245,.33),
+      rgba(127,135,255,.18)
+    );
+
+  backdrop-filter:blur(16px);
+
+  border:1px solid rgba(255,255,255,.18);
+
+  overflow:hidden;
+
+  box-shadow:
+    inset 0 0 25px rgba(255,255,255,.12),
+    0 0 40px rgba(127,135,255,.22);
+}
+
+.pager::before{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255,255,255,.08) 35%,
+      transparent 65%
+    );
+
+  animation:sheen 8s linear infinite;
+}
+
+@keyframes sheen{
+  0%{transform:translateX(-100%);}
+  100%{transform:translateX(100%);}
+}
+
+/* TOP */
+
+.top{
+  position:absolute;
+  top:22px;
+  left:25px;
+  right:25px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  color:white;
+  font-weight:700;
+}
+
+/* SIGNAL */
+
+.signal{
+  display:flex;
+  gap:3px;
+  align-items:flex-end;
+}
+
+.signal span{
+  width:5px;
+  border-radius:10px;
+  background:#cbecf5;
+}
+
+.signal span:nth-child(1){height:8px;}
+.signal span:nth-child(2){height:12px;}
+.signal span:nth-child(3){height:16px;}
+.signal span:nth-child(4){height:20px;}
+
+/* LED */
+
+.led{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:#7fffd4;
+
+  box-shadow:
+    0 0 12px #7fffd4,
+    0 0 25px #7fffd4;
+
+  animation:blink 2s infinite;
+}
+
+@keyframes blink{
+  0%,100%{opacity:1;}
+  50%{opacity:.35;}
+}
+
+.flash{
+  animation:flash .35s infinite !important;
+}
+
+@keyframes flash{
+  0%,100%{
+    opacity:1;
+    transform:scale(1);
+  }
+  50%{
+    opacity:.4;
+    transform:scale(1.15);
+  }
+}
+
+/* SCREEN */
+
+.screen{
+  position:absolute;
+  top:92px;
+  left:28px;
+  right:28px;
+  height:220px;
+
+  border-radius:25px;
+
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,.03),
+      rgba(255,255,255,.03) 2px,
+      rgba(0,0,0,.03) 3px,
+      rgba(0,0,0,.03) 4px
+    ),
+    linear-gradient(
+      to bottom,
+      var(--screen1),
+      var(--screen2)
+    );
+
+  border:4px solid rgba(255,255,255,.18);
+
+  overflow:hidden;
+
+  padding:28px;
+
+  box-shadow:
+    inset 0 0 30px rgba(0,0,0,.14),
+    0 0 20px rgba(203,236,245,.22);
+}
+
+.screen::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.03);
+  animation:flicker .15s infinite;
+}
+
+@keyframes flicker{
+  0%{opacity:.08;}
+  50%{opacity:.03;}
+  100%{opacity:.08;}
+}
+
+/* DEFAULT STATUS */
+
+.status{
+  transition:.4s ease;
+}
+
+.title{
+  margin-top:22px;
+
+  color:#355b4e;
+
+  text-align:center;
+
+  font-size:22px;
+  line-height:1.3;
+  font-weight:700;
+}
+
+.sub{
+  margin-top:18px;
+
+  color:#4a7063;
+
+  text-align:center;
+
+  font-size:15px;
+  min-height:45px;
+}
+
+/* INCOMING PAGE */
+
+.page{
+  position:absolute;
+  inset:0;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:.35s ease;
+
+  padding:30px;
+}
+
+.page.show{
+  opacity:1;
+}
+
+.page-header{
+  font-size:18px;
+  font-weight:700;
+  color:#355b4e;
+  margin-bottom:20px;
+}
+
+.from{
+  font-size:22px;
+  font-weight:700;
+  color:#2d5447;
+  margin-bottom:16px;
+}
+
+.message{
+  font-size:20px;
+  color:#48695d;
+  line-height:1.5;
+}
+
+/* TICKER */
+
+.ticker{
+  position:absolute;
+  bottom:8px;
+  left:12px;
+  right:12px;
+
+  overflow:hidden;
+  white-space:nowrap;
+
+  color:#48695d;
+  font-size:11px;
+  opacity:.75;
+}
+
+.ticker span{
+  display:inline-block;
+  padding-left:100%;
+  animation:scroll 24s linear infinite;
+}
+
+@keyframes scroll{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-100%);}
+}
+
+/* BUTTONS */
+
+.buttons{
+  position:absolute;
+  bottom:95px;
+  left:0;
+  right:0;
+
+  display:flex;
+  justify-content:center;
+  gap:18px;
+}
+
+.button{
+  width:64px;
+  height:22px;
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255,255,255,.24),
+      rgba(0,0,0,.12)
+    );
+
+  border:1px solid rgba(255,255,255,.18);
+
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,.18),
+    0 2px 8px rgba(0,0,0,.18);
+}
+
+/* BOTTOM */
+
+.bottom{
+  position:absolute;
+  bottom:28px;
+  left:28px;
+  right:28px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  color:white;
+  font-size:15px;
+  font-weight:600;
+}
+
+/* VIBRATION */
+
+.vibrate{
+  animation:vibrate .12s linear 3;
+}
+
+@keyframes vibrate{
+  0%{transform:translate(0);}
+  25%{transform:translate(2px,-1px);}
+  50%{transform:translate(-2px,1px);}
+  75%{transform:translate(2px,1px);}
+  100%{transform:translate(0);}
+}
+</style>
+</head>
+
+<body>
+
+<div class="star" style="top:10%;left:15%;">✦</div>
+<div class="star" style="top:18%;left:82%;">✦</div>
+<div class="star" style="top:64%;left:10%;">✦</div>
+<div class="star" style="top:72%;left:85%;">✦</div>
+<div class="star" style="top:52%;left:48%;">✦</div>
+
+<div class="wrap">
+
+  <div class="antenna"></div>
+
+  <div class="pager" id="pager">
+
+    <div class="top">
+
+      <div class="signal">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <div class="led" id="led"></div>
+
+      <div id="clock">11:11 PM</div>
+
+    </div>
+
+    <div class="screen">
+
+      <!-- NORMAL STATUS -->
+
+      <div class="status" id="status">
+
+        <div class="title" id="title">
+          Spoonie recharge<br>
+          active
+        </div>
+
+        <div class="sub" id="sub">
+          low spoon recovery mode 🌙
+        </div>
+
+      </div>
+
+      <!-- INCOMING PAGE -->
+
+      <div class="page" id="page">
+
+        <div class="page-header">
+          ✦ INCOMING PAGE ✦
+        </div>
+
+        <div class="from" id="from">
+          MoonbeamJen
+        </div>
+
+        <div class="message" id="message">
+          hydrate ☕
+        </div>
+
+      </div>
+
+      <div class="ticker">
+        <span>
+          ✦ scatter stardust • moonbeam pager online • cozy cyber café systems active •
+        </span>
+      </div>
+
+    </div>
+
+    <div class="buttons">
+      <div class="button"></div>
+      <div class="button"></div>
+      <div class="button"></div>
+    </div>
+
+    <div class="bottom">
+
+      <div>
+        ENERGY ▓▓▓░░
+      </div>
+
+      <div>
+        moonbeam pager ✦
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+/* CLOCK */
+
+function updateClock(){
+  const now = new Date();
+
+  let h = now.getHours();
+  let m = now.getMinutes();
+
+  const ampm = h >= 12 ? 'PM' : 'AM';
+
+  h = h % 12;
+  h = h ? h : 12;
+
+  m = m < 10 ? '0' + m : m;
+
+  document.getElementById('clock').innerText =
+    `${h}:${m} ${ampm}`;
+}
+
+updateClock();
+setInterval(updateClock,1000);
+
+/* LIVE MODES */
+
+const modes = {
+
+  recharge:{
+    title:"Spoonie recharge<br>active",
+    sub:"low spoon recovery mode 🌙"
+  },
+
+  brb:{
+    title:"Aurora will<br>return shortly",
+    sub:"grabbing tea ☕"
+  },
+
+  tarot:{
+    title:"Cosmic transmission<br>in progress",
+    sub:"tarot frequencies occupied ✦"
+  },
+
+  coding:{
+    title:"MoonSpace maintenance<br>underway",
+    sub:"cozy coding session active 💻"
+  },
+
+  sleep:{
+    title:"Pager docked for<br>night cycle",
+    sub:"moonbeam offline mode 🌙"
+  },
+
+  cafe:{
+    title:"Cafe operator<br>temporarily away",
+    sub:"restocking celestial snacks ☕"
+  }
+};
+
+/* LIVE PAGER STATE */
+
+async function loadPagerState(){
+
+  try{
+
+    const res = await fetch("/pager/status");
+
+    const data = await res.json();
+
+    console.log("LIVE PAGER:", data);
+
+    const mode = data.mode || "recharge";
+
+    if(modes[mode]){
+
+      document.getElementById("title").innerHTML =
+        modes[mode].title;
+
+      if(data.custom && data.custom.trim() !== ""){
+
+        document.getElementById("sub").innerHTML =
+          data.custom;
+
+      }else{
+
+        document.getElementById("sub").innerHTML =
+          modes[mode].sub;
+      }
+    }
+
+  }catch(err){
+
+    console.error("Pager sync failed:", err);
+  }
+}
+
+/* INITIAL LOAD */
+
+loadPagerState();
+
+/* AUTO REFRESH */
+
+setInterval(loadPagerState,3000);
+
+/* DEMO PAGE SYSTEM */
+/* Replace later with Wizebot data */
+
+const demoPages = [
+  {
+    from:"MoonbeamJen",
+    message:"hydrate ☕"
+  },
+  {
+    from:"StarCorgi",
+    message:"stretch reminder ✨"
+  },
+  {
+    from:"NebulaCat",
+    message:"you missed shiny loot 👀"
+  }
+];
+
+function triggerPage(data){
+
+  const page = document.getElementById("page");
+  const status = document.getElementById("status");
+  const pager = document.getElementById("pager");
+  const led = document.getElementById("led");
+
+  document.getElementById("from").innerText = data.from;
+  document.getElementById("message").innerText = data.message;
+
+  status.style.opacity = "0";
+
+  page.classList.add("show");
+
+  pager.classList.add("vibrate");
+
+  led.classList.add("flash");
+
+  setTimeout(()=>{
+    pager.classList.remove("vibrate");
+  },500);
+
+  setTimeout(()=>{
+    page.classList.remove("show");
+    status.style.opacity = "1";
+    led.classList.remove("flash");
+  },10000);
+}
+
+/* DEMO EVERY 35 SECONDS */
+
+setInterval(()=>{
+
+  const random =
+    demoPages[Math.floor(Math.random() * demoPages.length)];
+
+  triggerPage(random);
+
+},35000);
+
+/* OPTIONAL MANUAL TEST */
+/*
+triggerPage({
+  from:"MoonbeamJen",
+  message:"hydrate ☕"
+});
+*/
+</script>
+
+</body>
+</html>

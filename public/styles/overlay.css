@@ -296,15 +296,7 @@ body {
   100% { transform: translateY(-400px); opacity: 0; }
 }
 
-#wipLabel {
-  text-shadow:
-    0 0 6px rgba(127,135,255,0.5),
-    0 0 12px rgba(0,169,186,0.3);
-}
-
-.wip-frame img {
-  border-radius: 6px;
-  box-shadow:
-    inset 0 0 10px rgba(0,0,0,0.2),
-    0 0 8px rgba(127,135,255,0.2);
+#koda-frame {
+  filter: drop-shadow(0 0 12px rgba(127,135,255,.4))
+          drop-shadow(0 0 18px rgba(0,169,186,.3));
 }

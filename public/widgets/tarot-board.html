@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+  --deep:#2b2772;
+}
+
+html,
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+  font-family:'Quicksand', sans-serif;
+  color:var(--ice);
+}
+
+.board{
+  width:100%;
+  height:100%;
+  padding:12px;
+  box-sizing:border-box;
+
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+
+  overflow:hidden;
+
+  background:rgba(12,16,40,.20);
+  border-radius:18px;
+}
+
+.titlebar{
+  flex:0 0 auto;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+  color:#fff;
+  text-shadow:
+    0 0 8px rgba(127,135,255,.45),
+    0 0 14px rgba(0,169,186,.25);
+}
+
+.draws{
+  flex:1;
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  overflow:hidden;
+}
+
+.empty{
+  padding:12px;
+  border-radius:14px;
+  background:rgba(20,24,60,.50);
+  border:1px solid rgba(203,236,245,.18);
+  font-size:13px;
+  opacity:.85;
+  backdrop-filter:blur(6px);
+}
+
+.draw{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+
+  padding:8px;
+  border-radius:16px;
+
+  background:
+    radial-gradient(circle at top left, rgba(127,135,255,.18), transparent 45%),
+    radial-gradient(circle at bottom right, rgba(0,169,186,.14), transparent 45%),
+    rgba(20,24,60,.52);
+
+  border:1px solid rgba(203,236,245,.18);
+
+  box-shadow:
+    0 0 14px rgba(127,135,255,.18),
+    inset 0 1px 0 rgba(255,255,255,.04);
+
+  backdrop-filter:blur(7px);
+  animation:fadeIn .45s ease;
+}
+
+/* mini actual-card visual */
+.mini-card{
+  position:relative;
+  flex:0 0 74px;
+  width:74px;
+  height:111px;
+  border-radius:12px;
+  overflow:hidden;
+
+  background:
+    linear-gradient(
+      rgba(43,39,114,0.62),
+      rgba(10,12,30,0.76)
+    ),
+    url("/widgets/cards/aurora-card.png");
+
+  background-size:cover;
+  background-position:center;
+
+  border:1px solid rgba(203,236,245,.28);
+
+  box-shadow:
+    0 0 18px rgba(127,135,255,.35),
+    0 0 28px rgba(0,169,186,.22),
+    inset 0 0 12px rgba(255,255,255,.08);
+}
+
+.mini-card::before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:
+    linear-gradient(
+      115deg,
+      transparent 36%,
+      rgba(203,236,245,.18) 47%,
+      rgba(198,199,248,.22) 52%,
+      transparent 64%
+    );
+  animation:holoSweep 7s linear infinite;
+  pointer-events:none;
+}
+
+.mini-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:12px;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(255,255,255,.22), transparent 22%),
+    linear-gradient(180deg, rgba(255,255,255,.08), transparent 38%);
+  pointer-events:none;
+}
+
+.mini-symbol{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  text-shadow:
+    0 0 10px rgba(255,255,255,.55),
+    0 0 18px rgba(127,135,255,.45);
+}
+
+.deck-chip{
+  position:absolute;
+  z-index:3;
+  left:6px;
+  right:6px;
+  bottom:6px;
+
+  padding:3px 4px;
+  border-radius:999px;
+
+  background:rgba(12,16,40,.62);
+  border:1px solid rgba(203,236,245,.16);
+
+  font-size:8px;
+  font-weight:700;
+  letter-spacing:.7px;
+  text-align:center;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.85);
+}
+
+.draw.oracle .mini-card{
+  box-shadow:
+    0 0 18px rgba(198,199,248,.40),
+    0 0 28px rgba(203,236,245,.22),
+    inset 0 0 12px rgba(255,255,255,.10);
+}
+
+.draw.tarot .mini-card{
+  box-shadow:
+    0 0 18px rgba(127,135,255,.36),
+    0 0 28px rgba(0,169,186,.24),
+    inset 0 0 12px rgba(255,255,255,.08);
+}
+
+.card-info{
+  flex:1;
+  min-width:0;
+  padding-top:1px;
+}
+
+.header{
+  font-size:10px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  color:rgba(203,236,245,.68);
+  margin-bottom:2px;
+}
+
+.cardname{
+  font-size:15px;
+  line-height:1.1;
+  font-weight:700;
+  color:#fff;
+  text-shadow:0 0 8px rgba(127,135,255,.32);
+}
+
+.keyword{
+  margin-top:3px;
+  font-size:11px;
+  line-height:1.25;
+  color:var(--soft);
+}
+
+.action{
+  margin-top:5px;
+  font-size:11px;
+  line-height:1.28;
+  color:rgba(203,236,245,.92);
+}
+
+.clear-note{
+  flex:0 0 auto;
+  font-size:10px;
+  opacity:.55;
+  text-align:center;
+  letter-spacing:.8px;
+  text-transform:uppercase;
+}
+
+/* compact mode for tiny café window sizing */
+@media (max-width: 520px){
+  .board{
+    padding:10px;
+    gap:8px;
+  }
+
+  .titlebar{
+    font-size:11px;
+  }
+
+  .draw{
+    gap:8px;
+    padding:7px;
+  }
+
+  .mini-card{
+    flex-basis:64px;
+    width:64px;
+    height:96px;
+  }
+
+  .mini-symbol{
+    font-size:29px;
+  }
+
+  .cardname{
+    font-size:14px;
+  }
+
+  .keyword,
+  .action{
+    font-size:10px;
+  }
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(8px) scale(.98);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes holoSweep{
+  from{
+    transform:translateX(-35%) rotate(0deg);
+  }
+  to{
+    transform:translateX(35%) rotate(360deg);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="board">
+  <div class="titlebar">✨ Aurora Reading Board</div>
+
+  <div class="draws" id="draws">
+    <div class="empty" id="empty">Waiting for tarot or oracle draws...</div>
+  </div>
+
+  <div class="clear-note">Tarot + Oracle session feed</div>
+</div>
+
+<script>
+const drawsEl = document.getElementById("draws");
+
+function escapeHtml(str){
+  return String(str || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function clearEmpty(){
+  const empty = document.getElementById("empty");
+  if(empty) empty.remove();
+}
+
+function getDeckClass(deck){
+  const clean = String(deck || "").toLowerCase();
+  if(clean.includes("oracle")) return "oracle";
+  if(clean.includes("tarot")) return "tarot";
+  return "";
+}
+
+function addDraw(draw, append = false){
+  clearEmpty();
+
+  const el = document.createElement("div");
+  el.className = `draw ${getDeckClass(draw.deck)}`;
+
+  el.innerHTML = `
+    <div class="mini-card">
+      <div class="mini-symbol">${escapeHtml(draw.symbol || "✨")}</div>
+      <div class="deck-chip">${escapeHtml(draw.deck || "Card")}</div>
+    </div>
+
+    <div class="card-info">
+      <div class="header">${escapeHtml(draw.deck || "Card Draw")}</div>
+      <div class="cardname">${escapeHtml(draw.title || "Unknown Card")}</div>
+      <div class="keyword">${escapeHtml(draw.keyword || "")}</div>
+      <div class="action">${escapeHtml(draw.action || "")}</div>
+    </div>
+  `;
+
+  if(append) drawsEl.appendChild(el);
+  else drawsEl.prepend(el);
+
+  while(drawsEl.querySelectorAll(".draw").length > 5){
+    drawsEl.querySelector(".draw:last-child").remove();
+  }
+}
+
+const stream = new EventSource("/cardstream");
+
+stream.onopen = () => {
+  const empty = document.getElementById("empty");
+  if(empty) empty.textContent = "Connected. Waiting for tarot or oracle draws...";
+};
+
+stream.onmessage = (event)=>{
+  const data = JSON.parse(event.data);
+
+  if(data.type === "init"){
+    drawsEl.innerHTML = "";
+
+    if(!data.draws || !data.draws.length){
+      drawsEl.innerHTML = `<div class="empty" id="empty">Connected. No cards drawn yet.</div>`;
+      return;
+    }
+
+    data.draws.slice(0, 5).forEach(draw => addDraw(draw, true));
+  }
+
+  if(data.type === "new"){
+    addDraw(data.draw);
+  }
+
+  if(data.type === "clear"){
+    drawsEl.innerHTML = `<div class="empty" id="empty">Reading board cleared.</div>`;
+  }
+};
+
+stream.onerror = () => {
+  drawsEl.innerHTML = `<div class="empty" id="empty">Cardstream not connected. Check /cardstream and restart server.</div>`;
+};
+</script>
+
+</body>
+</html>
