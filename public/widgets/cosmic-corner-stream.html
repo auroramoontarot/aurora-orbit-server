@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cosmic Co-Working Corner</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --lavender: #7f87ff;
+    --teal: #00a9ba;
+    --ice: #cbecf5;
+    --soft: #c6c7f8;
+    --deep: #2b2772;
+    --panel: rgba(18, 18, 48, 0.88);
+    --line: rgba(203, 236, 245, 0.38);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    background: transparent;
+    font-family: "Quicksand", sans-serif;
+    color: var(--ice);
+    overflow: hidden;
+  }
+
+  .corner-widget {
+    width: 370px;
+    padding: 8px 10px;
+    border: 3px double var(--soft);
+
+    background:
+      radial-gradient(circle at 20% 20%, rgba(127,135,255,0.35), transparent 28%),
+      radial-gradient(circle at 80% 10%, rgba(0,169,186,0.28), transparent 30%),
+      linear-gradient(145deg, rgba(43,39,114,0.96), var(--panel));
+
+    box-shadow:
+      0 0 18px rgba(0,169,186,0.45),
+      inset 0 0 18px rgba(203,236,245,0.12);
+
+    image-rendering: pixelated;
+  }
+
+  .pixel-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    border:2px solid var(--line);
+
+    padding:6px 8px;
+
+    background:rgba(0,0,0,0.25);
+
+    margin-bottom:8px;
+  }
+
+  .title {
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:0.5px;
+    text-shadow:0 0 8px var(--teal);
+  }
+
+  .badge {
+    font-size:11px;
+    color:var(--deep);
+
+    background:var(--ice);
+
+    border:2px outset var(--soft);
+
+    padding:2px 6px;
+
+    font-weight:700;
+  }
+
+  .marquee-box {
+    border:2px inset var(--soft);
+
+    background:rgba(0,0,0,0.35);
+
+    padding:3px 0;
+
+    margin-bottom:10px;
+
+    font-size:11px;
+
+    color:var(--soft);
+  }
+
+  .orbit-card {
+    border:2px ridge var(--lavender);
+
+    background:rgba(255,255,255,0.08);
+
+    padding:7px;
+
+    text-align:center;
+
+    min-height:118px;
+
+    position:relative;
+
+    overflow:hidden;
+  }
+
+  .stars {
+    position:absolute;
+    inset:0;
+
+    pointer-events:none;
+
+    opacity:0.55;
+
+    background-image:
+      radial-gradient(circle, rgba(203,236,245,0.9) 1px, transparent 1px),
+      radial-gradient(circle, rgba(198,199,248,0.8) 1px, transparent 1px);
+
+    background-size:24px 24px, 37px 37px;
+
+    animation:twinkle 4s infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity:0.25; }
+    to { opacity:0.7; }
+  }
+
+  .current-label {
+    position:relative;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1.5px;
+
+    color:var(--soft);
+
+    margin-bottom:5px;
+
+    opacity:0.9;
+  }
+
+  .creator-name {
+    position:relative;
+
+    font-size:26px;
+
+    font-weight:700;
+
+    color:var(--ice);
+
+    text-shadow:0 0 10px var(--teal);
+
+    margin-bottom:2px;
+  }
+
+  .creator-meta {
+    position:relative;
+
+    font-size:14px;
+
+    color:var(--soft);
+
+    line-height:1.4;
+
+    margin-bottom:6px;
+  }
+
+  .status {
+    position:relative;
+
+    display:inline-block;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    padding:3px 8px;
+
+    border:1px solid var(--line);
+
+    background:rgba(0,169,186,0.22);
+
+    color:var(--ice);
+
+    text-transform:uppercase;
+
+    margin-bottom:10px;
+  }
+
+  .custom-status {
+    position:relative;
+
+    font-size:13px;
+
+    line-height:1.45;
+
+    color:var(--ice);
+
+    background:rgba(0,0,0,0.22);
+
+    border:1px solid rgba(203,236,245,0.18);
+
+    padding:6px 8px;
+
+    margin-top:5px;
+
+    border-radius:6px;
+  }
+
+  .command-box {
+    position:relative;
+
+    margin-top:7px;
+
+    padding-top:6px;
+
+    border-top:1px dashed rgba(203,236,245,0.18);
+
+    font-size:12px;
+
+    color:var(--soft);
+
+    line-height:1.5;
+  }
+
+  .command {
+    display:inline-block;
+
+    margin-top:4px;
+
+    padding:3px 8px;
+
+    background:rgba(127,135,255,0.16);
+
+    border:1px solid rgba(203,236,245,0.22);
+
+    color:var(--ice);
+
+    font-weight:700;
+
+    letter-spacing:0.5px;
+  }
+
+  .footer {
+    margin-top:8px;
+
+    font-size:11px;
+
+    text-align:center;
+
+    color:var(--soft);
+
+    opacity:0.85;
+  }
+
+  .footer span {
+    opacity:0.65;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="corner-widget">
+
+  <div class="pixel-top">
+    <div class="title">☄ Cosmic Co-Working Corner</div>
+    <div class="badge">MOONSPACE</div>
+  </div>
+
+  <div class="marquee-box">
+    <marquee scrollamount="3">
+      ✨ cozy creator orbit ✨ cowork streams ✨ body doubling ✨ low spoons welcome ✨ come as you orbit ☄
+    </marquee>
+  </div>
+
+  <div class="orbit-card">
+
+    <div class="stars"></div>
+
+    <div class="current-label">
+      currently orbiting
+    </div>
+
+    <div class="creator-name" id="creatorName">
+      Loading...
+    </div>
+
+    <div class="creator-meta" id="creatorMeta">
+      gathering stardust...
+    </div>
+
+    <div class="status" id="creatorStatus">
+      connecting
+    </div>
+
+    <div class="custom-status" id="customStatus">
+      ☄ establishing cozy signal...
+    </div>
+
+    <div class="command-box">
+      <div class="command" id="commandText">
+        !orbit
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    cozy web portals ✦
+    <span>moonbeams • misfits • night owls welcome</span>
+  </div>
+
+</div>
+
+<script>
+  const DATA_URL = "/data/cosmic-corner.json";
+
+  let creators = [];
+  let currentIndex = 0;
+  let twitchStatuses = {};
+
+  const creatorName = document.getElementById("creatorName");
+  const creatorMeta = document.getElementById("creatorMeta");
+  const creatorStatus = document.getElementById("creatorStatus");
+  const customStatus = document.getElementById("customStatus");
+  const commandText = document.getElementById("commandText");
+
+  function normalizeCreator(creator) {
+    return {
+      name: creator.name || "Mystery Desk",
+      url: creator.url || "#",
+      twitch: creator.twitch || "",
+      shift: creator.shift || "Open Orbit",
+      vibe: creator.vibe || "cozy cowork energy",
+      status: creator.status || "offline",
+      statusText: creator.statusText || "☄ cozy signal active",
+      command: creator.command || "!orbit",
+      timezone: creator.timezone || "America/Chicago",
+      start: creator.start,
+      end: creator.end,
+      fallback: creator.fallback || false
+    };
+  }
+
+  async function loadTwitchStatuses() {
+
+    try {
+
+      const response = await fetch("/top8-status", {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not load Twitch statuses");
+      }
+
+      twitchStatuses = await response.json();
+
+    } catch (error) {
+
+      console.error("Twitch status error:", error);
+
+    }
+  }
+
+  function isCreatorActive(creator) {
+
+    // Live on Twitch
+    if (
+      creator.twitch &&
+      twitchStatuses[creator.twitch] &&
+      twitchStatuses[creator.twitch].live
+    ) {
+      return true;
+    }
+
+    // Scheduled shift
+    const currentHour = new Date().toLocaleString("en-US", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: creator.timezone || "America/Chicago"
+    });
+
+    const hour = parseInt(currentHour, 10);
+
+    const start = creator.start;
+    const end = creator.end;
+
+    if (start === undefined || end === undefined) {
+      return false;
+    }
+
+    // Overnight shift support
+    if (start > end) {
+      return hour >= start || hour < end;
+    }
+
+    return hour >= start && hour < end;
+  }
+
+  function getFallbackCreator() {
+    return creators.find(c => c.fallback);
+  }
+
+  function renderCreator(index) {
+
+    if (!creators.length) return;
+
+    const creator = creators[index];
+
+    creatorName.textContent = creator.name;
+
+    creatorMeta.innerHTML = `
+      ${creator.shift}<br>
+      ${creator.vibe}
+    `;
+
+    let liveText = creator.status;
+
+    if (
+      creator.twitch &&
+      twitchStatuses[creator.twitch] &&
+      twitchStatuses[creator.twitch].live
+    ) {
+      liveText = "LIVE NOW ☄";
+    }
+
+    creatorStatus.textContent = liveText;
+
+    customStatus.textContent = creator.statusText;
+
+    commandText.textContent = creator.command;
+  }
+
+  function rotateCreator() {
+
+    if (creators.length <= 1) return;
+
+    currentIndex = (currentIndex + 1) % creators.length;
+
+    renderCreator(currentIndex);
+  }
+
+  async function loadCreators() {
+
+    try {
+
+      const response = await fetch(DATA_URL, {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error(`Could not load ${DATA_URL}`);
+      }
+
+      creators = await response.json();
+
+      creators = creators.map(normalizeCreator);
+
+      await loadTwitchStatuses();
+
+      const activeCreators = creators.filter(isCreatorActive);
+
+      if (activeCreators.length > 0) {
+
+        creators = activeCreators;
+
+        creators.forEach(c => {
+
+          if (
+            c.twitch &&
+            twitchStatuses[c.twitch] &&
+            twitchStatuses[c.twitch].live
+          ) {
+            c.status = "LIVE NOW ☄";
+          } else {
+            c.status = "currently orbiting";
+          }
+
+        });
+
+      } else {
+
+        const fallback = getFallbackCreator();
+
+        if (fallback) {
+
+          fallback.status = "quiet orbit hours";
+
+          fallback.statusText =
+            "☄ the café lights remain on";
+
+          creators = [fallback];
+        }
+      }
+
+      if (currentIndex >= creators.length) {
+        currentIndex = 0;
+      }
+
+      renderCreator(currentIndex);
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.querySelector(".orbit-card").innerHTML = `
+        <div style="
+          position:relative;
+          z-index:2;
+          text-align:center;
+          padding:20px;
+          color:#ffd6f7;
+        ">
+          ✦ cosmic signal lost ✦
+        </div>
+      `;
+    }
+  }
+
+  loadCreators();
+
+  // Refresh creator data every 5 min
+  setInterval(loadCreators, 300000);
+
+  // Rotate active orbiters every 45 sec
+  setInterval(rotateCreator, 45000);
+
+</script>
+
+</body>
+</html>
