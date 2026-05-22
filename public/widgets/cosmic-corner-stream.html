@@ -112,26 +112,24 @@
   }
 
   .stars {
-    position:absolute;
-    inset:0;
+  position:absolute;
+  inset:0;
 
-    pointer-events:none;
+  pointer-events:none;
 
-    opacity:0.55;
+  opacity:0.45;
 
-    background-image:
-      radial-gradient(circle, rgba(203,236,245,0.9) 1px, transparent 1px),
-      radial-gradient(circle, rgba(198,199,248,0.8) 1px, transparent 1px);
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(203,236,245,0.9) 1px, transparent 1px),
+    radial-gradient(circle at 78% 22%, rgba(198,199,248,0.8) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 34% 72%, rgba(203,236,245,0.7) 1px, transparent 1px),
+    radial-gradient(circle at 88% 66%, rgba(198,199,248,0.9) 1px, transparent 1px),
+    radial-gradient(circle at 58% 42%, rgba(203,236,245,0.6) 1.5px, transparent 1.5px),
+    radial-gradient(circle at 22% 88%, rgba(198,199,248,0.75) 1px, transparent 1px),
+    radial-gradient(circle at 66% 84%, rgba(203,236,245,0.85) 1px, transparent 1px);
 
-    background-size:24px 24px, 37px 37px;
-
-    animation:twinkle 4s infinite alternate;
-  }
-
-  @keyframes twinkle {
-    from { opacity:0.25; }
-    to { opacity:0.7; }
-  }
+  animation:twinkle 5s infinite alternate;
+}
 
   .current-label {
     position:relative;
