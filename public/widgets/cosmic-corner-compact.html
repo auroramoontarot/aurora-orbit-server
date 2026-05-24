@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Compact Cosmic Co-Working Corner</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+  :root{
+    --lavender:#7f87ff;
+    --teal:#00a9ba;
+    --ice:#cbecf5;
+    --soft:#c6c7f8;
+    --deep:#2b2772;
+    --panel:rgba(18,18,48,.88);
+    --line:rgba(203,236,245,.28);
+  }
+
+  *{
+    box-sizing:border-box;
+  }
+
+  body{
+    margin:0;
+    background:transparent;
+    overflow:hidden;
+    font-family:"Quicksand", sans-serif;
+    color:var(--ice);
+  }
+
+  .corner-widget{
+
+    width:320px;
+
+    padding:8px;
+
+    border:2px solid var(--line);
+
+    border-radius:18px;
+
+    background:
+      radial-gradient(
+        circle at 20% 20%,
+        rgba(127,135,255,.26),
+        transparent 30%
+      ),
+
+      radial-gradient(
+        circle at 80% 10%,
+        rgba(0,169,186,.22),
+        transparent 32%
+      ),
+
+      linear-gradient(
+        145deg,
+        rgba(43,39,114,.96),
+        var(--panel)
+      );
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:
+      0 0 18px rgba(0,169,186,.22),
+      inset 0 0 14px rgba(203,236,245,.08);
+
+    position:relative;
+
+    overflow:hidden;
+  }
+
+  .corner-widget::before{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background-image:
+      radial-gradient(
+        rgba(255,255,255,.65) 1px,
+        transparent 1px
+      );
+
+    background-size:34px 34px;
+
+    opacity:.08;
+
+    pointer-events:none;
+  }
+
+  .top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    position:relative;
+    z-index:2;
+
+    margin-bottom:8px;
+  }
+
+  .title{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:.04em;
+
+    color:#fff;
+
+    text-shadow:
+      0 0 10px rgba(0,169,186,.42);
+  }
+
+  .badge{
+    font-size:9px;
+
+    padding:3px 6px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.1);
+
+    border:1px solid rgba(203,236,245,.18);
+
+    color:var(--soft);
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    font-weight:700;
+  }
+
+  .orbit-card{
+    position:relative;
+    z-index:2;
+
+    padding:12px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,.05);
+
+    border:1px solid rgba(203,236,245,.14);
+
+    text-align:center;
+  }
+
+  .current-label{
+    font-size:9px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.18em;
+
+    color:var(--soft);
+
+    opacity:.85;
+
+    margin-bottom:6px;
+  }
+
+  .creator-name{
+    font-size:22px;
+    font-weight:700;
+
+    color:#fff;
+
+    line-height:1.1;
+
+    text-shadow:
+      0 0 12px rgba(0,169,186,.32);
+
+    margin-bottom:4px;
+  }
+
+  .creator-meta{
+    font-size:12px;
+
+    line-height:1.45;
+
+    color:var(--soft);
+
+    margin-bottom:8px;
+  }
+
+  .status{
+    display:inline-block;
+
+    padding:4px 8px;
+
+    border-radius:999px;
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.08em;
+
+    font-weight:700;
+
+    background:rgba(0,169,186,.16);
+
+    border:1px solid rgba(203,236,245,.16);
+
+    color:var(--ice);
+  }
+
+  .custom-status{
+    margin-top:10px;
+
+    padding-top:10px;
+
+    border-top:1px dashed rgba(203,236,245,.14);
+
+    font-size:11px;
+
+    line-height:1.5;
+
+    color:rgba(203,236,245,.92);
+  }
+
+</style>
+</head>
+
+<body>
+
+<div class="corner-widget">
+
+  <div class="top-row">
+
+    <div class="title">
+      ☄ Cosmic Co-Work Corner
+    </div>
+
+    <div class="badge">
+      MOONSPACE
+    </div>
+
+  </div>
+
+  <div class="orbit-card">
+
+    <div class="current-label">
+      currently orbiting
+    </div>
+
+    <div class="creator-name" id="creatorName">
+      Loading...
+    </div>
+
+    <div class="creator-meta" id="creatorMeta">
+      gathering stardust...
+    </div>
+
+    <div class="status" id="creatorStatus">
+      connecting
+    </div>
+
+    <div class="custom-status" id="customStatus">
+      ☄ establishing cozy signal...
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+  const DATA_URL = "/data/cosmic-corner.json";
+
+  let creators = [];
+  let currentIndex = 0;
+  let twitchStatuses = {};
+
+  const creatorName = document.getElementById("creatorName");
+  const creatorMeta = document.getElementById("creatorMeta");
+  const creatorStatus = document.getElementById("creatorStatus");
+  const customStatus = document.getElementById("customStatus");
+
+  function normalizeCreator(creator) {
+    return {
+      name: creator.name || "Mystery Desk",
+      url: creator.url || "#",
+      twitch: creator.twitch || "",
+      shift: creator.shift || "Open Orbit",
+      vibe: creator.vibe || "cozy cowork energy",
+      status: creator.status || "offline",
+      statusText: creator.statusText || "☄ cozy signal active",
+      timezone: creator.timezone || "America/Chicago",
+      start: creator.start,
+      end: creator.end,
+      fallback: creator.fallback || false
+    };
+  }
+
+  async function loadTwitchStatuses() {
+
+    try {
+
+      const response = await fetch("/top8-status", {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not load Twitch statuses");
+      }
+
+      twitchStatuses = await response.json();
+
+    } catch (error) {
+
+      console.error("Twitch status error:", error);
+
+    }
+  }
+
+  function isCreatorActive(creator) {
+
+    if (
+      creator.twitch &&
+      twitchStatuses[creator.twitch] &&
+      twitchStatuses[creator.twitch].live
+    ) {
+      return true;
+    }
+
+    const currentHour = new Date().toLocaleString("en-US", {
+      hour: "numeric",
+      hour12: false,
+      timeZone: creator.timezone || "America/Chicago"
+    });
+
+    const hour = parseInt(currentHour, 10);
+
+    const start = creator.start;
+    const end = creator.end;
+
+    if (start === undefined || end === undefined) {
+      return false;
+    }
+
+    if (start > end) {
+      return hour >= start || hour < end;
+    }
+
+    return hour >= start && hour < end;
+  }
+
+  function getFallbackCreator() {
+    return creators.find(c => c.fallback);
+  }
+
+  function renderCreator(index) {
+
+    if (!creators.length) return;
+
+    const creator = creators[index];
+
+    creatorName.textContent = creator.name;
+
+    creatorMeta.innerHTML = `
+      ${creator.shift}<br>
+      ${creator.vibe}
+    `;
+
+    let liveText = creator.status;
+
+    if (
+      creator.twitch &&
+      twitchStatuses[creator.twitch] &&
+      twitchStatuses[creator.twitch].live
+    ) {
+      liveText = "LIVE NOW ☄";
+    }
+
+    creatorStatus.textContent = liveText;
+
+    customStatus.textContent = creator.statusText;
+  }
+
+  function rotateCreator() {
+
+    if (creators.length <= 1) return;
+
+    currentIndex = (currentIndex + 1) % creators.length;
+
+    renderCreator(currentIndex);
+  }
+
+  async function loadCreators() {
+
+    try {
+
+      const response = await fetch(DATA_URL, {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error(`Could not load ${DATA_URL}`);
+      }
+
+      creators = await response.json();
+
+      creators = creators.map(normalizeCreator);
+
+      await loadTwitchStatuses();
+
+      const activeCreators = creators.filter(isCreatorActive);
+
+      if (activeCreators.length > 0) {
+
+        creators = activeCreators;
+
+        creators.forEach(c => {
+
+          if (
+            c.twitch &&
+            twitchStatuses[c.twitch] &&
+            twitchStatuses[c.twitch].live
+          ) {
+            c.status = "LIVE NOW ☄";
+          } else {
+            c.status = "currently orbiting";
+          }
+
+        });
+
+      } else {
+
+        const fallback = getFallbackCreator();
+
+        if (fallback) {
+
+          fallback.status = "quiet orbit hours";
+
+          fallback.statusText =
+            "☄ the café lights remain on";
+
+          creators = [fallback];
+        }
+      }
+
+      if (currentIndex >= creators.length) {
+        currentIndex = 0;
+      }
+
+      renderCreator(currentIndex);
+
+    } catch (error) {
+
+      console.error(error);
+
+      document.querySelector(".orbit-card").innerHTML = `
+        <div style="
+          text-align:center;
+          padding:16px;
+          color:#ffd6f7;
+          font-size:12px;
+        ">
+          ✦ cosmic signal lost ✦
+        </div>
+      `;
+    }
+  }
+
+  loadCreators();
+
+  setInterval(loadCreators, 300000);
+
+  setInterval(rotateCreator, 45000);
+
+</script>
+
+</body>
+</html>

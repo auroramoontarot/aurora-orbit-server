@@ -1,0 +1,15 @@
+<div class="amt-wide" style="padding:24px 20px;">
+
+  <p style="margin-bottom:16px;">
+    ✨ Explore the Cosmic Co-Work Corner and discover
+    cozy creators across the constellation.
+  </p>
+
+  <div class="amt-buttons" style="margin-top:0;">
+    <a class="amt-btn"
+       href="https://scatterstardust.com/orbit">
+       Explore the Orbit
+    </a>
+  </div>
+
+</div>
