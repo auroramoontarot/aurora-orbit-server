@@ -29,8 +29,9 @@ body{
 
 .cart-widget{
     position:relative;
-    width:620px;
-    height:300px;
+    width:920px;
+    height:760px;
+    overflow:visible;
 }
 
 /* =========================================
@@ -39,8 +40,12 @@ body{
 
 .particles{
     position:absolute;
-    inset:0;
+    inset:-40px 0 0 0;
+
     pointer-events:none;
+    overflow:hidden;
+
+    z-index:1;
 }
 
 .sparkle{
@@ -48,7 +53,11 @@ body{
     width:4px;
     height:4px;
     border-radius:50%;
-    background:white;
+    background:rgba(255,255,255,.9);
+
+box-shadow:
+    0 0 6px rgba(255,255,255,.8),
+    0 0 12px rgba(203,236,245,.6);
     opacity:.5;
 
     animation:floatUp linear infinite;
@@ -59,18 +68,24 @@ body{
     from{
         transform:
             translateY(0px)
-            scale(.6);
+            translateX(0px)
+            scale(.5);
+
         opacity:0;
     }
 
-    20%{
+    15%{
         opacity:1;
     }
 
     to{
         transform:
-            translateY(-100px)
-            scale(1.2);
+            translateY(-260px)
+            translateX(
+                calc((var(--drift) - .5) * 60px)
+            )
+            scale(1.4);
+
         opacity:0;
     }
 }
@@ -136,10 +151,13 @@ body{
 .shelf-area{
 
     position:absolute;
-    left:28px;
-    right:28px;
-    bottom:38px;
-    height:90px;
+
+    left:40px;
+    right:40px;
+
+    bottom:70px;
+
+    height:140px;
 }
 
 .shelf-board{
@@ -170,12 +188,12 @@ body{
 .books{
     position:absolute;
     bottom:12px;
-    left:18px;
-    right:130px;
+    left:130px;
+    right:18px;
 
     display:flex;
     align-items:flex-end;
-    gap:5px;
+    gap:3px;
 
     overflow:hidden;
 }
@@ -185,7 +203,7 @@ body{
     width:28px;
 
     border-radius:
-        6px 6px 0 0;
+        2px 2px 0 0;
 
     position:relative;
 
@@ -236,25 +254,30 @@ body{
 .decor{
 
     position:absolute;
-    bottom:14px;
-    right:18px;
+
+    bottom:18px;
+    left:18px;
 
     display:flex;
     align-items:flex-end;
     gap:12px;
+
+    z-index:3;
 }
 
 .crystal{
-    font-size:34px;
+    font-size:50px;
     filter:drop-shadow(0 0 8px rgba(127,135,255,.45));
 }
 
-.mug{
-    font-size:34px;
+.plant{
+    font-size:50px;
 }
 
+.crystal,
 .plant{
-    font-size:34px;
+    line-height:1;
+    transform:translateY(6px);
 }
 
 .mini-jar{
@@ -347,15 +370,17 @@ body{
     left:50%;
     transform:translateX(-50%);
 
-    top:146px;
+    top:14px;
 
     display:flex;
-    gap:12px;
+    gap:18px;
 
-    padding-top:6px;
+    padding-top:10px;
 
     border-top:
-        2px solid rgba(255,255,255,.12);
+        2px solid rgba(255,255,255,.14);
+
+    z-index:3;
 }
 
 .light{
@@ -395,14 +420,13 @@ body{
     left:50%;
     transform:translateX(-50%);
 
-    bottom:-7px;
+    bottom:-52px;
 
     display:flex;
     align-items:center;
-    gap:3px;
+    gap:10px;
 
-    padding:
-        3px 3px;
+    padding:8px 16px;
 
     border-radius:18px;
 
@@ -416,6 +440,8 @@ body{
 
     box-shadow:
         0 0 16px rgba(127,135,255,.18);
+
+    z-index:10;
 }
 
 .moon-small{
@@ -493,8 +519,6 @@ body{
 
     <div class="cart">
 
-        
-
         <div class="lights">
             <div class="light"></div>
             <div class="light"></div>
@@ -503,41 +527,37 @@ body{
             <div class="light"></div>
         </div>
 
-       
-
         <div class="shelf-area">
 
             <div class="books" id="books"></div>
 
             <div class="decor">
-                <div class="crystal">🔮</div>
-                <div class="mini-jar" id="miniJar"></div>
                 <div class="plant">🪴</div>
+                <div class="mini-jar" id="miniJar"></div>
+                <div class="crystal">🔮</div>
             </div>
 
             <div class="shelf-board"></div>
 
+            <div class="shelf-label">
+
+                <div class="moon-small"></div>
+
+                <div class="label-text">
+                    <div class="library-name">
+                        Moonbeam Library
+                    </div>
+
+                    <div class="library-progress" id="progressText">
+                        0 / 50 Books Shelved
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
-<div class="shelf-label">
-
-    <div class="moon-small"></div>
-
-    <div class="label-text">
-        <div class="library-name">
-            Moonbeam Library
-        </div>
-
-        <div class="library-progress" id="progressText">
-            0 / 50 Books Shelved
-        </div>
     </div>
-
-</div>
-
-    </div>
-
-
 
 </div>
 
@@ -547,7 +567,7 @@ body{
    EDIT THESE
 ========================================= */
 
-const currentGoal = 55;
+const currentGoal = 57;
 const maxGoal = 60;
 
 /* =========================================
@@ -617,16 +637,21 @@ function createSparkle(){
     sparkle.classList.add('sparkle');
 
     sparkle.style.left =
-        Math.random() * 620 + 'px';
+        Math.random() * 920 + 'px';
 
     sparkle.style.top =
-        (Math.random() * 250) + 20 + 'px';
+        (Math.random() * 540) + 20 + 'px';
 
     sparkle.style.animationDuration =
-        (Math.random() * 4 + 3) + 's';
+    (Math.random() * 4 + 3) + 's';
 
-    document.getElementById('particles')
-        .appendChild(sparkle);
+sparkle.style.setProperty(
+    '--drift',
+    Math.random()
+);
+
+document.getElementById('particles')
+    .appendChild(sparkle);
 
     setTimeout(()=>{
         sparkle.remove();

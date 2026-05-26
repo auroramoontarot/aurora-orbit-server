@@ -31,7 +31,7 @@
   }
 
   .corner-widget {
-    width: 370px;
+    width: 320px;
     padding: 8px 10px;
     border: 3px double var(--soft);
 
@@ -62,7 +62,7 @@
   }
 
   .title {
-    font-size:15px;
+    font-size:13px;
     font-weight:700;
     letter-spacing:0.5px;
     text-shadow:0 0 8px var(--teal);
@@ -90,7 +90,7 @@
 
     margin-bottom:10px;
 
-    font-size:11px;
+    font-size:10px;
 
     color:var(--soft);
   }
@@ -134,7 +134,7 @@
   .current-label {
     position:relative;
 
-    font-size:11px;
+    font-size:10px;
 
     text-transform:uppercase;
 
@@ -150,7 +150,7 @@
   .creator-name {
     position:relative;
 
-    font-size:26px;
+    font-size:22px;
 
     font-weight:700;
 
@@ -164,7 +164,7 @@
   .creator-meta {
     position:relative;
 
-    font-size:14px;
+    font-size:13px;
 
     color:var(--soft);
 
@@ -178,7 +178,7 @@
 
     display:inline-block;
 
-    font-size:12px;
+    font-size:11px;
 
     font-weight:700;
 
@@ -273,7 +273,7 @@
 
   <div class="pixel-top">
     <div class="title">☄ Cosmic Co-Working Corner</div>
-    <div class="badge">MOONSPACE</div>
+    <div class="badge">!ORBIT</div>
   </div>
 
   <div class="marquee-box">
@@ -306,17 +306,8 @@
       ☄ establishing cozy signal...
     </div>
 
-    <div class="command-box">
-      <div class="command" id="commandText">
-        !orbit
-      </div>
-    </div>
+    
 
-  </div>
-
-  <div class="footer">
-    cozy web portals ✦
-    <span>moonbeams • misfits • night owls welcome</span>
   </div>
 
 </div>
@@ -332,7 +323,6 @@
   const creatorMeta = document.getElementById("creatorMeta");
   const creatorStatus = document.getElementById("creatorStatus");
   const customStatus = document.getElementById("customStatus");
-  const commandText = document.getElementById("commandText");
 
   function normalizeCreator(creator) {
     return {
@@ -438,7 +428,6 @@
 
     customStatus.textContent = creator.statusText;
 
-    commandText.textContent = creator.command;
   }
 
   function rotateCreator() {

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Aurora Moon Cosmic Breathing Overlay</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+
+  /* =========================
+     COLORS
+  ========================= */
+
+  --primary: #7f87ff;
+  --secondary: #00a9ba;
+  --soft: #cbecf5;
+  --lavender: #c6c7f8;
+
+  /* =========================
+     MODE VARIABLES
+  ========================= */
+
+  --scale-min: .72;
+  --scale-max: 1;
+
+  --bg-opacity: .16;
+
+  --glow-strength: .45;
+
+}
+
+/* =========================
+   RESET
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+
+  overflow: hidden;
+  background: transparent;
+  font-family: 'Quicksand', sans-serif;
+
+}
+
+/* =========================
+   MAIN OVERLAY
+========================= */
+
+.overlay {
+
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+
+}
+
+/* =========================
+   SPACE BACKGROUND
+========================= */
+
+.space-bg {
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    radial-gradient(circle at center,
+      rgba(127,135,255,var(--bg-opacity)) 0%,
+      rgba(0,169,186,0.08) 30%,
+      transparent 70%);
+
+  filter: blur(40px);
+
+}
+
+/* =========================
+   STARS
+========================= */
+
+.stars {
+
+  position: absolute;
+  inset: 0;
+
+}
+
+.star {
+
+  position: absolute;
+
+  width: 2px;
+  height: 2px;
+
+  border-radius: 50%;
+  background: white;
+
+  opacity: .3;
+
+  animation: twinkle linear infinite;
+
+}
+
+@keyframes twinkle {
+
+  0%,100% {
+    opacity: .2;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(2);
+  }
+
+}
+
+/* =========================
+   FLOATING DUST
+========================= */
+
+.dust {
+
+  position: absolute;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: rgba(203,236,245,.7);
+
+  filter: blur(2px);
+
+  animation: drift ease-in-out infinite;
+
+}
+
+@keyframes drift {
+
+  0% {
+    transform: translateY(0px);
+    opacity: .15;
+  }
+
+  50% {
+    transform: translateY(-30px);
+    opacity: .8;
+  }
+
+  100% {
+    transform: translateY(0px);
+    opacity: .15;
+  }
+
+}
+
+/* =========================
+   BREATHING WRAP
+========================= */
+
+.breath-wrap {
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 360px;
+  height: 360px;
+
+  transform: translate(-50%, -50%);
+
+}
+
+/* =========================
+   OUTER ORBIT
+========================= */
+
+.orbit {
+
+  position: absolute;
+  inset: 0;
+
+  border-radius: 50%;
+
+  border: 1px solid rgba(255,255,255,.15);
+
+  box-shadow:
+    0 0 30px rgba(127,135,255,.18),
+    inset 0 0 30px rgba(203,236,245,.05);
+
+}
+
+/* =========================
+   BREATHING CORE
+========================= */
+
+.breath-core {
+
+  position: absolute;
+
+  inset: 50px;
+
+  border-radius: 50%;
+
+  backdrop-filter: blur(18px);
+
+  background:
+    radial-gradient(circle at center,
+      rgba(203,236,245,.55),
+      rgba(127,135,255,.22),
+      rgba(0,169,186,.08),
+      transparent);
+
+  box-shadow:
+    0 0 55px rgba(127,135,255,var(--glow-strength)),
+    inset 0 0 45px rgba(255,255,255,.12);
+
+}
+
+/* =========================
+   CELESTIAL ICONS
+========================= */
+
+.moon,
+.sun {
+
+  position: absolute;
+
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-size: 42px;
+
+  filter:
+    drop-shadow(0 0 14px rgba(255,255,255,.4));
+
+}
+
+
+/* =========================
+   TEXT
+========================= */
+
+.text-wrap {
+
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+}
+
+.phase {
+
+  font-size: 2rem;
+  font-weight: 700;
+
+  letter-spacing: 8px;
+
+  color: var(--soft);
+
+  text-shadow:
+    0 0 12px rgba(203,236,245,.7),
+    0 0 25px rgba(127,135,255,.45);
+
+}
+
+.timer {
+
+  margin-top: 14px;
+
+  font-size: 1.2rem;
+
+  letter-spacing: 4px;
+
+  color: rgba(255,255,255,.88);
+
+}
+
+.mode-name {
+
+  margin-top: 18px;
+
+  font-size: .85rem;
+
+  letter-spacing: 3px;
+
+  color: rgba(255,255,255,.45);
+
+}
+
+/* =========================
+   MODE TAG
+========================= */
+
+.mode-tag {
+
+  position: absolute;
+
+  top: 35px;
+  right: 35px;
+
+  padding: 10px 16px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.06);
+
+  border: 1px solid rgba(255,255,255,.08);
+
+  backdrop-filter: blur(12px);
+
+  color: rgba(255,255,255,.8);
+
+  font-size: .8rem;
+  letter-spacing: 2px;
+
+}
+
+/* =========================
+   MODE TRANSITIONS
+========================= */
+
+.breath-core,
+.space-bg {
+
+  transition:
+    all 2s ease;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+  <div class="space-bg"></div>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="mode-tag" id="modeTag">
+    BOX BREATHING
+  </div>
+
+  <div class="breath-wrap">
+
+    <div class="orbit"></div>
+
+    <div class="breath-core" id="breathCore"></div>
+
+    <div class="text-wrap">
+
+      <div class="phase" id="phaseText">
+        INHALE
+      </div>
+
+      <div class="timer" id="timerText">
+        4
+      </div>
+
+      <div class="mode-name" id="modeName">
+        cosmic compass ✦ steady reset
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* =========================
+   BREATHING MODES
+========================= */
+
+const MODES = {
+
+  box: {
+
+    label: "BOX BREATHING",
+
+    subtitle: "cosmic compass ✦ steady reset",
+
+    phases: [
+
+      { name: "INHALE", duration: 4000, scale: 1 },
+      { name: "HOLD", duration: 4000, scale: 1 },
+      { name: "EXHALE", duration: 4000, scale: .72 },
+      { name: "HOLD", duration: 4000, scale: .72 }
+
+    ],
+
+    bgOpacity: .16,
+    glow: .45
+
+  },
+
+  deep: {
+
+    label: "5 • 7 • 8 BREATHING",
+
+    subtitle: "lunar tide ✦ deep calm",
+
+    phases: [
+
+      { name: "INHALE", duration: 5000, scale: 1 },
+      { name: "HOLD", duration: 7000, scale: 1 },
+      { name: "EXHALE", duration: 8000, scale: .65 }
+
+    ],
+
+    bgOpacity: .24,
+    glow: .7
+
+  },
+
+  reset: {
+
+    label: "STARDUST RESET",
+
+    subtitle: "quick grounding ✦ nervous system reset",
+
+    phases: [
+
+      { name: "INHALE", duration: 3000, scale: .95 },
+      { name: "EXHALE", duration: 5000, scale: .7 }
+
+    ],
+
+    bgOpacity: .14,
+    glow: .35
+
+  }
+
+};
+
+/* =========================
+   ELEMENTS
+========================= */
+
+const phaseText = document.getElementById("phaseText");
+const timerText = document.getElementById("timerText");
+const breathCore = document.getElementById("breathCore");
+const modeTag = document.getElementById("modeTag");
+const modeName = document.getElementById("modeName");
+
+let currentMode = MODES.box;
+
+function getBreathingMode() {
+
+  const now = new Date();
+
+  const minutes = now.getMinutes();
+
+  if (
+    minutes < 25 ||
+    (minutes >= 30 && minutes < 55)
+  ) {
+
+    return MODES.box;
+
+  }
+
+  return MODES.deep;
+
+}
+
+/* =========================
+   APPLY MODE
+========================= */
+
+function applyMode() {
+
+  document.documentElement.style
+    .setProperty('--bg-opacity', currentMode.bgOpacity);
+
+  document.documentElement.style
+    .setProperty('--glow-strength', currentMode.glow);
+
+  modeTag.textContent = currentMode.label;
+
+  modeName.textContent = currentMode.subtitle;
+
+}
+
+applyMode();
+
+/* =========================
+   BREATH LOOP
+========================= */
+
+let phaseIndex = 0;
+
+function runPhase() {
+
+  const targetMode = getBreathingMode();
+
+/* only switch after full cycle finishes */
+
+if (
+  phaseIndex === 0 &&
+  currentMode !== targetMode
+) {
+
+  currentMode = targetMode;
+
+  applyMode();
+
+}
+
+const phase = currentMode.phases[phaseIndex];
+
+  phaseText.textContent = phase.name;
+
+  breathCore.style.transition =
+    `transform ${phase.duration}ms ease-in-out,
+     opacity ${phase.duration}ms ease-in-out`;
+
+  breathCore.style.transform =
+    `scale(${phase.scale})`;
+
+  breathCore.style.opacity =
+    phase.scale > .8 ? 1 : .65;
+
+  /* countdown */
+
+  let seconds = Math.ceil(phase.duration / 1000);
+
+  timerText.textContent = seconds;
+
+  const countdown = setInterval(() => {
+
+    seconds--;
+
+    if (seconds > 0) {
+      timerText.textContent = seconds;
+    }
+
+  }, 1000);
+
+  setTimeout(() => {
+
+    clearInterval(countdown);
+
+    phaseIndex =
+      (phaseIndex + 1) % currentMode.phases.length;
+
+    runPhase();
+
+  }, phase.duration);
+
+}
+
+runPhase();
+
+/* =========================
+   STARS
+========================= */
+
+const starsContainer =
+  document.getElementById("stars");
+
+for (let i = 0; i < 140; i++) {
+
+  const star =
+    document.createElement("div");
+
+  star.classList.add("star");
+
+  star.style.left =
+    Math.random() * 100 + "%";
+
+  star.style.top =
+    Math.random() * 100 + "%";
+
+  star.style.animationDuration =
+    (2 + Math.random() * 6) + "s";
+
+  star.style.animationDelay =
+    Math.random() * 8 + "s";
+
+  starsContainer.appendChild(star);
+
+}
+
+/* =========================
+   FLOATING DUST
+========================= */
+
+for (let i = 0; i < 20; i++) {
+
+  const dust =
+    document.createElement("div");
+
+  dust.classList.add("dust");
+
+  dust.style.left =
+    Math.random() * 100 + "%";
+
+  dust.style.top =
+    Math.random() * 100 + "%";
+
+  dust.style.animationDuration =
+    (8 + Math.random() * 10) + "s";
+
+  dust.style.animationDelay =
+    Math.random() * 8 + "s";
+
+  document.body.appendChild(dust);
+
+}
+
+</script>
+
+</body>
+</html>

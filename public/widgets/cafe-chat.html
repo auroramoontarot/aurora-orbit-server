@@ -1,510 +1,593 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Luna-Tics Shuttle Chat</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<title>Moonbeam Scattered Notes Chat</title>
 
-  <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: transparent;
-      font-family: 'Quicksand', sans-serif;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 
-    :root{
-      --lav:#7f87ff;
-      --teal:#00a9ba;
-      --ice:#cbecf5;
-      --mist:#c6c7f8;
-    }
+<style>
 
-    .chat-wrap{
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      border-radius: 18px;
-      background: rgba(25, 18, 14, 0.18);
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow:
-        inset 0 0 10px rgba(255,255,255,0.03),
-        0 4px 18px rgba(0,0,0,0.14);
-      backdrop-filter: blur(2px);
-    }
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand',sans-serif;
+}
 
-    .chat-wrap::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
-      z-index:0;
-    }
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --mist:#c6c7f8;
+}
 
-    .chat-wrap.speaking{
-      box-shadow:
-        inset 0 0 18px rgba(255,255,255,0.06),
-        inset 0 0 34px rgba(0,169,186,0.10),
-        0 0 18px rgba(127,135,255,0.18),
-        0 0 28px rgba(0,169,186,0.12);
-      border-color: rgba(203,236,245,0.18);
-    }
+/* ENTIRE CHAT AREA */
 
-    .chat-wrap.speaking::after{
-      content:"";
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-      border-radius:26px;
-      background:
-        radial-gradient(circle at center, rgba(127,135,255,0.08), transparent 60%),
-        radial-gradient(circle at top right, rgba(0,169,186,0.08), transparent 45%);
-      animation: astreaGlowPulse 1.8s ease-in-out infinite;
-      z-index:1;
-    }
+.chat-wrap{
+  position:relative;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  pointer-events:none;
+}
 
-    .chat-title{
-      position:absolute;
-      top:10px;
-      left:14px;
-      z-index:3;
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-size:11px;
-      font-weight:700;
-      letter-spacing:1.4px;
-      text-transform:uppercase;
-      color:rgba(255,245,225,.88);
-    }
+/* NOTES */
 
-    .chat-title .dot{
-      animation: pulseStar 2.4s ease-in-out infinite;
-    }
+.note{
+  position:absolute;
 
-    .chat-title .dot::before{
-      content:"✦";
-      color:#f6d98f;
-      font-size:12px;
-      text-shadow:
-        0 0 6px rgba(246,217,143,.35),
-        0 0 10px rgba(127,135,255,.18);
-    }
+  width:max-content;
+  max-width:190px;
+  min-width:135px;
 
-    .chat-feed{
-      position:absolute;
-      left:14px;
-      right:14px;
-      top:38px;
-      bottom:14px;
-      display:flex;
-      flex-direction:column;
-      justify-content:flex-end;
-      gap:9px;
-      overflow:hidden;
-      z-index:2;
-    }
+  padding:14px 14px 15px 14px;
 
-    .msg{
-      position:relative;
-      align-self:flex-start;
-      max-width:62%;
-      padding:16px 13px 11px 14px;
-      border-radius:11px;
-      background: rgba(255, 248, 238, 0.92);
-      border: 1px solid rgba(120, 90, 60, 0.12);
-      color:#3b2e2a;
-      font-size:15px;
-      line-height:1.35;
-      word-break:break-word;
-      box-shadow:
-        0 4px 10px rgba(0,0,0,.12),
-        0 1px 0 rgba(255,255,255,.38) inset;
-      opacity:0;
-      transform:translateY(14px) scale(.98) rotate(-0.8deg);
-      animation:
-        chatIn .45s ease forwards,
-        noteFloat 5.5s ease-in-out infinite;
-      transform-origin: top center;
-    }
+  border-radius:14px;
 
-    .msg::before{
-      content:"★";
-      position:absolute;
-      top:-7px;
-      left:13px;
-      z-index:2;
-      font-size:11px;
-      color:#f6c177;
-      text-shadow:
-        0 0 4px rgba(246,193,119,.35),
-        0 1px 2px rgba(0,0,0,.14);
-      transform: rotate(-8deg);
-    }
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,248,238,.96),
+      rgba(255,244,230,.92)
+    );
 
-    .msg::after{
-      content:"";
-      position:absolute;
-      top:3px;
-      left:50%;
-      width:44px;
-      height:10px;
-      transform:translateX(-50%) rotate(-2deg);
-      border-radius:2px;
-      background:rgba(246,217,143,.34);
-      box-shadow:
-        0 1px 2px rgba(0,0,0,.08),
-        inset 0 0 3px rgba(255,255,255,.22);
-      pointer-events:none;
-    }
+  border:1px solid rgba(140,120,90,.14);
 
-    .msg.self{
-      align-self:flex-end;
-      background: rgba(240, 244, 255, 0.95);
-      border-color: rgba(127,135,255,.20);
-      transform:translateY(14px) scale(.98) rotate(0.8deg);
-    }
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.16),
+    inset 0 1px 0 rgba(255,255,255,.4);
 
-    .msg.self::before{
-      left:auto;
-      right:13px;
-      transform: rotate(8deg);
-    }
+  color:#3b2e2a;
 
-    .msg.self::after{
-      background:rgba(198,199,248,.40);
-      transform:translateX(-50%) rotate(2deg);
-    }
+  opacity:0;
 
-    .msg.mod{
-      background: rgba(232, 253, 255, 0.93);
-      border-color: rgba(0,169,186,.18);
-    }
+  transform-origin:center;
 
-    .msg.mod::after{
-      background:rgba(203,236,245,.42);
-    }
+  animation:
+    noteIn .6s ease forwards,
+    floaty 6s ease-in-out infinite;
 
-    .msg.sub{
-      background: rgba(250, 244, 255, 0.94);
-      border-color: rgba(198,199,248,.24);
-    }
+  backdrop-filter:blur(4px);
 
-    .msg.sub::after{
-      background:rgba(232,218,255,.42);
-    }
+  word-break:break-word;
+}
 
-    .meta{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      margin-bottom:4px;
-      font-size:10px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      color:rgba(92,72,58,.65);
-    }
+/* DIFFERENT NOTE COLORS */
 
-    .tag{
-      padding:2px 7px;
-      border-radius:999px;
-      border:1px solid rgba(120,90,60,.12);
-      background:rgba(255,255,255,.38);
-      color:#6e5a52;
-      font-weight:700;
-      letter-spacing:1px;
-      font-size:10px;
-    }
+.note.mod{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(230,255,255,.96),
+      rgba(214,248,255,.92)
+    );
+}
 
-    .user{
-      font-weight:700;
-      color:#6a5cff;
-    }
+.note.sub{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(248,240,255,.96),
+      rgba(235,226,255,.92)
+    );
+}
 
-    .msg.mod .user{
-      color:#008a98;
-    }
+.note.self{
+  background:
+    linear-gradient(
+      145deg,
+      rgba(240,245,255,.96),
+      rgba(222,232,255,.92)
+    );
+}
 
-    .msg.self .user{
-      color:#4d56d8;
-    }
+/* TAPE */
 
-    .text{
-      color:#3b2e2a;
-      font-size:15px;
-    }
+.note::before{
+  content:"";
 
-    .msg.old{
-      opacity:.42 !important;
-      filter:saturate(.82);
-    }
+  position:absolute;
 
-    .empty-state{
-      align-self:center;
-      margin-top:auto;
-      margin-bottom:auto;
-      padding:10px 14px;
-      border-radius:12px;
-      font-size:12px;
-      letter-spacing:1px;
-      text-transform:uppercase;
-      color:rgba(255,245,225,.76);
-      background:rgba(60,38,28,.22);
-      border:1px solid rgba(255,255,255,.08);
-      backdrop-filter: blur(2px);
-    }
+  top:-6px;
+  left:50%;
 
-    .error-state{
-      color:#fff;
-      border-color:rgba(255,120,120,.3);
-      background:rgba(80,20,30,.25);
-    }
+  transform:translateX(-50%) rotate(-2deg);
 
-    @keyframes chatIn{
-      to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-      }
-    }
+  width:48px;
+  height:11px;
 
-    @keyframes noteFloat{
-      0%,100% { margin-top:0; }
-      50% { margin-top:-2px; }
-    }
+  border-radius:3px;
 
-    @keyframes pulseStar{
-      0%,100%{ transform:scale(1); opacity:.85; }
-      50%{ transform:scale(1.15); opacity:1; }
-    }
+  background:rgba(246,217,143,.36);
 
-    @keyframes astreaGlowPulse{
-      0%,100%{ opacity:.45; }
-      50%{ opacity:.9; }
-    }
-  </style>
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.08),
+    inset 0 0 4px rgba(255,255,255,.25);
+}
+
+/* STAR PIN */
+
+.note::after{
+  content:"✦";
+
+  position:absolute;
+
+  top:-11px;
+  right:10px;
+
+  color:#f6c177;
+
+  font-size:11px;
+
+  text-shadow:
+    0 0 6px rgba(246,193,119,.35);
+}
+
+/* META */
+
+.meta{
+  display:flex;
+  align-items:center;
+  gap:6px;
+
+  margin-bottom:4px;
+
+  font-size:8px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+
+  opacity:.65;
+}
+
+.tag{
+  padding:2px 6px;
+
+  border-radius:999px;
+
+  background:rgba(255,255,255,.45);
+
+  border:1px solid rgba(120,90,60,.1);
+
+  font-size:9px;
+  font-weight:700;
+}
+
+.content{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.user{
+  font-weight:700;
+  font-size:11px;
+  color:#645cff;
+
+  padding-bottom:2px;
+
+  border-bottom:
+    1px dashed rgba(100,100,100,.18);
+
+  letter-spacing:.3px;
+}
+
+.text{
+  font-size:11px;
+  line-height:1.35;
+  color:#3b2e2a;
+
+  padding-top:2px;
+
+  word-wrap:break-word;
+}
+
+.note.mod .user{
+  color:#008e9c;
+}
+
+.note.self .user{
+  color:#4d56d8;
+}
+
+/* OLDER NOTES */
+
+.note.old{
+  opacity:.35 !important;
+  filter:saturate(.7);
+}
+
+/* ANIMATIONS */
+
+@keyframes noteIn{
+  0%{
+    opacity:0;
+    transform:
+      translateY(18px)
+      scale(.92)
+      rotate(var(--rotate));
+  }
+
+  100%{
+    opacity:1;
+    transform:
+      translateY(0)
+      scale(1)
+      rotate(var(--rotate));
+  }
+}
+
+@keyframes floaty{
+  0%,100%{
+    margin-top:0;
+  }
+
+  50%{
+    margin-top:-3px;
+  }
+}
+
+</style>
 </head>
 
 <body>
-  <div class="chat-wrap">
-    <div class="chat-title">
-      <span class="dot"></span>
-      <span>11th House Coffee + Collab</span>
+
+<div class="chat-wrap" id="chatWrap"></div>
+
+<audio id="astreaChime"
+src="/widgets/sounds/moonbeam.mp3"
+preload="auto"></audio>
+
+<script>
+
+const MAX_MESSAGES = 6;
+
+const wrap = document.getElementById("chatWrap");
+
+let currentAudio = null;
+
+/* RANDOM NOTE POSITIONS */
+
+function getRandomPosition(noteWidth){
+
+  const estimatedHeight = 190;
+
+  const padding = 24;
+
+  const maxX =
+    window.innerWidth -
+    noteWidth -
+    padding;
+
+  const maxY =
+    window.innerHeight -
+    estimatedHeight -
+    padding;
+
+  return {
+
+    x:
+      Math.random() *
+      Math.max(maxX, 20),
+
+    y:
+      Math.random() *
+      Math.max(maxY, 20)
+
+  };
+}
+
+function escapeHtml(str){
+  return String(str)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function getTimeStamp(){
+
+  const now = new Date();
+
+  return now.toLocaleTimeString([],{
+    hour:"numeric",
+    minute:"2-digit"
+  });
+}
+
+function buildRoleTag(data){
+
+  if(data.broadcaster) return "Host";
+  if(data.mod) return "Mod";
+  if(data.subscriber) return "Moonbeam";
+
+  return "Signal";
+}
+
+/* AGING */
+
+function refreshAges(){
+
+  const notes = [...wrap.querySelectorAll(".note")];
+
+  notes.forEach((el,index)=>{
+
+    el.classList.remove("old");
+
+    if(index < notes.length - 2){
+      el.classList.add("old");
+    }
+  });
+}
+
+/* REMOVE OLDEST */
+
+function removeOldestIfNeeded(){
+
+  while(wrap.querySelectorAll(".note").length > MAX_MESSAGES){
+
+    const first =
+      wrap.querySelector(".note");
+
+    if(first){
+      first.remove();
+    }
+  }
+}
+
+/* ADD NOTE */
+
+function addMessage(data){
+
+  const note =
+    document.createElement("div");
+
+  note.className = "note";
+
+  const widths = [145,160,175,190];
+
+  const selectedWidth =
+    widths[
+      Math.floor(Math.random() * widths.length)
+    ];
+
+  note.style.width =
+    selectedWidth + "px";
+
+  if(data.broadcaster){
+    note.classList.add("self");
+  }
+  else if(data.mod){
+    note.classList.add("mod");
+  }
+  else if(data.subscriber){
+    note.classList.add("sub");
+  }
+
+  /* RANDOM POSITION */
+
+  const pos =
+    getRandomPosition(selectedWidth);
+
+  const rotate =
+    (Math.random() * 6 - 3).toFixed(2);
+
+  note.style.left = pos.x + "px";
+  note.style.top = pos.y + "px";
+
+  note.style.setProperty(
+    "--rotate",
+    rotate + "deg"
+  );
+
+  note.innerHTML = `
+
+    <div class="meta">
+      <span class="tag">
+        ${buildRoleTag(data)}
+      </span>
+
+      <span>
+        ${getTimeStamp()}
+      </span>
     </div>
 
-    <div class="chat-feed" id="chatFeed">
-      <div class="empty-state" id="emptyState">Cosmic coffee brewing...</div>
+    <div class="content">
+
+      <div class="user">
+        ${escapeHtml(data.user)}
+      </div>
+
+      <div class="text">
+        ${escapeHtml(data.text)}
+      </div>
+
     </div>
-  </div>
 
-  <audio id="astreaChime" src="/widgets/sounds/moonbeam.mp3" preload="auto"></audio>
+  `;
 
-  <script>
-    const MAX_MESSAGES = 10;
-    const feed = document.getElementById("chatFeed");
-    const chatWrap = document.querySelector(".chat-wrap");
-    let currentAudio = null;
-    let speakingTimeout = null;
+  wrap.appendChild(note);
 
-    function setSpeakingState(isSpeaking) {
-      if (!chatWrap) return;
+  removeOldestIfNeeded();
 
-      if (isSpeaking) {
-        chatWrap.classList.add("speaking");
+  refreshAges();
 
-        if (speakingTimeout) {
-          clearTimeout(speakingTimeout);
-          speakingTimeout = null;
-        }
-      } else {
-        speakingTimeout = setTimeout(() => {
-          chatWrap.classList.remove("speaking");
-        }, 250);
-      }
+  /* AUTO FADE */
+
+  setTimeout(()=>{
+
+    note.style.transition =
+      "opacity 1.4s ease";
+
+    note.style.opacity = "0";
+
+    setTimeout(()=>{
+      note.remove();
+    },1400);
+
+  },28000);
+
+}
+
+/* TTS */
+
+async function playTTS(text, mode="astrea"){
+
+  try{
+
+    const res = await fetch("/tts",{
+      method:"POST",
+
+      headers:{
+        "Content-Type":"application/json"
+      },
+
+      body:JSON.stringify({
+        text,
+        mode
+      })
+    });
+
+    if(!res.ok){
+      throw new Error("TTS failed");
     }
 
-    function escapeHtml(str){
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    const blob = await res.blob();
+
+    if(currentAudio){
+
+      currentAudio.pause();
+
+      currentAudio = null;
     }
 
-    function getTimeStamp(){
-      const now = new Date();
-      return now.toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit"
-      });
+    const chime =
+      document.getElementById("astreaChime");
+
+    if(chime && mode === "astrea"){
+
+      chime.volume = 0.3;
+
+      chime.currentTime = 0;
+
+      await chime.play();
     }
 
-    function refreshAges(){
-      const messages = [...feed.querySelectorAll(".msg")];
-      messages.forEach((el, index) => {
-        el.classList.remove("old");
-        if (index < messages.length - 3) el.classList.add("old");
-      });
-    }
+    await new Promise(r =>
+      setTimeout(r,350)
+    );
 
-    function removeOldestIfNeeded(){
-      while (feed.querySelectorAll(".msg").length > MAX_MESSAGES) {
-        const firstMsg = feed.querySelector(".msg");
-        if (firstMsg) firstMsg.remove();
-      }
-    }
+    const url =
+      URL.createObjectURL(blob);
 
-    function buildRoleTag(data){
-      if (data.broadcaster) return "Host";
-      if (data.mod) return "Mod";
-      if (data.subscriber) return "Moonbeam";
-      return "Signal";
-    }
+    const audio =
+      new Audio(url);
 
-    function addMessage(data){
-      const currentEmpty = document.getElementById("emptyState");
-      if (currentEmpty) currentEmpty.remove();
+    currentAudio = audio;
 
-      const msg = document.createElement("div");
-      msg.className = "msg";
+    audio.volume = 0.8;
 
-      if (data.broadcaster) {
-        msg.classList.add("self");
-      } else if (data.mod) {
-        msg.classList.add("mod");
-      } else if (data.subscriber) {
-        msg.classList.add("sub");
-      }
+    audio.onended = ()=>{
 
-      msg.innerHTML = `
-        <div class="meta">
-          <span class="tag">${buildRoleTag(data)}</span>
-          <span>${getTimeStamp()}</span>
-        </div>
-        <div class="content">
-          <span class="user">${escapeHtml(data.user)}:</span>
-          <span class="text">${escapeHtml(data.text)}</span>
-        </div>
-      `;
-
-      feed.appendChild(msg);
-      removeOldestIfNeeded();
-      refreshAges();
-    }
-
-    async function playTTS(text, mode = "astrea"){
-      try {
-        const res = await fetch("/tts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ text, mode })
-        });
-
-        if (!res.ok) {
-          const err = await res.text();
-          throw new Error(err || `HTTP ${res.status}`);
-        }
-
-        const blob = await res.blob();
-
-        if (currentAudio) {
-          currentAudio.pause();
-          currentAudio = null;
-        }
-
-        const chime = document.getElementById("astreaChime");
-
-        if (mode === "astrea") {
-          setSpeakingState(true);
-        }
-
-        if (chime && mode === "astrea") {
-          chime.volume = 0.3;
-          chime.currentTime = 0;
-          await chime.play();
-        }
-
-        await new Promise(r => setTimeout(r, mode === "astrea" ? 500 : 120));
-
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-        currentAudio = audio;
-        audio.volume = 0.8;
-
-        audio.onended = () => {
-          URL.revokeObjectURL(url);
-          if (mode === "astrea") {
-            setSpeakingState(false);
-          }
-        };
-
-        await audio.play();
-
-      } catch (err) {
-        if (mode === "astrea") {
-          setSpeakingState(false);
-        }
-        console.error("TTS play failed:", err);
-      }
-    }
-
-    const stream = new EventSource("/chatstream");
-
-    stream.onopen = () => {
-      const currentEmpty = document.getElementById("emptyState");
-      if (currentEmpty) currentEmpty.textContent = "Signal locked in...";
+      URL.revokeObjectURL(url);
     };
 
-    stream.onmessage = async (event) => {
-      try {
-        const data = JSON.parse(event.data);
+    await audio.play();
 
-        if (data.type === "status") {
-          const currentEmpty = document.getElementById("emptyState");
-          if (currentEmpty) currentEmpty.textContent = "Signal locked in...";
-          return;
-        }
+  }catch(err){
 
-        if (data.type === "message") {
-          addMessage(data);
-          return;
-        }
+    console.error(
+      "TTS failed:",
+      err
+    );
+  }
+}
 
-        if (data.type === "tts") {
-          await playTTS(data.text, data.mode || "astrea");
-          return;
-        }
+/* CHAT STREAM */
 
-        if (data.type === "astrea") {
-          await playTTS(data.text, "astrea");
-          return;
-        }
+const stream =
+  new EventSource("/chatstream");
 
-        if (data.type === "aurora") {
-          await playTTS(data.text, "aurora");
-          return;
-        }
+stream.onmessage =
+async (event)=>{
 
-      } catch (err) {
-        console.error("Bad chatstream payload:", err);
-      }
-    };
+  try{
 
-    stream.onerror = () => {
-      const currentEmpty = document.getElementById("emptyState");
-      if (currentEmpty) {
-        currentEmpty.textContent = "Relay offline...";
-        currentEmpty.classList.add("error-state");
-      }
-    };
-  </script>
+    const data =
+      JSON.parse(event.data);
+
+    if(data.type === "message"){
+
+      addMessage(data);
+
+      return;
+    }
+
+    if(data.type === "tts"){
+
+      await playTTS(
+        data.text,
+        data.mode || "astrea"
+      );
+
+      return;
+    }
+
+    if(data.type === "astrea"){
+
+      await playTTS(
+        data.text,
+        "astrea"
+      );
+
+      return;
+    }
+
+    if(data.type === "aurora"){
+
+      await playTTS(
+        data.text,
+        "aurora"
+      );
+
+      return;
+    }
+
+  }catch(err){
+
+    console.error(
+      "Bad payload:",
+      err
+    );
+  }
+};
+
+</script>
+
 </body>
 </html>

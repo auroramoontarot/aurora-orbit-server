@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Cosmic Messages</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --lavender:#c6c7f8;
+  --blue:#7f87ff;
+  --cyan:#cbecf5;
+  --teal:#00a9ba;
+
+  --glass:rgba(255,255,255,0.08);
+  --border:rgba(255,255,255,0.14);
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand',sans-serif;
+}
+
+/* WRAPPER */
+
+.away-wrap{
+  position:relative;
+
+  width:100%;
+  height:100vh;
+
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+
+  padding-bottom:28px;
+
+  overflow:hidden;
+}
+
+/* BACKGROUND GLOW */
+
+.glow{
+  position:absolute;
+
+  width:500px;
+  height:160px;
+
+  bottom:-60px;
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(127,135,255,.18),
+      transparent 70%
+    );
+
+  filter:blur(40px);
+
+  animation:pulseGlow 8s ease-in-out infinite;
+}
+
+@keyframes pulseGlow{
+  0%,100%{
+    opacity:.5;
+    transform:scale(1);
+  }
+  50%{
+    opacity:1;
+    transform:scale(1.08);
+  }
+}
+
+/* MAIN BAR */
+
+.away-bar{
+  position:relative;
+
+  width:min(1200px,92vw);
+
+  height:58px;
+
+  border-radius:999px;
+
+  background:var(--glass);
+
+  border:1px solid var(--border);
+
+  backdrop-filter:blur(18px);
+
+  overflow:hidden;
+
+  box-shadow:
+    0 0 24px rgba(127,135,255,.18),
+    inset 0 0 18px rgba(255,255,255,.03);
+
+  opacity:.82;
+}
+
+/* SHIMMER */
+
+.away-bar::before{
+  content:"";
+
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      110deg,
+      transparent 0%,
+      rgba(255,255,255,.06) 45%,
+      rgba(255,255,255,.12) 50%,
+      rgba(255,255,255,.06) 55%,
+      transparent 100%
+    );
+
+  transform:translateX(-120%);
+
+  animation:shimmer 14s linear infinite;
+}
+
+@keyframes shimmer{
+  to{
+    transform:translateX(120%);
+  }
+}
+
+/* LABEL */
+
+.label{
+  position:absolute;
+
+  left:20px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  z-index:5;
+
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  color:white;
+
+  font-size:.8rem;
+
+  letter-spacing:.08em;
+
+  text-transform:uppercase;
+
+  opacity:.68;
+
+  white-space:nowrap;
+}
+
+/* FADE EDGES */
+
+.fade-left,
+.fade-right{
+  position:absolute;
+  top:0;
+
+  width:120px;
+  height:100%;
+
+  z-index:4;
+
+  pointer-events:none;
+}
+
+.fade-left{
+  left:0;
+
+  background:
+    linear-gradient(
+      to right,
+      rgba(13,13,20,.88),
+      transparent
+    );
+}
+
+.fade-right{
+  right:0;
+
+  background:
+    linear-gradient(
+      to left,
+      rgba(13,13,20,.88),
+      transparent
+    );
+}
+
+/* TICKER */
+
+.ticker-wrap{
+  position:absolute;
+
+  inset:0;
+
+  display:flex;
+  align-items:center;
+
+  overflow:hidden;
+}
+
+.ticker-track{
+  display:flex;
+  align-items:center;
+
+  width:max-content;
+
+  padding-left:240px;
+
+  animation:scrollTicker 50s linear infinite;
+}
+
+@keyframes scrollTicker{
+  from{
+    transform:translateX(0);
+  }
+  to{
+    transform:translateX(-50%);
+  }
+}
+
+/* ITEMS */
+
+.item{
+  display:flex;
+  align-items:center;
+
+  gap:10px;
+
+  padding-right:54px;
+
+  color:white;
+
+  white-space:nowrap;
+
+  font-size:.95rem;
+
+  letter-spacing:.02em;
+
+  opacity:.92;
+}
+
+.user{
+  color:var(--lavender);
+  font-weight:700;
+}
+
+.message{
+  opacity:.9;
+}
+
+.dot{
+  opacity:.25;
+}
+
+/* FLOATING STARS */
+
+.star{
+  position:absolute;
+
+  border-radius:50%;
+
+  background:white;
+
+  opacity:.14;
+
+  animation:floatStar linear infinite;
+}
+
+@keyframes floatStar{
+  from{
+    transform:translateY(0px);
+  }
+  to{
+    transform:translateY(-120vh);
+  }
+}
+
+/* OPTIONAL SOFT BLINK */
+
+.blink{
+  animation:blink 5s ease-in-out infinite;
+}
+
+@keyframes blink{
+  0%,100%{
+    opacity:.85;
+  }
+  50%{
+    opacity:1;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<div class="away-wrap">
+
+  <!-- GLOW -->
+  <div class="glow"></div>
+
+  <!-- FLOATING STARS -->
+  <div id="stars"></div>
+
+  <!-- BAR -->
+  <div class="away-bar">
+
+    <!-- LABEL -->
+    <div class="label">
+      ✨ cosmic messages
+    </div>
+
+    <!-- FADE EDGES -->
+    <div class="fade-left"></div>
+    <div class="fade-right"></div>
+
+    <!-- TICKER -->
+<div class="ticker-wrap">
+
+  <div class="ticker-track" id="tickerTrack"></div>
+
+</div>
+
+  </div>
+
+</div>
+
+<script>
+
+const stars = document.getElementById("stars");
+const tickerTrack = document.getElementById("tickerTrack");
+
+/* -------------------------
+   FLOATING STARS
+------------------------- */
+
+for(let i=0;i<35;i++){
+
+  const star = document.createElement("div");
+
+  star.classList.add("star");
+
+  const size = Math.random()*4 + 2;
+
+  star.style.width = size + "px";
+  star.style.height = size + "px";
+
+  star.style.left = Math.random()*100 + "%";
+
+  star.style.top = Math.random()*120 + "%";
+
+  star.style.animationDuration =
+    (25 + Math.random()*40) + "s";
+
+  star.style.animationDelay =
+    (-Math.random()*40) + "s";
+
+  star.style.opacity =
+    (.05 + Math.random()*.18);
+
+  star.style.background =
+    Math.random() > .5
+      ? "#c6c7f8"
+      : "#cbecf5";
+
+  stars.appendChild(star);
+}
+
+/* -------------------------
+   LOAD MOODS
+------------------------- */
+
+async function loadMoods(){
+
+  try{
+
+    const res = await fetch(
+      "http://localhost:3000/moods"
+    );
+
+    const data = await res.json();
+
+    const statuses = Array.isArray(data.statuses)
+      ? data.statuses
+      : [];
+
+    renderTicker(statuses);
+
+  }catch(err){
+
+    console.error(
+      "Mood load failed:",
+      err
+    );
+
+  }
+
+}
+
+/* -------------------------
+   RENDER TICKER
+------------------------- */
+
+function renderTicker(statuses){
+
+  /* EMPTY STATE */
+
+  if(!statuses.length){
+
+    tickerTrack.innerHTML = `
+      <div class="item">
+        <span class="user">
+          🌙 Moonbeams
+        </span>
+
+        <span class="message">
+          drifting quietly tonight
+        </span>
+      </div>
+    `;
+
+    return;
+  }
+
+  /* DUPLICATE FOR LOOPING */
+
+  const loopedStatuses = [
+    ...statuses,
+    ...statuses
+  ];
+
+  const html = loopedStatuses
+    .map(status => {
+
+      const user =
+        String(status.user || "Moonbeam");
+
+      const message =
+        String(status.message || "floating softly");
+
+      return `
+        <div class="item">
+
+          <span class="user">
+            ${escapeHtml(user)}
+          </span>
+
+          <span class="message">
+            ${escapeHtml(message)}
+          </span>
+
+        </div>
+
+        <div class="dot">
+          ✦
+        </div>
+      `;
+
+    })
+    .join("");
+
+  tickerTrack.innerHTML = html;
+}
+
+/* -------------------------
+   HTML ESCAPE
+------------------------- */
+
+function escapeHtml(str){
+
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* -------------------------
+   INITIAL LOAD
+------------------------- */
+
+loadMoods();
+
+/* -------------------------
+   AUTO REFRESH
+------------------------- */
+
+setInterval(() => {
+
+  loadMoods();
+
+}, 10000);
+
+</script>
+
+</body>
+</html>

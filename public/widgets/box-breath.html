@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Celestial Box Breathing Overlay</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+  background: transparent;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* =========================
+   MAIN OVERLAY
+========================= */
+
+.overlay {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+/* =========================
+   COSMIC BACKGROUND GLOW
+========================= */
+
+.cosmic-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at center,
+      rgba(127,135,255,0.18) 0%,
+      rgba(0,169,186,0.08) 35%,
+      transparent 70%);
+  filter: blur(40px);
+}
+
+/* =========================
+   STARFIELD
+========================= */
+
+.stars {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  opacity: .6;
+  animation: twinkle 4s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+  0%,100% {
+    opacity: .2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+}
+
+/* =========================
+   BREATHING CONTAINER
+========================= */
+
+.breathing-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  transform: translate(-50%, -50%);
+}
+
+/* =========================
+   OUTER RINGS
+========================= */
+
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(203,236,245,0.25);
+  box-shadow:
+    0 0 25px rgba(127,135,255,0.35),
+    inset 0 0 25px rgba(198,199,248,0.12);
+}
+
+/* Animated breathing pulse */
+
+.breathing-circle {
+  position: absolute;
+  inset: 30px;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle at center,
+      rgba(203,236,245,0.55),
+      rgba(127,135,255,0.18),
+      transparent);
+
+  backdrop-filter: blur(10px);
+
+  animation: breathe 16s infinite ease-in-out;
+}
+
+/* =========================
+   BREATH ANIMATION
+========================= */
+
+/*
+4s inhale
+4s hold
+4s exhale
+4s hold
+*/
+
+@keyframes breathe {
+
+  /* INHALE */
+  0% {
+    transform: scale(0.72);
+    opacity: .65;
+  }
+
+  25% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  /* HOLD */
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  /* EXHALE */
+  75% {
+    transform: scale(0.72);
+    opacity: .55;
+  }
+
+  /* HOLD */
+  100% {
+    transform: scale(0.72);
+    opacity: .55;
+  }
+}
+
+/* =========================
+   MOON + SUN
+========================= */
+
+.moon,
+.sun {
+  position: absolute;
+  font-size: 42px;
+  filter: drop-shadow(0 0 14px rgba(255,255,255,.35));
+}
+
+.moon {
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sun {
+  bottom: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* =========================
+   TEXT
+========================= */
+
+.breath-text {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.phase {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 6px;
+
+  color: #cbecf5;
+
+  text-shadow:
+    0 0 12px rgba(203,236,245,.7),
+    0 0 24px rgba(127,135,255,.5);
+
+  margin-bottom: 12px;
+}
+
+.count {
+  font-size: 1rem;
+  letter-spacing: 3px;
+  color: #c6c7f8;
+  opacity: .9;
+}
+
+.subtitle {
+  margin-top: 18px;
+  font-size: .85rem;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,.55);
+}
+
+/* =========================
+   FLOATING PARTICLES
+========================= */
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+
+  background: rgba(203,236,245,.8);
+
+  filter: blur(1px);
+
+  animation: float 10s infinite ease-in-out;
+}
+
+@keyframes float {
+
+  0% {
+    transform: translateY(0px);
+    opacity: .2;
+  }
+
+  50% {
+    transform: translateY(-25px);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0px);
+    opacity: .2;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+
+  <div class="cosmic-glow"></div>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="breathing-container">
+
+    <div class="ring"></div>
+
+    <div class="breathing-circle"></div>
+
+    <div class="moon">🌙</div>
+    <div class="sun">☀️</div>
+
+    <div class="breath-text">
+
+      <div class="phase" id="phaseText">
+        INHALE
+      </div>
+
+      <div class="count" id="countText">
+        4 COUNTS
+      </div>
+
+      <div class="subtitle">
+        scatter stardust ✦ breathe slow ✦ center yourself
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* =========================
+   STAR GENERATOR
+========================= */
+
+const starsContainer = document.getElementById("stars");
+
+for (let i = 0; i < 90; i++) {
+
+  const star = document.createElement("div");
+  star.classList.add("star");
+
+  star.style.left = Math.random() * 100 + "%";
+  star.style.top = Math.random() * 100 + "%";
+
+  star.style.animationDelay = Math.random() * 5 + "s";
+  star.style.animationDuration = (2 + Math.random() * 4) + "s";
+
+  starsContainer.appendChild(star);
+}
+
+/* =========================
+   FLOATING PARTICLES
+========================= */
+
+for (let i = 0; i < 16; i++) {
+
+  const particle = document.createElement("div");
+  particle.classList.add("particle");
+
+  particle.style.left = (20 + Math.random() * 60) + "%";
+  particle.style.top = (20 + Math.random() * 60) + "%";
+
+  particle.style.animationDelay = Math.random() * 8 + "s";
+  particle.style.animationDuration = (6 + Math.random() * 6) + "s";
+
+  document.querySelector(".overlay").appendChild(particle);
+}
+
+/* =========================
+   BREATHING PHASE TEXT
+========================= */
+
+const phaseText = document.getElementById("phaseText");
+
+const phases = [
+  "INHALE",
+  "HOLD",
+  "EXHALE",
+  "HOLD"
+];
+
+let phaseIndex = 0;
+
+setInterval(() => {
+
+  phaseIndex = (phaseIndex + 1) % phases.length;
+
+  phaseText.textContent = phases[phaseIndex];
+
+}, 4000);
+
+window.setBreathMode = function(mode) {
+
+  if (mode === "focus") {
+    currentMode = MODES.box;
+  }
+
+  else if (mode === "break") {
+    currentMode = MODES.deep;
+  }
+
+  else if (mode === "idle") {
+    currentMode = MODES.reset;
+  }
+
+  applyMode();
+
+};
+
+</script>
+
+</body>
+</html>

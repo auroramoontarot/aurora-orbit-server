@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const fetch = require("node-fetch");
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
+app.use(cors());
 /* -------------------------
    TWITCH CHAT RELAY
 ------------------------- */
@@ -123,6 +125,7 @@ const SPOTIFY_STATE_DATA = path.join(DATA_DIR, "spotify-state.json");
 const SPOTIFY_AUTO_DATA = path.join(DATA_DIR, "spotify-auto.json");
 const CARD_DRAWS_DATA = path.join(DATA_DIR, "card-draws.json");
 const GRATITUDE_JAR_DATA = path.join(DATA_DIR, "gratitude-jar.json");
+const MOODS_DATA = path.join(DATA_DIR, "moods.json");
 
 /* -------------------------
    HELPERS
@@ -247,10 +250,10 @@ const coffeeCozyMessages = [
 ];
 
 const coffeeBmcMessages = [
-  "☕ Fuel the mission ✨ Support the stream with a little caffeine magic: https://buymeacoffee.com/auroramoontarot 💜",
-  "☕ If you'd like to toss a little stardust into the cup, you can do so here: https://buymeacoffee.com/auroramoontarot ✨",
-  "💜 Cozy corner support link: https://buymeacoffee.com/auroramoontarot — thank you for helping keep the lights glowing.",
-  "☕ Moonbeam coffee break magic lives here too: https://buymeacoffee.com/auroramoontarot ✨"
+  "☕ Fuel the mission ✨ Support the stream with a little caffeine magic: https://ko-fi.com/auroramoontarot 💜",
+  "☕ If you'd like to toss a little stardust into the cup, you can do so here: https://ko-fi.com/auroramoontarot ✨",
+  "💜 Cozy corner support link: https://ko-fi.com/auroramoontarot — thank you for helping keep the lights glowing.",
+  "☕ Moonbeam coffee break magic lives here too: https://ko-fi.com/auroramoontarot ✨"
 ];
 
 let lastFollowupType = null;
@@ -1306,6 +1309,87 @@ app.post("/api/gratitude-jar", (req, res) => {
     res.status(500).json({
       success: false,
       error: "Failed to save gratitude entry"
+    });
+  }
+});
+
+app.post("/mood", (req, res) => {
+  try {
+
+    const user = String(req.body?.user || "").trim();
+    let message = String(req.body?.message || "").trim();
+
+    if (!user || !message) {
+      return res.status(400).json({
+        success: false,
+        error: "Missing mood data"
+      });
+    }
+
+    /* LIMIT LENGTH */
+
+    message = message.slice(0, 80);
+
+    const data = readJsonFile(MOODS_DATA, {
+      statuses: []
+    });
+
+    const statuses = Array.isArray(data.statuses)
+      ? data.statuses
+      : [];
+
+    /* REMOVE OLD ENTRY */
+
+    const filtered = statuses.filter(
+      s => String(s.user || "").toLowerCase() !== user.toLowerCase()
+    );
+
+    /* ADD NEW ENTRY */
+
+    filtered.unshift({
+      user,
+      message,
+      createdAt: Date.now()
+    });
+
+    /* LIMIT TOTAL */
+
+    data.statuses = filtered.slice(0, 40);
+
+    writeJsonFile(MOODS_DATA, data);
+
+    res.json({
+      success: true,
+      data
+    });
+
+  } catch (err) {
+    console.error("Mood update error:", err);
+
+    res.status(500).json({
+      success: false,
+      error: "Failed to update mood"
+    });
+  }
+});
+
+app.get("/moods", (req, res) => {
+
+  try {
+
+    const data = readJsonFile(MOODS_DATA, {
+      statuses: []
+    });
+
+    res.json(data);
+
+  } catch (err) {
+
+    console.error("Mood load error:", err);
+
+    res.status(500).json({
+      success: false,
+      error: "Failed to load moods"
     });
   }
 });

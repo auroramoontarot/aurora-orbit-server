@@ -2,134 +2,400 @@
 <html>
 <head>
 <meta charset="UTF-8">
+
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
 <title>Aurora Moon Pomodoro</title>
 
 <style>
+
 :root{
+
   --text:#cbecf5;
   --soft:#c6c7f8;
   --aurora:#00a9ba;
   --primary:#7f87ff;
   --deep:#2b2772;
+
   --line:rgba(203,236,245,.22);
+
 }
 
-*{ box-sizing:border-box; }
+/* =========================
+   RESET
+========================= */
 
-html, body {
-  margin: 0;
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+
+  margin:0;
   width:100%;
   height:100%;
-  background: transparent;
-  overflow: hidden;
-  font-family: 'Quicksand', sans-serif;
-  color: var(--text);
+
+  overflow:hidden;
+
+  background:transparent;
+
+  font-family:'Quicksand', sans-serif;
+  color:var(--text);
+
 }
 
-.container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(720px, calc(100vw - 80px));
-  min-height: 320px;
-  transform: translate(-50%, -50%);
-  text-align: center;
+/* =========================
+   MAIN CONTAINER
+========================= */
 
-  padding: 38px 42px 32px;
-  border-radius: 38px;
+.container{
+
+  position:absolute;
+
+  top:50%;
+  left:50%;
+
+  width:min(720px, calc(100vw - 80px));
+  min-height:320px;
+
+  transform:translate(-50%, -50%);
+
+  text-align:center;
+
+  padding:38px 42px 32px;
+
+  border-radius:38px;
 
   background:
-    linear-gradient(180deg, rgba(255,255,255,.18), rgba(255,255,255,.06)),
-    radial-gradient(circle at top left, rgba(203,236,245,.22), transparent 40%),
-    radial-gradient(circle at bottom right, rgba(127,135,255,.26), transparent 45%),
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.18),
+      rgba(255,255,255,.06)
+    ),
+
+    radial-gradient(
+      circle at top left,
+      rgba(203,236,245,.22),
+      transparent 40%
+    ),
+
+    radial-gradient(
+      circle at bottom right,
+      rgba(127,135,255,.26),
+      transparent 45%
+    ),
+
     rgba(12,16,35,.72);
 
-  border: 1px solid var(--line);
+  border:1px solid var(--line);
+
   box-shadow:
     0 0 35px rgba(0,169,186,.26),
     0 0 80px rgba(127,135,255,.16),
     inset 0 0 28px rgba(255,255,255,.08);
 
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
 
   overflow:hidden;
+
 }
+
+/* =========================
+   STAR CORNER
+========================= */
 
 .container::after{
+
   content:"✦";
+
   position:absolute;
+
   top:22px;
   right:28px;
+
   font-size:24px;
+
   color:var(--soft);
+
   opacity:.62;
+
   text-shadow:0 0 16px var(--aurora);
-  animation: twinkle 3.5s ease-in-out infinite;
+
+  animation:twinkle 3.5s ease-in-out infinite;
+
 }
 
-.timer {
+/* =========================
+   TIMER
+========================= */
+
+.timer{
+
   position:relative;
-  z-index:1;
-  font-size: 112px;
-  font-weight: 700;
+  z-index:2;
+
+  font-size:112px;
+  font-weight:700;
+
   line-height:1;
-  margin-bottom: 13px;
-  letter-spacing: 2px;
-  color: #f2fcff;
+
+  margin-bottom:13px;
+
+  letter-spacing:2px;
+
+  color:#f2fcff;
+
   text-shadow:
     0 0 12px rgba(203,236,245,.82),
     0 0 28px rgba(0,169,186,.72),
     0 0 54px rgba(127,135,255,.45);
+
 }
 
-.status {
+/* =========================
+   STATUS
+========================= */
+
+.status{
+
   position:relative;
-  z-index:1;
+  z-index:2;
+
   display:inline-flex;
+
   align-items:center;
   justify-content:center;
-  min-width: 330px;
 
-  font-size: 44px;
-  margin-top: 13px;
-  padding: 12px 24px;
-  letter-spacing: 1px;
-  opacity: 0.96;
-  font-weight: 700;
+  min-width:330px;
+
+  margin-top:13px;
+
+  padding:12px 24px;
 
   border-radius:999px;
+
   background:rgba(43,39,114,.34);
+
   border:1px solid rgba(203,236,245,.22);
+
   box-shadow:
     inset 0 0 14px rgba(255,255,255,.08),
     0 0 20px rgba(0,169,186,.18);
+
+  font-size:44px;
+  font-weight:700;
+
+  letter-spacing:1px;
+
+  opacity:.96;
+
+  transition:all .6s ease;
+
 }
 
+/* =========================
+   MOON NOTE
+========================= */
+
 .moon-note{
+
   position:relative;
-  z-index:1;
+  z-index:2;
+
   margin-top:20px;
+
   font-size:25px;
+
   color:rgba(203,236,245,.82);
+
   letter-spacing:.6px;
+
+  transition:all .6s ease;
+
+}
+
+/* =========================
+   BREATHING GLOW
+========================= */
+
+.breath-glow{
+
+  position:absolute;
+
+  inset:-120px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(127,135,255,.22),
+      rgba(0,169,186,.08),
+      transparent 65%
+    );
+
+  filter:blur(50px);
+
+  opacity:.65;
+
+  animation:breathe 16s ease-in-out infinite;
+
+}
+
+/* =========================
+   FLOATING STARS
+========================= */
+
+.stars{
+
+  position:absolute;
+  inset:0;
+
+  overflow:hidden;
+}
+
+.star{
+
+  position:absolute;
+
+  width:2px;
+  height:2px;
+
+  border-radius:50%;
+  background:white;
+
+  opacity:.25;
+
+  animation:starFloat linear infinite;
+
+}
+
+/* =========================
+   MODE TRANSITIONS
+========================= */
+
+.focus-mode .status{
+
+  box-shadow:
+    inset 0 0 14px rgba(255,255,255,.08),
+    0 0 22px rgba(127,135,255,.28);
+
+}
+
+.break-mode .status{
+
+  box-shadow:
+    inset 0 0 14px rgba(255,255,255,.08),
+    0 0 28px rgba(0,169,186,.42);
+
+}
+
+.break-mode .moon-note{
+
+  opacity:.95;
+
+}
+
+.focus-mode .moon-note{
+
+  opacity:.78;
+
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes breathe{
+
+  0%{
+    transform:scale(.75);
+    opacity:.35;
+  }
+
+  25%{
+    transform:scale(1);
+    opacity:.9;
+  }
+
+  50%{
+    transform:scale(1);
+    opacity:.9;
+  }
+
+  75%{
+    transform:scale(.72);
+    opacity:.3;
+  }
+
+  100%{
+    transform:scale(.72);
+    opacity:.3;
+  }
+
 }
 
 @keyframes twinkle{
-  0%,100%{ opacity:.35; transform:scale(.92) rotate(0deg); }
-  50%{ opacity:.9; transform:scale(1.12) rotate(12deg); }
+
+  0%,100%{
+    opacity:.35;
+    transform:scale(.92) rotate(0deg);
+  }
+
+  50%{
+    opacity:.9;
+    transform:scale(1.12) rotate(12deg);
+  }
+
 }
+
+@keyframes starFloat{
+
+  0%{
+    transform:translateY(0px);
+    opacity:.15;
+  }
+
+  50%{
+    transform:translateY(-14px);
+    opacity:.85;
+  }
+
+  100%{
+    transform:translateY(0px);
+    opacity:.15;
+  }
+
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <div class="timer" id="timer">--:--</div>
-  <div class="status" id="status">Sip☕</div>
-  <div class="moon-note">scatter stardust • sip gently • return softly</div>
+<div class="container focus-mode" id="container">
+
+  <div class="breath-glow"></div>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="timer" id="timer">
+    --:--
+  </div>
+
+  <div class="status" id="status">
+    ✨ Focus Session
+  </div>
+
+  <div class="moon-note" id="moonNote">
+    focus constellation • steady breathing • grounded productivity
+  </div>
+
 </div>
+
+<!-- =========================
+     AUDIO
+========================= -->
 
 <audio id="focusMusic" autoplay loop>
   <source src="sounds/focus-music.mp3" type="audio/mpeg">
@@ -141,99 +407,288 @@ html, body {
 
 <script>
 
-const timerDisplay = document.getElementById("timer");
-const statusDisplay = document.getElementById("status");
-const focusMusic = document.getElementById("focusMusic");
-const chime = document.getElementById("chime");
+/* =========================
+   ELEMENTS
+========================= */
+
+const timerDisplay =
+  document.getElementById("timer");
+
+const statusDisplay =
+  document.getElementById("status");
+
+const moonNote =
+  document.getElementById("moonNote");
+
+const focusMusic =
+  document.getElementById("focusMusic");
+
+const chime =
+  document.getElementById("chime");
+
+const container =
+  document.getElementById("container");
+
+/* =========================
+   AUDIO
+========================= */
 
 focusMusic.volume = 0.13;
 
-/* ---------- AUDIO SAFETY ---------- */
+function safePlay(audio){
 
-function safePlay(audio) {
   audio.play().catch(() => {
-    console.log("Audio blocked until user interaction");
+    console.log("Audio blocked");
   });
+
 }
 
-function unlockAudio() {
-  focusMusic.play().then(() => {
-    focusMusic.pause();
-    focusMusic.currentTime = 0;
-  }).catch(() => {});
+function unlockAudio(){
+
+  focusMusic.play()
+    .then(() => {
+
+      focusMusic.pause();
+      focusMusic.currentTime = 0;
+
+    })
+    .catch(() => {});
+
 }
 
-window.addEventListener("click", unlockAudio, { once: true });
-window.addEventListener("keydown", unlockAudio, { once: true });
+window.addEventListener(
+  "click",
+  unlockAudio,
+  { once:true }
+);
+
+window.addEventListener(
+  "keydown",
+  unlockAudio,
+  { once:true }
+);
+
+/* =========================
+   STAR GENERATOR
+========================= */
+
+const starsContainer =
+  document.getElementById("stars");
+
+for(let i = 0; i < 80; i++){
+
+  const star =
+    document.createElement("div");
+
+  star.classList.add("star");
+
+  star.style.left =
+    Math.random() * 100 + "%";
+
+  star.style.top =
+    Math.random() * 100 + "%";
+
+  star.style.animationDuration =
+    (4 + Math.random() * 6) + "s";
+
+  star.style.animationDelay =
+    Math.random() * 6 + "s";
+
+  starsContainer.appendChild(star);
+
+}
+
+/* =========================
+   PHASE STATE
+========================= */
 
 let lastPhase = null;
 
-/* ---------- REAL-TIME SYNC ---------- */
+/* =========================
+   SESSION LOGIC
+========================= */
 
 function getSessionState(){
+
   const now = new Date();
+
   const minutes = now.getMinutes();
   const seconds = now.getSeconds();
 
-  let phase, remaining;
+  let phase;
+  let remaining;
 
-  if (minutes < 25) {
+  if(minutes < 25){
+
     phase = "FOCUS";
-    remaining = (24 - minutes) * 60 + (60 - seconds);
-  } 
-  else if (minutes < 30) {
-    phase = "BREAK";
-    remaining = (29 - minutes) * 60 + (60 - seconds);
-  } 
-  else if (minutes < 55) {
-    phase = "FOCUS";
-    remaining = (54 - minutes) * 60 + (60 - seconds);
-  } 
-  else {
-    phase = "BREAK";
-    remaining = (59 - minutes) * 60 + (60 - seconds);
+
+    remaining =
+      (24 - minutes) * 60 + (60 - seconds);
+
   }
 
-  return { phase, remaining };
+  else if(minutes < 30){
+
+    phase = "BREAK";
+
+    remaining =
+      (29 - minutes) * 60 + (60 - seconds);
+
+  }
+
+  else if(minutes < 55){
+
+    phase = "FOCUS";
+
+    remaining =
+      (54 - minutes) * 60 + (60 - seconds);
+
+  }
+
+  else{
+
+    phase = "BREAK";
+
+    remaining =
+      (59 - minutes) * 60 + (60 - seconds);
+
+  }
+
+  return {
+    phase,
+    remaining
+  };
+
 }
 
-function startAutoPomodoro(){
-  function update(){
-    const { phase, remaining } = getSessionState();
+/* =========================
+   MODE SWITCH
+========================= */
 
-    const min = Math.floor(remaining / 60);
-    const sec = remaining % 60;
+function applyFocusMode(){
+
+  container.classList.remove("break-mode");
+  container.classList.add("focus-mode");
+
+  statusDisplay.textContent =
+    "✨ Focus Session";
+
+  moonNote.textContent =
+    "focus constellation • steady breathing • grounded productivity";
+
+  /* Send to breathing overlay */
+
+  window.parent.postMessage({
+    type:"breathMode",
+    mode:"focus"
+  }, "*");
+
+}
+
+function applyBreakMode(){
+
+  container.classList.remove("focus-mode");
+  container.classList.add("break-mode");
+
+  statusDisplay.textContent =
+    "☕ Stardust Break";
+
+  moonNote.textContent =
+    "stardust break • unclench your jaw • drift gently";
+
+  /* Send to breathing overlay */
+
+  window.parent.postMessage({
+    type:"breathMode",
+    mode:"break"
+  }, "*");
+
+}
+
+/* =========================
+   MAIN LOOP
+========================= */
+
+function startAutoPomodoro(){
+
+  function update(){
+
+    const {
+      phase,
+      remaining
+    } = getSessionState();
+
+    const min =
+      Math.floor(remaining / 60);
+
+    const sec =
+      remaining % 60;
 
     timerDisplay.textContent =
       `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
 
-    statusDisplay.textContent =
-      phase === "FOCUS" ? "✨ Focus Session" : "☕ Stardust Break";
+    /* =========================
+       PHASE CHANGES
+    ========================= */
 
-    /* 🔔 trigger only when phase changes */
-    if (phase !== lastPhase) {
+    if(phase !== lastPhase){
+
       lastPhase = phase;
 
       chime.currentTime = 0;
+
       safePlay(chime);
 
-      if (phase === "BREAK") {
-        fetch("http://localhost:3000/coffee-break", { method: "POST" })
-          .catch(err => console.error("Coffee break trigger failed:", err));
-      } else {
-        fetch("http://localhost:3000/focus-start", { method: "POST" })
-          .catch(err => console.error("Focus start trigger failed:", err));
+      if(phase === "BREAK"){
+
+        applyBreakMode();
+
+        fetch(
+          "http://localhost:3000/coffee-break",
+          { method:"POST" }
+        ).catch(err =>
+          console.error(
+            "Coffee break trigger failed:",
+            err
+          )
+        );
+
       }
+
+      else{
+
+        applyFocusMode();
+
+        fetch(
+          "http://localhost:3000/focus-start",
+          { method:"POST" }
+        ).catch(err =>
+          console.error(
+            "Focus start trigger failed:",
+            err
+          )
+        );
+
+      }
+
     }
+
   }
 
   update();
+
   setInterval(update, 1000);
+
 }
-/* ---------- INIT ---------- */
+
+/* =========================
+   INIT
+========================= */
 
 safePlay(focusMusic);
+
 startAutoPomodoro();
+
 </script>
 
 </body>

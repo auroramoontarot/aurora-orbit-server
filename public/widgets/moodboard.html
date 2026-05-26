@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Moonbeam Moodboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --lavender:#c6c7f8;
+  --blue:#7f87ff;
+  --cyan:#cbecf5;
+  --glass:rgba(255,255,255,0.08);
+  --border:rgba(255,255,255,0.14);
+}
+
+/* RESET */
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand',sans-serif;
+}
+
+/* WRAPPER */
+
+.mood-scene{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  overflow:hidden;
+  pointer-events:none;
+}
+
+/* PANEL */
+
+.mood-panel{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:
+    translate(-50%, -50%)
+    scale(.92);
+
+  width:420px;
+
+  padding:22px;
+
+  border-radius:28px;
+
+  background:var(--glass);
+
+  border:1px solid var(--border);
+
+  backdrop-filter:blur(22px);
+
+  box-shadow:
+    0 0 40px rgba(127,135,255,.18),
+    inset 0 0 20px rgba(255,255,255,.03);
+
+  opacity:0;
+
+  transition:
+    opacity 1.8s ease,
+    transform 1.8s ease;
+
+}
+
+/* ACTIVE STATE */
+
+.mood-panel.active{
+
+  opacity:1;
+
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+
+}
+
+/* HEADER */
+
+.panel-header{
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+
+  margin-bottom:18px;
+
+  color:white;
+
+  text-transform:uppercase;
+
+  letter-spacing:.12em;
+
+  font-size:1.05rem;
+
+  font-weight:700;
+
+  opacity:.92;
+}
+
+.sparkle{
+  opacity:.8;
+}
+
+/* MOOD LIST */
+
+.moods{
+
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+
+}
+
+/* CARD */
+
+.mood{
+
+  display:flex;
+  flex-direction:column;
+
+  gap:6px;
+
+  padding:14px 16px;
+
+  border-radius:20px;
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid rgba(255,255,255,.08);
+
+  backdrop-filter:blur(10px);
+
+  animation:fadeUp .6s ease forwards;
+
+  opacity:0;
+}
+
+.mood:nth-child(1){
+  animation-delay:.05s;
+}
+
+.mood:nth-child(2){
+  animation-delay:.12s;
+}
+
+.mood:nth-child(3){
+  animation-delay:.19s;
+}
+
+.mood:nth-child(4){
+  animation-delay:.26s;
+}
+
+@keyframes fadeUp{
+
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0px);
+  }
+
+}
+
+/* USER */
+
+.user-line{
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  color:white;
+
+  font-size:1rem;
+
+  font-weight:700;
+
+  letter-spacing:.02em;
+}
+
+.emoji{
+  font-size:1.2rem;
+}
+
+/* MESSAGE */
+
+.message{
+
+  color:white;
+
+  opacity:.72;
+
+  font-size:.92rem;
+
+  padding-left:30px;
+
+  line-height:1.35;
+}
+
+/* EMPTY STATE */
+
+.empty{
+
+  text-align:center;
+
+  color:white;
+
+  opacity:.55;
+
+  padding:10px 0;
+
+  font-size:.9rem;
+}
+
+/* SHIMMER */
+
+.mood-panel::before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  border-radius:inherit;
+
+  background:
+    linear-gradient(
+      120deg,
+      transparent 0%,
+      rgba(255,255,255,.05) 45%,
+      rgba(255,255,255,.10) 50%,
+      rgba(255,255,255,.05) 55%,
+      transparent 100%
+    );
+
+  transform:translateX(-120%);
+
+  animation:shimmer 10s linear infinite;
+
+  pointer-events:none;
+}
+
+@keyframes shimmer{
+
+  to{
+    transform:translateX(120%);
+  }
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="mood-scene">
+
+  <!-- PANEL -->
+
+  <div class="mood-panel" id="moodPanel">
+
+    <div class="panel-header">
+
+      <span class="sparkle">✦</span>
+
+      moonbeam moodboard
+
+      <span class="sparkle">✦</span>
+
+    </div>
+
+    <div class="moods" id="moodsContainer"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* -------------------------
+   ELEMENTS
+------------------------- */
+
+const panel =
+  document.getElementById("moodPanel");
+
+const moodsContainer =
+  document.getElementById("moodsContainer");
+
+/* -------------------------
+   LOAD MOODS
+------------------------- */
+
+async function loadMoods(){
+
+  try{
+
+    const res = await fetch(
+      "http://10.0.0.204:3000/moods"
+    );
+
+    const data = await res.json();
+
+    const statuses =
+      Array.isArray(data.statuses)
+        ? data.statuses
+        : [];
+
+    renderMoods(statuses);
+
+  }catch(err){
+
+    console.error(
+      "Mood load failed:",
+      err
+    );
+
+  }
+
+}
+
+/* -------------------------
+   RENDER
+------------------------- */
+
+function renderMoods(statuses){
+
+  if(!statuses.length){
+
+    moodsContainer.innerHTML = `
+      <div class="empty">
+        drifting quietly tonight ✨
+      </div>
+    `;
+
+    return;
+  }
+
+  const limitedStatuses =
+    statuses.slice(0, 4);
+
+  const html = limitedStatuses
+    .map(status => {
+
+      const user =
+        String(status.user || "Moonbeam");
+
+      const message =
+        String(status.message || "floating softly");
+
+      const emojiMatch =
+        user.match(/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})/u);
+
+      const emoji =
+        emojiMatch?.[0] || "✨";
+
+      return `
+
+        <div class="mood">
+
+          <div class="user-line">
+
+            <div class="emoji">
+              ${escapeHtml(emoji)}
+            </div>
+
+            <div class="username">
+              ${escapeHtml(user)}
+            </div>
+
+          </div>
+
+          <div class="message">
+            ${escapeHtml(message)}
+          </div>
+
+        </div>
+
+      `;
+
+    })
+    .join("");
+
+  moodsContainer.innerHTML = html;
+}
+
+/* -------------------------
+   PANEL WAKEUP
+------------------------- */
+
+function activateMoodboard(){
+
+  panel.classList.add("active");
+
+  setTimeout(()=>{
+
+    panel.classList.remove("active");
+
+  },10000);
+
+}
+
+/* -------------------------
+   HTML ESCAPE
+------------------------- */
+
+function escapeHtml(str){
+
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/* -------------------------
+   INITIALIZE
+------------------------- */
+
+loadMoods();
+
+/* WAKE AFTER LOAD */
+
+setTimeout(()=>{
+
+  activateMoodboard();
+
+},1200);
+
+/* -------------------------
+   AUTO REFRESH
+------------------------- */
+
+setInterval(()=>{
+
+  loadMoods();
+
+},10000);
+
+/* -------------------------
+   OCCASIONAL WAKEUPS
+------------------------- */
+
+setInterval(()=>{
+
+  activateMoodboard();
+
+},45000);
+
+</script>
+
+</body>
+</html>
