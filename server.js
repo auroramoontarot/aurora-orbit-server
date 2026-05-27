@@ -48,7 +48,7 @@ app.get("/chatstream", (req, res) => {
 });
 
 let lastAstreaAutoAt = 0;
-const ASTREA_AUTO_COOLDOWN_MS = 12 * 60 * 1000; // 12 minutes
+const ASTREA_AUTO_COOLDOWN_MS = 45 * 60 * 1000; // 45 minutes
 
 function canTriggerAstreaAuto() {
   return Date.now() - lastAstreaAutoAt >= ASTREA_AUTO_COOLDOWN_MS;
@@ -451,7 +451,7 @@ function triggerAstreaAuto(reason = "auto") {
   const quietForMs = Date.now() - lastChatActivityAt;
 
   // only speak automatically if chat has been fairly quiet
-  if (quietForMs < 3 * 60 * 1000) {
+  if (quietForMs < 15 * 60 * 1000) {
     return false;
   }
 
@@ -826,13 +826,23 @@ app.post("/astrea/transmit", (req, res) => {
    WEATHER
 ------------------------- */
 
+/* -------------------------
+   WEATHER
+------------------------- */
+
 app.get("/weather", async (req, res) => {
+
   try {
+
     const WEATHER_API_KEY = process.env.WU_API_KEY;
 
     if (!WEATHER_API_KEY) {
       throw new Error("Missing WU_API_KEY in .env");
     }
+
+    /* -------------------------
+       TRY PERSONAL WEATHER STATION
+    ------------------------- */
 
     const weatherStation =
       `https://api.weather.com/v2/pws/observations/current?stationId=KMNSTLOU35&format=json&units=e&apiKey=${WEATHER_API_KEY}`;
@@ -845,123 +855,209 @@ app.get("/weather", async (req, res) => {
 
     const data = await response.json();
 
-    // ✅ SAVE LAST GOOD WEATHER
+    const obs = data?.observations?.[0];
+
+    const obsTime = obs?.obsTimeUtc
+      ? new Date(obs.obsTimeUtc).getTime()
+      : 0;
+
+    const ageMinutes = (Date.now() - obsTime) / 60000;
+
+    console.log(
+      "🌤 PWS observation age:",
+      ageMinutes.toFixed(1),
+      "minutes"
+    );
+
+    /* -------------------------
+       STALE DATA CHECK
+    ------------------------- */
+
+    if (!obsTime || ageMinutes > 90) {
+      throw new Error("PWS data is stale");
+    }
+
+    /* -------------------------
+       SAVE GOOD LIVE WEATHER
+    ------------------------- */
+
     writeJsonFile(WEATHER_CACHE_DATA, {
       source: "wu-live",
       fetchedAt: new Date().toISOString(),
       data
     });
 
-    res.json(data);
+    console.log("✅ Using LIVE PWS weather");
 
-  } catch (err) {
-    console.error("Weather fetch error:", err.message);
-
-    // 🔁 FALLBACK TO CACHED WEATHER
-    const cached = readJsonFile(WEATHER_CACHE_DATA, null);
-
-    if (cached?.data?.observations?.length) {
-      console.log("Using cached weather fallback");
-      return res.json(cached.data);
-    }
-
-    res.status(500).json({
-      error: "Weather fetch failed and no cache available"
-    });
-  }
-});
-
-app.get("/neighborhood-weather", async (req, res) => {
-  try {
-    const pointUrl = "https://api.weather.gov/points/44.9483,-93.3480";
-
-    const pointResponse = await fetch(pointUrl, {
-      headers: {
-        "User-Agent": "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
-      }
-    });
-
-    if (!pointResponse.ok) {
-      throw new Error(`NWS points HTTP ${pointResponse.status}`);
-    }
-
-    const pointData = await pointResponse.json();
-    const stationsUrl = pointData?.properties?.observationStations;
-
-    if (!stationsUrl) {
-      throw new Error("NWS observationStations URL missing");
-    }
-
-    const stationsResponse = await fetch(stationsUrl, {
-      headers: {
-        "User-Agent": "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
-      }
-    });
-
-    if (!stationsResponse.ok) {
-      throw new Error(`NWS stations HTTP ${stationsResponse.status}`);
-    }
-
-    const stationsData = await stationsResponse.json();
-    const firstStation = stationsData?.features?.[0]?.properties?.stationIdentifier;
-
-    if (!firstStation) {
-      throw new Error("No NWS station found");
-    }
-
-    const obsUrl = `https://api.weather.gov/stations/${firstStation}/observations/latest`;
-
-    const obsResponse = await fetch(obsUrl, {
-      headers: {
-        "User-Agent": "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
-      }
-    });
-
-    if (!obsResponse.ok) {
-      throw new Error(`NWS observations HTTP ${obsResponse.status}`);
-    }
-
-    const obsData = await obsResponse.json();
-    const p = obsData?.properties || {};
-
-    const cToF = (c) =>
-      typeof c === "number" ? Math.round((c * 9) / 5 + 32) : null;
-
-    const kmhToMph = (kmh) =>
-  typeof kmh === "number" ? Math.round(kmh * 0.621371) : null;
-
-    const paToInHg = (pa) =>
-      typeof pa === "number" ? Number((pa * 0.0002953).toFixed(2)) : null;
-
-    res.json({
-      source: "nws-neighborhood",
-      station: firstStation,
-      fetchedAt: new Date().toISOString(),
-      observationTime: p.timestamp || null,
-      current: {
-        temp: cToF(p.temperature?.value),
-        feelsLike: cToF(p.heatIndex?.value ?? p.windChill?.value),
-        humidity: p.relativeHumidity?.value
-          ? Math.round(p.relativeHumidity.value)
-          : null,
-        windSpeed: kmhToMph(p.windSpeed?.value),
-windGust: kmhToMph(p.windGust?.value),
-        pressure: paToInHg(p.barometricPressure?.value),
-        description: p.textDescription || "Neighborhood weather"
-      },
-      raw: obsData
+    return res.json({
+      ...data,
+      weatherSource: "live-pws"
     });
 
   } catch (err) {
-    console.error("Neighborhood weather fetch error:", err.message);
 
-    res.status(500).json({
-      error: "Neighborhood weather fetch failed",
-      details: err.message
-    });
+    console.error("⚠️ PWS weather failed:", err.message);
+
+    /* -------------------------
+       TRY NWS / NEIGHBORHOOD WEATHER
+    ------------------------- */
+
+    try {
+
+      console.log("🌎 Attempting neighborhood weather fallback...");
+
+      const pointUrl = "https://api.weather.gov/points/44.9483,-93.3480";
+
+      const pointResponse = await fetch(pointUrl, {
+        headers: {
+          "User-Agent":
+            "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
+        }
+      });
+
+      if (!pointResponse.ok) {
+        throw new Error(`NWS points HTTP ${pointResponse.status}`);
+      }
+
+      const pointData = await pointResponse.json();
+
+      const stationsUrl =
+        pointData?.properties?.observationStations;
+
+      if (!stationsUrl) {
+        throw new Error("NWS observationStations URL missing");
+      }
+
+      const stationsResponse = await fetch(stationsUrl, {
+        headers: {
+          "User-Agent":
+            "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
+        }
+      });
+
+      if (!stationsResponse.ok) {
+        throw new Error(`NWS stations HTTP ${stationsResponse.status}`);
+      }
+
+      const stationsData = await stationsResponse.json();
+
+      const firstStation =
+        stationsData?.features?.[0]?.properties?.stationIdentifier;
+
+      if (!firstStation) {
+        throw new Error("No NWS station found");
+      }
+
+      const obsUrl =
+        `https://api.weather.gov/stations/${firstStation}/observations/latest`;
+
+      const obsResponse = await fetch(obsUrl, {
+        headers: {
+          "User-Agent":
+            "AuroraMoonTarot weather overlay auroramoontarot@gmail.com"
+        }
+      });
+
+      if (!obsResponse.ok) {
+        throw new Error(`NWS observations HTTP ${obsResponse.status}`);
+      }
+
+      const obsData = await obsResponse.json();
+
+      const p = obsData?.properties || {};
+
+      const cToF = (c) =>
+        typeof c === "number"
+          ? Math.round((c * 9) / 5 + 32)
+          : null;
+
+      const kmhToMph = (kmh) =>
+        typeof kmh === "number"
+          ? Math.round(kmh * 0.621371)
+          : null;
+
+      const paToInHg = (pa) =>
+        typeof pa === "number"
+          ? Number((pa * 0.0002953).toFixed(2))
+          : null;
+
+      const nwsData = {
+        source: "nws-neighborhood",
+        weatherSource: "neighborhood-fallback",
+        station: firstStation,
+        fetchedAt: new Date().toISOString(),
+        observationTime: p.timestamp || null,
+
+        current: {
+          temp: cToF(p.temperature?.value),
+
+          feelsLike: cToF(
+            p.heatIndex?.value ??
+            p.windChill?.value
+          ),
+
+          humidity: p.relativeHumidity?.value
+            ? Math.round(p.relativeHumidity.value)
+            : null,
+
+          windSpeed: kmhToMph(p.windSpeed?.value),
+
+          windGust: kmhToMph(p.windGust?.value),
+
+          pressure: paToInHg(p.barometricPressure?.value),
+
+          description:
+            p.textDescription || "Neighborhood weather"
+        }
+      };
+
+      /* -------------------------
+         SAVE FALLBACK WEATHER TOO
+      ------------------------- */
+
+      writeJsonFile(WEATHER_CACHE_DATA, {
+        source: "nws-fallback",
+        fetchedAt: new Date().toISOString(),
+        data: nwsData
+      });
+
+      console.log("✅ Using NWS neighborhood fallback");
+
+      return res.json(nwsData);
+
+    } catch (fallbackErr) {
+
+      console.error(
+        "⚠️ Neighborhood fallback failed:",
+        fallbackErr.message
+      );
+
+      /* -------------------------
+         FINAL CACHE FALLBACK
+      ------------------------- */
+
+      const cached = readJsonFile(
+        WEATHER_CACHE_DATA,
+        null
+      );
+
+      if (cached?.data) {
+
+        console.log("🗂 Using cached weather fallback");
+
+        return res.json({
+          ...cached.data,
+          weatherSource: "cached-fallback"
+        });
+      }
+
+      res.status(500).json({
+        error:
+          "Weather fetch failed and no cache available"
+      });
+    }
   }
 });
-
 app.get("/moonphase", (req, res) => {
   try {
     let lp = 2551443;
