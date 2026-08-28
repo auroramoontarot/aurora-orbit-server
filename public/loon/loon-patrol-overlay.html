@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+}
+
+#echo {
+    position: absolute;
+    width: 90px;
+    z-index: 9999;
+    pointer-events: none;
+    transition:
+        left 6s ease-in-out,
+        top 6s ease-in-out;
+}
+
+#echo img {
+    width: 100%;
+    display: block;
+    animation: bob 6s ease-in-out infinite;
+}
+
+@keyframes bob {
+    0%,100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-6px);
+    }
+}
+
+.sparkle {
+    position: absolute;
+    pointer-events: none;
+    font-size: 18px;
+    z-index: 9998;
+    animation: sparkleFade 4s forwards;
+}
+
+@keyframes sparkleFade {
+    0% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(0.4) translateY(-40px);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="echo">
+    <img src="/images/loon.png" alt="Echo">
+</div>
+
+<script>
+
+const echo = document.getElementById("echo");
+
+let patrolActive = false;
+
+const perches = [
+    { left: 85, top: 78 }, // lower right
+    { left: 8,  top: 80 }, // lower left
+    { left: 85, top: 12 }, // upper right
+    { left: 70, top: 18 }, // moon area
+    { left: 20, top: 35 }  // tarot area
+];
+
+function randomPerch() {
+    return perches[
+        Math.floor(Math.random() * perches.length)
+    ];
+}
+
+function moveEcho(left, top) {
+    echo.style.left = left + "%";
+    echo.style.top = top + "%";
+}
+
+function perchEcho() {
+    const perch = randomPerch();
+    moveEcho(perch.left, perch.top);
+}
+
+function createSparkle() {
+
+    const sparkle = document.createElement("div");
+
+    sparkle.className = "sparkle";
+
+    const particles = [
+        "✦",
+        "✧",
+        "✨",
+        "⋆",
+        "✶"
+    ];
+
+    sparkle.innerHTML =
+        particles[Math.floor(Math.random() * particles.length)];
+
+    const rect = echo.getBoundingClientRect();
+
+    sparkle.style.left =
+        (rect.left + 40 + (Math.random() * 30 - 15)) + "px";
+
+    sparkle.style.top =
+        (rect.top + 40 + (Math.random() * 30 - 15)) + "px";
+
+    document.body.appendChild(sparkle);
+
+    setTimeout(() => {
+        sparkle.remove();
+    }, 4000);
+}
+
+function createTrail(duration = 12000) {
+
+    const interval = setInterval(() => {
+
+        if (!patrolActive) {
+            clearInterval(interval);
+            return;
+        }
+
+        createSparkle();
+
+    }, 300);
+
+    setTimeout(() => {
+        clearInterval(interval);
+    }, duration);
+}
+
+async function stardustPatrol(type = "ambient") {
+
+    if (patrolActive) return;
+
+    patrolActive = true;
+
+    createTrail(
+        type === "raid"
+            ? 18000
+            : 12000
+    );
+
+    moveEcho(15, 65);
+await wait(6000);
+
+moveEcho(50, 20);
+await wait(6000);
+
+moveEcho(82, 40);
+await wait(6000);
+
+moveEcho(55, 12);
+await wait(6000);
+
+    perchEcho();
+
+    patrolActive = false;
+}
+
+function wait(ms) {
+    return new Promise(resolve =>
+        setTimeout(resolve, ms)
+    );
+}
+
+function schedulePatrol() {
+
+    stardustPatrol();
+
+    setTimeout(
+        schedulePatrol,
+        13 * 60 * 1000
+    );
+}
+
+window.triggerEchoFollow = () => {
+    stardustPatrol("follow");
+};
+
+window.triggerEchoSub = () => {
+    stardustPatrol("sub");
+};
+
+window.triggerEchoRaid = () => {
+    stardustPatrol("raid");
+};
+
+perchEcho();
+
+setTimeout(() => {
+    schedulePatrol();
+}, 15000);
+
+setInterval(() => {
+
+    if (!patrolActive && Math.random() < 0.25) {
+        createSparkle();
+    }
+
+}, 45000);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html, body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:transparent;
+    font-family:'Quicksand',sans-serif;
+}
+
+#caption-wrap{
+    position:absolute;
+    left:50%;
+    bottom:50px;
+    transform:translateX(-50%);
+
+    width:95%;
+    max-width:900px;
+
+    text-align:center;
+}
+
+#caption{
+    opacity:0;
+
+    display:inline-block;
+
+    width:fit-content;
+    max-width:100%;
+
+    white-space:normal;
+    overflow-wrap:break-word;
+    word-break:normal;
+
+    background:rgba(43,39,114,0.88);
+    backdrop-filter:blur(12px);
+
+    border:2px solid rgba(127,135,255,0.7);
+    border-radius:24px;
+
+    padding:16px;
+
+    color:#ffffff;
+    font-size:22px;
+    font-weight:700;
+    line-height:1.4;
+
+    box-sizing:border-box;
+
+    box-shadow:
+        0 0 25px rgba(0,169,186,0.35);
+
+    text-shadow:
+        0 0 8px rgba(127,135,255,0.5);
+
+    transition:opacity .6s ease;
+}
+
+.corner{
+    color:#cbecf5;
+}
+</style>
+</head>
+
+<body>
+
+<div id="caption-wrap">
+    <div id="caption"></div>
+</div>
+
+<script>
+const captionEl = document.getElementById('caption');
+
+let lastText = '';
+let fadeTimer;
+
+async function loadCaptions() {
+    try {
+        const response = await fetch(
+            '/data/captions/captions.txt?t=' + Date.now()
+        );
+
+        let text = (await response.text()).trim();
+
+        // Remove exact duplicated captions
+        const parts = text.split('. ');
+
+        if (
+            parts.length === 2 &&
+            parts[0].trim() === parts[1].replace('.', '').trim()
+        ) {
+            text = parts[0] + '.';
+        }
+
+        if (!text) return;
+
+        if (text === lastText) return;
+
+        if (
+            lastText &&
+            text.length < lastText.length &&
+            lastText.startsWith(text)
+        ) {
+            return;
+        }
+
+        lastText = text;
+
+        captionEl.innerHTML =
+            '<span class="corner">✦</span> ' +
+            text +
+            ' <span class="corner">✦</span>';
+
+        captionEl.style.opacity = '1';
+
+        clearTimeout(fadeTimer);
+
+        fadeTimer = setTimeout(() => {
+            captionEl.style.opacity = '0';
+        }, 7000);
+
+    } catch(err){
+        console.log(err);
+    }
+}
+
+setInterval(loadCaptions, 2000);
+loadCaptions();
+</script>
+
+</body>
+</html>

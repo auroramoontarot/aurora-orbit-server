@@ -32,15 +32,30 @@
     color:var(--ice);
   }
 
+  .marquee-box {
+    border:2px inset var(--soft);
+
+    background:rgba(0,0,0,0.35);
+
+    padding:10px 0;
+
+    margin-bottom:4px;
+
+    font-size:11px;
+
+    color:var(--soft);
+  }
+
   .corner-widget{
 
-    width:320px;
-
-    padding:8px;
+    width:340px;
+    height:275px;
+   
+    padding:7px;
 
     border:2px solid var(--line);
 
-    border-radius:18px;
+    border-radius:12px;
 
     background:
       radial-gradient(
@@ -99,11 +114,11 @@
     position:relative;
     z-index:2;
 
-    margin-bottom:8px;
+    margin-bottom:12px;
   }
 
   .title{
-    font-size:13px;
+    font-size:15px;
     font-weight:700;
     letter-spacing:.04em;
 
@@ -114,9 +129,9 @@
   }
 
   .badge{
-    font-size:9px;
+    font-size:12px;
 
-    padding:3px 6px;
+    padding:7px 7px;
 
     border-radius:999px;
 
@@ -137,7 +152,7 @@
     position:relative;
     z-index:2;
 
-    padding:12px;
+    padding:7px;
 
     border-radius:14px;
 
@@ -149,7 +164,7 @@
   }
 
   .current-label{
-    font-size:9px;
+    font-size:12px;
 
     text-transform:uppercase;
 
@@ -159,7 +174,7 @@
 
     opacity:.85;
 
-    margin-bottom:6px;
+    margin-bottom:8px;
   }
 
   .creator-name{
@@ -173,11 +188,11 @@
     text-shadow:
       0 0 12px rgba(0,169,186,.32);
 
-    margin-bottom:4px;
+    margin-bottom:5px;
   }
 
   .creator-meta{
-    font-size:12px;
+    font-size:13px;
 
     line-height:1.45;
 
@@ -189,7 +204,7 @@
   .status{
     display:inline-block;
 
-    padding:4px 8px;
+    padding:5px 7px;
 
     border-radius:999px;
 
@@ -209,13 +224,14 @@
   }
 
   .custom-status{
-    margin-top:10px;
+    margin-top:5px;
 
-    padding-top:10px;
+    padding-top:5px;
+    padding-bottom:5px;
 
     border-top:1px dashed rgba(203,236,245,.14);
 
-    font-size:11px;
+    font-size:13px;
 
     line-height:1.5;
 
@@ -236,7 +252,7 @@
     </div>
 
     <div class="badge">
-      MOONSPACE
+      !ORBIT
     </div>
 
   </div>
@@ -244,7 +260,7 @@
   <div class="orbit-card">
 
     <div class="current-label">
-      currently orbiting
+      COSMIC CORNER ORBIT
     </div>
 
     <div class="creator-name" id="creatorName">
@@ -262,7 +278,10 @@
     <div class="custom-status" id="customStatus">
       ☄ establishing cozy signal...
     </div>
-
+<div class="marquee-box">
+    <marquee scrollamount="2">
+      ✨ cozy creator orbit ✨ cowork streams ✨ body doubling ✨ low spoons welcome ✨ come as you orbit ✨
+    </marquee>
   </div>
 
 </div>
@@ -456,7 +475,7 @@
       document.querySelector(".orbit-card").innerHTML = `
         <div style="
           text-align:center;
-          padding:16px;
+          padding:10px;
           color:#ffd6f7;
           font-size:12px;
         ">

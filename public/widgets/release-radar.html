@@ -13,39 +13,42 @@
     --aurora: #00a9ba;
     --ice: #cbecf5;
     --soft: #c6c7f8;
-    --dark: rgba(20, 18, 55, 0.72);
+    --dark: rgba(65, 75, 140, 0.55);
   }
 
   * {
     box-sizing: border-box;
   }
 
-  body {
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    background: transparent;
-    font-family: 'Quicksand', sans-serif;
-    color: var(--ice);
-  }
+  html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent !important;
+}
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  color: var(--ice);
+}
 
   .release-radar {
-    position: absolute;
-    left: 40px;
-    bottom: 40px;
-    width: 420px;
-    padding: 22px 24px;
-    border-radius: 28px;
-    background:
-      linear-gradient(135deg, rgba(127,135,255,0.20), rgba(0,169,186,0.10)),
-      var(--dark);
-    border: 1px solid rgba(203,236,245,0.28);
-    box-shadow:
-      0 0 28px rgba(0,169,186,0.22),
-      inset 0 0 24px rgba(198,199,248,0.08);
-    backdrop-filter: blur(12px);
-  }
+  position:absolute;
+  left:40px;
+  bottom:40px;
+  width:420px;
+  padding:22px 24px;
+  border-radius:28px;
+
+  background:transparent;
+
+  border:1px solid rgba(203,236,245,0.28);
+
+  box-shadow:
+    0 0 28px rgba(0,169,186,0.22);
+}
 
   .topline {
     display: flex;
@@ -102,7 +105,7 @@
     text-align: center;
     padding: 10px 6px;
     border-radius: 18px;
-    background: rgba(8, 12, 34, 0.48);
+    background: transparent;
     border: 1px solid rgba(203,236,245,0.14);
   }
 

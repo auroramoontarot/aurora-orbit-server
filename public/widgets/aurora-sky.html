@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Aurora Sky</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+    font-family: 'Quicksand', sans-serif;
+  }
+
+  #sky {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .particle {
+    position: absolute;
+    opacity: 0;
+    animation: drift linear forwards;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 0 8px rgba(127,135,255,0.5));
+  }
+
+  .star {
+    color: #cbecf5;
+    font-size: 40px;
+    opacity: 0.95;
+  }
+
+  .moon {
+    color: #c6c7f8;
+    font-size: 56px;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 12px rgba(198,199,248,0.85));
+  }
+
+  .chat {
+    font-size: 46px;
+    opacity: 1;
+    z-index: 10;
+    filter: drop-shadow(0 0 14px rgba(127,135,255,0.9));
+  }
+
+  @keyframes drift {
+    0% {
+      transform: translateY(20px) translateX(0px);
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    50% {
+      transform: translateY(-60vh) translateX(20px);
+    }
+    100% {
+      transform: translateY(-120vh) translateX(-30px);
+      opacity: 0;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<div id="sky"></div>
+
+<script>
+const sky = document.getElementById("sky");
+
+/* -------------------------
+   helpers
+-------------------------- */
+
+function rand(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+/* -------------------------
+   STAR
+-------------------------- */
+
+function spawnStar() {
+  const el = document.createElement("div");
+  el.className = "particle star";
+  el.textContent = "✦";
+
+  el.style.left = rand(0, window.innerWidth) + "px";
+  el.style.top = window.innerHeight + 20 + "px";
+
+  const duration = rand(6, 12);
+  el.style.animationDuration = duration + "s";
+
+  sky.appendChild(el);
+  setTimeout(() => el.remove(), duration * 1000);
+}
+
+/* -------------------------
+   MOON MOTES
+-------------------------- */
+
+function spawnMoon() {
+  const el = document.createElement("div");
+  el.className = "particle moon";
+  el.textContent = "⏾";
+
+  el.style.left = rand(0, window.innerWidth) + "px";
+  el.style.top = window.innerHeight + 20 + "px";
+
+  const duration = rand(10, 18);
+  el.style.animationDuration = duration + "s";
+
+  sky.appendChild(el);
+  setTimeout(() => el.remove(), duration * 1000);
+}
+
+/* -------------------------
+   LOOPS (ambient sky)
+-------------------------- */
+
+function loopStars() {
+  spawnStar();
+  setTimeout(loopStars, rand(4000, 8000));
+}
+
+function loopMoons() {
+  spawnMoon();
+  setTimeout(loopMoons, rand(45000, 90000));
+}
+
+/* start ambient */
+loopStars();
+loopMoons();
+
+</script>
+</body>
+</html>

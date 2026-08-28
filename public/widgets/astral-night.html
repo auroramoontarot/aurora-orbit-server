@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<title>Astral Observation Night</title>
+
+<style>
+
+html,
+body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:'Quicksand',sans-serif;
+}
+
+/* =====================================================
+   MAIN FRAME
+===================================================== */
+
+#astral-frame{
+    position:relative;
+    width:100%;
+    height:100%;
+
+    border-radius:28px;
+    overflow:hidden;
+
+    background:
+        radial-gradient(circle at top center,
+            rgba(127,135,255,.18),
+            transparent 45%),
+
+        radial-gradient(circle at bottom left,
+            rgba(0,169,186,.15),
+            transparent 45%),
+
+        linear-gradient(
+            180deg,
+            #07101f 0%,
+            #050814 100%
+        );
+}
+
+/* =====================================================
+   STARS
+===================================================== */
+
+#stars,
+#stars2,
+#stars3{
+    position:absolute;
+    inset:0;
+}
+
+#stars{
+    background-image:
+        radial-gradient(white 1px, transparent 1px);
+
+    background-size:120px 120px;
+
+    opacity:.45;
+
+    animation:drift1 180s linear infinite;
+}
+
+#stars2{
+    background-image:
+        radial-gradient(#cbecf5 1px, transparent 1px);
+
+    background-size:220px 220px;
+
+    opacity:.25;
+
+    animation:drift2 260s linear infinite;
+}
+
+#stars3{
+    background-image:
+        radial-gradient(#7f87ff 1px, transparent 1px);
+
+    background-size:320px 320px;
+
+    opacity:.15;
+
+    animation:drift3 320s linear infinite;
+}
+
+@keyframes drift1{
+    from{transform:translateY(0);}
+    to{transform:translateY(120px);}
+}
+
+@keyframes drift2{
+    from{transform:translateY(0);}
+    to{transform:translateY(-120px);}
+}
+
+@keyframes drift3{
+    from{transform:translateX(0);}
+    to{transform:translateX(120px);}
+}
+
+/* =====================================================
+   AURORA
+===================================================== */
+
+#aurora{
+    position:absolute;
+    inset:0;
+
+    background:
+        radial-gradient(
+            ellipse at 20% 10%,
+            rgba(0,169,186,.20),
+            transparent 40%
+        ),
+
+        radial-gradient(
+            ellipse at 80% 0%,
+            rgba(127,135,255,.22),
+            transparent 40%
+        );
+
+    animation:auroraPulse 14s ease-in-out infinite;
+}
+
+@keyframes auroraPulse{
+    0%,100%{opacity:.55;}
+    50%{opacity:1;}
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+#status{
+    position:absolute;
+    top:25px;
+    right:25px;
+
+    color:#cbecf5;
+    opacity:.45;
+
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:4px;
+}
+
+#header{
+    position:absolute;
+
+    left:50%;
+    bottom:430px;
+
+    transform:translateX(-50%);
+
+    width:700px;
+
+    text-align:center;
+}
+
+#title{
+    font-size:34px;
+    font-weight:700;
+
+    color:#cbecf5;
+
+    text-shadow:
+        0 0 20px rgba(127,135,255,.8);
+}
+
+#subtitle{
+    margin-top:8px;
+
+    color:white;
+    opacity:.9;
+
+    font-size:15px;
+}
+
+/* =====================================================
+   CONSTELLATION
+===================================================== */
+
+#constellation{
+    position:absolute;
+
+    top:120px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    font-size:64px;
+    font-weight:700;
+
+    color:rgba(203,236,245,.08);
+
+    text-transform:uppercase;
+
+    letter-spacing:10px;
+}
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+#cards{
+    position:absolute;
+
+    left:50%;
+    bottom:180px;
+
+    transform:translateX(-50%);
+
+    display:grid;
+
+    grid-template-columns:250px 250px;
+
+    gap:15px;
+}
+
+.card{
+    width:250px;
+
+    padding:14px;
+
+    border-radius:20px;
+
+    background:rgba(12,18,38,.55);
+
+    backdrop-filter:blur(16px);
+
+    border:1px solid rgba(203,236,245,.12);
+
+    box-shadow:
+        0 0 20px rgba(127,135,255,.15);
+}
+
+.card-title{
+    font-size:16px;
+    font-weight:700;
+
+    color:#cbecf5;
+
+    margin-bottom:8px;
+}
+
+.card-content{
+    color:white;
+
+    font-size:14px;
+    line-height:1.5;
+}
+
+/* =====================================================
+   MESSAGE BAR
+===================================================== */
+
+#message-bar{
+    position:absolute;
+
+    left:50%;
+    bottom:25px;
+
+    transform:translateX(-50%);
+
+    width:1100px;
+    max-width:90%;
+
+    text-align:center;
+
+    padding:12px 20px;
+
+    border-radius:18px;
+
+    background:rgba(12,18,38,.6);
+
+    border:1px solid rgba(203,236,245,.12);
+
+    color:#cbecf5;
+
+    backdrop-filter:blur(12px);
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="astral-frame">
+
+    <div id="stars"></div>
+    <div id="stars2"></div>
+    <div id="stars3"></div>
+    <div id="aurora"></div>
+
+    <div id="status">
+        OBSERVATORY ACTIVE
+    </div>
+
+    <div id="header">
+        <div id="title">
+            🌌 Astral Observation Night
+        </div>
+
+        <div id="subtitle">
+            Astrea is tending the Haven while celestial observations continue.
+        </div>
+    </div>
+
+    <div id="constellation">
+        CYGNUS
+    </div>
+
+    <div id="cards">
+
+        <div class="card">
+    <div class="card-title">🌙 Lunar Status</div>
+    <div class="card-content" id="moon-card">
+        Loading...
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">☁ Sky Conditions</div>
+    <div class="card-content" id="weather-card">
+        Loading...
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">✨ Aurora Watch</div>
+    <div class="card-content" id="aurora-card">
+        Loading...
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">🕯 Sacred Time</div>
+    <div class="card-content" id="sacred-card">
+        Loading...
+    </div>
+</div>
+
+    </div>
+
+    <div id="message-bar">
+        🌌 Astral Observation Night is active.
+    </div>
+
+</div>
+
+<script>
+
+const messages = [
+
+"🌌 Astral Observation Night is active.",
+"🔭 Celestial observations continue above the Haven.",
+"✨ Small progress is still progress, Moonbeams.",
+"☕ Hydration check from Astrea.",
+"📚 Observatory quiet hours remain in effect.",
+"🪐 Another successful orbit completed.",
+"⭐ Remember to stretch between quests.",
+"🌠 The stars approve of your efforts.",
+"🌙 The lanterns remain lit for all travelers.",
+"🐾 Koda's night watch remains uneventful."
+
+];
+
+const constellations = [
+
+"CYGNUS",
+"LYRA",
+"PEGASUS",
+"CASSIOPEIA",
+"DRACO",
+"URSA MAJOR",
+"SCORPIUS",
+"AQUILA"
+
+];
+
+let msgIndex = 0;
+let constIndex = 0;
+
+/* -----------------------------
+   MESSAGE ROTATION
+----------------------------- */
+
+setInterval(() => {
+
+    msgIndex++;
+
+    if(msgIndex >= messages.length){
+        msgIndex = 0;
+    }
+
+    document.getElementById("message-bar").textContent =
+        messages[msgIndex];
+
+}, 20000);
+
+/* -----------------------------
+   CONSTELLATION ROTATION
+----------------------------- */
+
+setInterval(() => {
+
+    constIndex++;
+
+    if(constIndex >= constellations.length){
+        constIndex = 0;
+    }
+
+    document.getElementById("constellation").textContent =
+        constellations[constIndex];
+
+}, 60000);
+
+/* -----------------------------
+   OBSERVATORY DATA
+----------------------------- */
+
+async function loadObservatoryData(){
+
+    console.log("🌌 Loading observatory data...");
+
+    /* -----------------
+       MOON
+    ----------------- */
+
+    try{
+
+        const response = await fetch("/moonphase");
+        const data = await response.json();
+
+        document.getElementById("moon-card").innerHTML =
+            data.phase || "Unknown";
+
+    }catch(err){
+
+        console.error("Moon error:", err);
+
+        document.getElementById("moon-card").innerHTML =
+            "Unavailable";
+    }
+
+    /* -----------------
+       WEATHER
+    ----------------- */
+
+    try{
+
+        const response = await fetch("/weather");
+        const data = await response.json();
+
+        let temp = "--";
+        let desc = "Observing skies";
+
+        if(data?.observations?.[0]){
+
+            temp =
+                data.observations[0]?.imperial?.temp ??
+                "--";
+
+            desc =
+                data.observations[0]?.humidity != null
+                ? `${data.observations[0].humidity}% humidity`
+                : "Live weather";
+
+        }
+        else if(data?.current){
+
+            temp =
+                data.current.temp ?? "--";
+
+            desc =
+                data.current.description ||
+                "Neighborhood weather";
+
+        }
+
+        document.getElementById("weather-card").innerHTML =
+            `${temp}°<br>${desc}`;
+
+    }catch(err){
+
+        console.error("Weather error:", err);
+
+        document.getElementById("weather-card").innerHTML =
+            "Unavailable";
+    }
+
+    /* -----------------
+       AURORA
+    ----------------- */
+
+    try{
+
+        const response = await fetch("/aurastream");
+        const data = await response.json();
+
+        const kp = Number(data.kp || 0);
+
+        let status = "Quiet";
+
+        if(kp >= 5){
+            status = "Strong";
+        }
+        else if(kp >= 3){
+            status = "Active";
+        }
+
+        document.getElementById("aurora-card").innerHTML =
+            `KP ${kp}<br>${status}`;
+
+    }catch(err){
+
+        console.error("Aurora error:", err);
+
+        document.getElementById("aurora-card").innerHTML =
+            "Unavailable";
+    }
+
+    /* -----------------
+       SACRED TIME
+    ----------------- */
+
+    try{
+
+        const response = await fetch("/sacred-time");
+        const data = await response.json();
+
+        document.getElementById("sacred-card").innerHTML =
+            data.season ||
+            data.hebrewDate ||
+            "Sacred skies";
+
+    }catch(err){
+
+        console.error("Sacred time error:", err);
+
+        document.getElementById("sacred-card").innerHTML =
+            "Unavailable";
+    }
+
+}
+
+/* -----------------------------
+   STARTUP
+----------------------------- */
+
+window.addEventListener("load", () => {
+
+    console.log("✨ Astral Observation Night loaded");
+
+    loadObservatoryData();
+
+    setInterval(
+        loadObservatoryData,
+        600000
+    );
+
+});
+
+</script>
+
+</body>
+</html>

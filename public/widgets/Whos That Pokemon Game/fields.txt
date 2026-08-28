@@ -1,0 +1,174 @@
+{
+  "testMessage": {
+    "type": "button",
+    "label": "Trigger",
+    "value": "Trigger",
+    "group": "🚀 Trigger"
+  },
+  "autoShowInterval": {
+    "type": "slider",
+    "label": "Play game every how many minutes? (0 disable) ",
+    "value": 15,
+    "step": 1,
+    "min": 0,
+    "max": 60,
+    "group": "⚙️ Display Settings"
+  },
+  "revealDelay": {
+    "type": "slider",
+    "label": "Reveal after how many seconds?",
+    "value": 15,
+    "step": 1,
+    "min": 5,
+    "max": 90,
+    "group": "⚙️ Display Settings"
+  },
+  "answerDisplayDuration": {
+    "type": "slider",
+    "label": "Display revealed pokemon how many sec?",
+    "value": 5,
+    "step": 1,
+    "min": 2,
+    "max": 60,
+    "group": "⚙️ Display Settings"
+  },
+  "winnerDisplayDuration": {
+    "type": "slider",
+    "label": "Display winner how many sec?",
+    "value": 5,
+    "step": 1,
+    "min": 2,
+    "max": 60,
+    "group": "⚙️ Display Settings"
+  },
+  "triggerCommand": {
+    "label": "Trigger Command (start with !)",
+    "type": "text",
+    "value": "!newpokemon",
+    "group": "⚙️ Display Settings"
+  },
+  "answerCommand": {
+    "label": "Answer Command (start with !)",
+    "type": "text",
+    "value": "!pokemon",
+    "group": "⚙️ Display Settings"
+  },
+  "top3": {
+    "type": "checkbox",
+    "label": "Show Top 3 Winners",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "playSound": {
+    "type": "checkbox",
+    "label": "Play music",
+    "value": true,
+    "group": "⚙️ Display Settings"
+  },
+  "displayCountdownTimer": {
+    "type": "checkbox",
+    "label": "Display Countdown Timer",
+    "value": true,
+    "group": "⚙️ Display Settings"
+  },
+  "displayGameRules": {
+    "type": "checkbox",
+    "label": "Display Game Rules",
+    "value": true,
+    "group": "⚙️ Display Settings"
+  },
+  "includedGenerations": {
+    "type": "hidden",
+    "label": "Included Generations",
+    "group": "⚙️ Display Settings"
+  },
+  "gen1": {
+    "type": "checkbox",
+    "label": "Generation I",
+    "value": true,
+    "group": "⚙️ Display Settings"
+  },
+  "gen2": {
+    "type": "checkbox",
+    "label": "Generation II",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "gen3": {
+    "type": "checkbox",
+    "label": "Generation III",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "gen4": {
+    "type": "checkbox",
+    "label": "Generation IV",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "gen5": {
+    "type": "checkbox",
+    "label": "Generation V",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "gen6": {
+    "type": "checkbox",
+    "label": "Generation VI",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "gen7": {
+    "type": "checkbox",
+    "label": "Generation VII",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "gen8": {
+    "type": "checkbox",
+    "label": "Generation VIII",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "gen9": {
+    "type": "checkbox",
+    "label": "Generation IX",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "permissions": {
+    "type": "hidden",
+    "label": "Permissions - check one or none",
+    "group": "⚙️ Display Settings"
+  },
+  "broadcasteronly": {
+    "type": "checkbox",
+    "label": "Only broadcaster can trigger game",
+    "value": false,
+    "group": "⚙️ Display Settings"
+  },
+  "modsonly": {
+    "type": "checkbox",
+    "label": "Broadcaster + mods can trigger game",
+    "value": true,
+    "group": "⚙️ Display Settings"
+  },
+  "fontGenerator": {
+    "type": "text",
+    "label": "Pokemon Font Generator",
+    "value": "https://www.textstudio.com/",
+    "group": "💖 🖤"
+  },
+  "author": {
+    "type": "text",
+    "label": "💖 Widget made by LJFleur 🖤",
+    "value": "https://www.twitch.tv/ljfleur",
+    "group": "💖 🖤"
+  },
+  "widgetVersion": {
+    "type": "text",
+    "label": "Widget Version",
+    "value": "v1.3",
+    "group": "💖 🖤"
+  }
+}

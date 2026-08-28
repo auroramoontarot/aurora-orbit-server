@@ -37,13 +37,30 @@
     display:flex;
     align-items:flex-end;
     justify-content:center;
-    padding:12px;
+    padding:6px;
   }
 
   .bar{
-    width:100%;
-    max-width:1800px;
+    width:700px;
+  
+  transform:rotate(2.8deg);
+  transform-origin:center center;
 
+  overflow:hidden;
+
+  padding:2px;
+  padding-top:2px;
+
+  background:
+    radial-gradient(circle at 20% 15%, rgba(127,135,255,0.34), transparent 32%),
+    radial-gradient(circle at 85% 20%, rgba(0,169,186,0.26), transparent 34%),
+    linear-gradient(145deg, rgba(18,24,48,0.96), rgba(43,39,114,0.94));
+
+  border:2px double rgba(203,236,245,0.55);
+
+  box-shadow:
+    inset 0 0 28px rgba(203,236,245,0.13),
+    0 0 20px rgba(0,169,186,0.38);
     display:flex;
     align-items:center;
     gap:18px;
@@ -53,8 +70,6 @@
     background:var(--panel);
 
     border:1px solid rgba(255,255,255,0.06);
-
-    backdrop-filter:blur(14px);
 
     box-shadow:
       0 0 24px rgba(127,135,255,0.08),
@@ -73,13 +88,13 @@
 
   .divider{
     width:1px;
-    height:28px;
+    height:14px;
     background:var(--line);
     flex-shrink:0;
   }
 
   .label{
-    font-size:10px;
+    font-size:7px;
     font-weight:700;
     letter-spacing:1px;
     text-transform:uppercase;
@@ -87,21 +102,21 @@
   }
 
   .value{
-  font-size:13px;
+  font-size:8px;
   font-weight:700;
   color:#fff;
   line-height:1;
 }
 
 .sub{
-  font-size:10px;
+  font-size:7px;
   opacity:.75;
   line-height:1;
 }
 
   .live-dot{
-    width:8px;
-    height:8px;
+    width:6px;
+    height:6px;
     border-radius:50%;
     background:#ff6b8f;
 
@@ -132,13 +147,13 @@
   display:flex;
   width:max-content;
 
-  animation:scroll 90s linear infinite;
+  animation:scroll 140s linear infinite;
 }
 
 .ticker{
   white-space:nowrap;
 
-  font-size:15px;
+  font-size:8px;
   font-weight:600;
 
   padding-right:80px;
@@ -223,35 +238,84 @@ async function buildMegaTicker() {
 
   let worldStats = [];
 
+
+/*
+  WEATHER
+*/
+
+try {
+
+  const weather = await fetch(
+    `${API_BASE}/weather`
+  ).then(r => r.json());
+
+  let temp = null;
+  let humidity = null;
+  let desc = "Cozy skies";
+
   /*
-    WEATHER
+    LIVE PWS FORMAT
   */
 
-  try {
+  if (weather?.observations?.[0]) {
 
-    const weather = await fetch(
-      `${API_BASE}/weather`
-    ).then(r => r.json());
+    const obs = weather.observations[0];
 
-    const obs =
-      weather?.observations?.[0];
+    temp =
+      obs?.imperial?.temp ?? null;
 
-    const temp =
-      obs?.imperial?.temp;
+    humidity =
+      obs?.humidity ?? null;
 
-    const humidity =
-      obs?.humidity;
-
-    const desc =
-      weather?.current?.description ||
-      "Cozy skies";
-
-    weatherText =
-      `🌤 ${Math.round(temp)}° • ${humidity}% humidity • ${desc}`;
-
-  } catch (err) {
-    console.log("Weather failed");
+    desc =
+      obs?.neighborhood ||
+      obs?.wx_phrase ||
+      "Local conditions";
   }
+
+  /*
+    NWS FALLBACK FORMAT
+  */
+
+  else if (weather?.current) {
+
+    temp =
+      weather.current.temp ?? null;
+
+    humidity =
+      weather.current.humidity ?? null;
+
+    desc =
+      weather.current.description ||
+      "Neighborhood weather";
+  }
+
+  /*
+    FINAL FORMAT
+  */
+
+  weatherText =
+    `🌤 ${temp ?? "--"}° • ${humidity ?? "--"}% humidity • ${desc}`;
+
+  /*
+    UPDATE TOP BAR WEATHER TOO
+  */
+
+  document.getElementById("temp").textContent =
+    `${temp ?? "--"}°`;
+
+  document.getElementById("weatherDesc").textContent =
+    desc;
+
+} catch (err) {
+
+  console.log("Weather failed", err);
+
+  document.getElementById("temp").textContent = "--°";
+
+  document.getElementById("weatherDesc").textContent =
+    "Weather offline";
+}
 
   /*
     MEDIA STATUS

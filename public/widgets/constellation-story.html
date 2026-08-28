@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+}
+
+html,
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:'Quicksand',sans-serif;
+}
+
+body{
+  background:
+    radial-gradient(circle at top right,
+      rgba(127,135,255,.45),
+      transparent 35%),
+
+    radial-gradient(circle at bottom left,
+      rgba(0,169,186,.35),
+      transparent 40%),
+
+    linear-gradient(
+      180deg,
+      #101524,
+      #0b1020
+    );
+}
+
+.story{
+  width:100%;
+  min-height:100vh;
+
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+
+  position:relative;
+}
+
+.stars{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.stars::before{
+  content:"";
+  position:absolute;
+  inset:0;
+
+  background-image:
+    radial-gradient(
+      rgba(255,255,255,.8) 1px,
+      transparent 1px
+    );
+
+  background-size:80px 80px;
+
+  opacity:.15;
+}
+
+
+
+.header{
+  text-align:center;
+  margin-bottom:5px;
+}
+
+.title{
+  font-size:25px;
+  font-weight:700;
+  letter-spacing:2px;
+  color:white;
+}
+
+.section{
+  margin-bottom:15px;
+}
+
+.section-title{
+  color:var(--soft);
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:5px;
+text-align:left;
+}
+
+.section-content{
+  color:white;
+  font-size:18px;
+font-weight:600;
+  line-height:1.8;
+  white-space:pre-line;
+text-align:left;
+
+}
+
+.moon{
+  font-size:36px;
+font-weight:600;
+margin-top:15px;
+}
+
+.moon-date{
+  margin-top:3px;
+margin-bottom:15px;
+  font-size:16px;
+font-weight:600;
+  line-height:1.2;
+  color:var(--ice);
+  text-align:center;
+}
+
+/* NEW */
+#games,
+#streamers{
+    column-count:2;
+    column-gap:20px;
+    white-space:pre-line;
+    line-height:1.6;
+}
+
+@media (max-width: 1000px){
+
+  .story{
+    width:100vw;
+    min-height:100vh;
+  }
+
+  .moon{
+    top:15px;
+    right:15px;
+    font-size:36px;
+  }
+
+  .title{
+    font-size:18px;
+    letter-spacing:1px;
+  }
+
+  .section-title{
+    font-size:15px;
+  }
+
+  .section-content{
+    font-size:13px;
+    width:90vw;
+  }
+
+  /* NEW */
+  #games,
+  #streamers{
+    column-count:2;
+    column-gap:20px;
+    white-space:pre-line;
+    line-height:1.6;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="story">
+
+  <div class="stars"></div>
+
+  <div class="header">
+
+    <div class="moon" id="moonPhase">
+      🌙
+      <div class="moon-date" id="moonDate"></div>
+
+    <div class="title">
+      🌌 CONSTELLATION LOG
+    </div>
+
+  </div>
+    <div class="section">
+  <div class="section-title" id="gamesTitle">
+    ⭐ Stars Explored
+  </div>
+
+  <div
+    class="section-content"
+    id="games"
+  ></div>
+</div>
+<div class="section">
+  <div class="section-title" id="streamersTitle">
+    💫 Orbits Visited
+  </div>
+
+  <div
+    class="section-content"
+    id="streamers"
+  ></div>
+      <div
+        class="section-content"
+        id="streamers"
+      ></div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        🌙 Collected Stardust
+      </div>
+
+      <div
+        class="section-content"
+        id="stardust"
+      ></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+async function loadConstellation() {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/constellation"
+      );
+
+    const data =
+      await response.json();
+
+    document.getElementById(
+      "gamesTitle"
+    ).innerText =
+      `⭐ ${data.games.length} Stars Explored`;
+
+    document.getElementById(
+      "streamersTitle"
+    ).innerText =
+      `🌙 ${data.streamers.length} Orbits Visited`;
+
+    document.getElementById(
+      "games"
+    ).innerText =
+      data.games.join("\n") ||
+      "No stars explored";
+
+    document.getElementById(
+      "streamers"
+    ).innerText =
+      data.streamers.join("\n") ||
+      "No orbits visited";
+
+    document.getElementById(
+      "stardust"
+    ).innerText =
+      data.stardust ||
+      "A quiet evening beneath the stars.";
+
+  } catch (err) {
+
+    console.error(
+      "Constellation load failed:",
+      err
+    );
+
+  }
+
+}
+function getMoonPhase() {
+
+  const now = new Date();
+
+  const lp = 2551443;
+  const newMoon = new Date(
+    "2000-01-06T18:14:00Z"
+  );
+
+  const phase =
+    ((now - newMoon) / 1000) % lp;
+
+  const phaseIndex =
+    Math.floor(
+      (phase / lp) * 8
+    );
+
+  const phases = [
+    {
+      icon:"🌑",
+      name:"New Moon"
+    },
+    {
+      icon:"🌒",
+      name:"Waxing Crescent"
+    },
+    {
+      icon:"🌓",
+      name:"First Quarter"
+    },
+    {
+      icon:"🌔",
+      name:"Waxing Gibbous"
+    },
+    {
+      icon:"🌕",
+      name:"Full Moon"
+    },
+    {
+      icon:"🌖",
+      name:"Waning Gibbous"
+    },
+    {
+      icon:"🌗",
+      name:"Last Quarter"
+    },
+    {
+      icon:"🌘",
+      name:"Waning Crescent"
+    }
+  ];
+
+  return phases[phaseIndex];
+}
+
+const moon = getMoonPhase();
+
+document.getElementById(
+  "moonPhase"
+).innerHTML =
+  `${moon.icon}
+   <div style="
+     font-size:18px;
+     margin-top:8px;
+     color:#cbecf5;
+   ">
+     ${moon.name}
+   </div>
+   <div class="moon-date" id="moonDate"></div>`;
+
+loadConstellation();
+
+document.getElementById(
+  "moonDate"
+).innerText =
+  new Date().toLocaleDateString(
+    "en-US",
+    {
+      month:"long",
+      day:"numeric",
+      year:"numeric"
+    }
+  );
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "updated": "2026-08-28T14:26:19.576Z",
+  "calendar": {
+    "current": {
+      "emoji": "🌿",
+      "title": "Morning Ritual Hour",
+      "subtitle": "Ends in 33m"
+    },
+    "next": {
+      "emoji": "🌙",
+      "title": "Spoonbeam Self-Care",
+      "subtitle": "Begins in 3m"
+    }
+  },
+  "sky": {
+    "mode": "day",
+    "isGoldenHour": false,
+    "isBlueHour": false,
+    "isTwilight": true
+  },
+  "sun": {
+    "sunrise": "2026-08-28T11:30:53.226Z",
+    "sunset": "2026-08-29T00:57:24.825Z",
+    "solarNoon": "2026-08-28T18:14:34.004Z",
+    "dawn": "2026-08-28T11:00:16.379Z",
+    "dusk": "2026-08-29T01:27:54.810Z",
+    "goldenHour": "2026-08-29T00:18:07.700Z",
+    "goldenHourEnd": "2026-08-28T12:10:17.253Z"
+  },
+  "moon": {
+    "phase": "Full Moon",
+    "illumination": 100,
+    "visible": false,
+    "altitude": -25.21180505697513,
+    "rise": "2026-08-28T00:49:29.559Z",
+    "set": "2026-08-28T11:57:02.127Z"
+  },
+  "magic": {
+    "auroraChance": 0,
+    "meteorShower": false,
+    "specialEvent": null
+  }
+}

@@ -1,164 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-
 <meta charset="UTF-8">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<title>Aurora Mission Tracker</title>
 
 <style>
 
-body {
-  margin: 0;
-  font-family: 'Quicksand', sans-serif;
-  color: #cbecf5;
-  background: transparent;
-  padding: 40px;
+html,
+body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:transparent;
+    font-family:'Quicksand',sans-serif;
 }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-  position: relative;
-  text-align: center;
-  top: 50%;
-  transform: translateY(-50%);
+body{
+    display:flex;
+    justify-content:left;
+    align-items:center;
 }
 
-.title {
-  font-size: 18px;
-  margin-bottom: 1px;
-  color: #c6c7f8;
-  text-align: center;
+.status-bar{
+    font-size:15px;
+    font-weight:700;
+    color:#cbecf5;
+    text-align:left;
+    white-space:nowrap;
+
+    text-shadow:
+        0 0 10px rgba(0,169,186,.8),
+        0 0 20px rgba(127,135,255,.5),
+        0 0 35px rgba(127,135,255,.3);
 }
 
-.task {
-  font-size: 48px;
-  font-weight: 700;
-  max-width: 900px;
-  margin: 0 auto; /* 👈 ensures centering */
-  text-align: center; /* 👈 important */
-  word-wrap: break-word;
-  text-shadow: 0 0 10px #00a9ba, 0 0 20px rgba(0,169,186,.4);
+.now{
+    color:#cbecf5;
 }
 
-.complete {
-  font-size: 48px;
-  color: #7fffd4;
-  opacity: 0;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: -40px;
-  text-shadow: 0 0 10px #00ffd0, 0 0 20px #00a9ba;
-  transition: opacity .5s ease;
-  pointer-events: none;
+.separator{
+    margin:0 13px;
+    color:#7f87ff;
+    opacity:.75;
 }
 
-.showComplete {
-  opacity: 1;
-  animation: pop .9s ease;
-}
-
-@keyframes pop {
-  0% {
-    transform: translateX(-50%) scale(.6);
-  }
-  100% {
-    transform: translateX(-50%) scale(1);
-  }
-}
-
-#meteor {
-  position: absolute;
-  width: 300px;
-  height: 4px;
-  background: linear-gradient(90deg, transparent, #7f87ff, #cbecf5, transparent);
-  top: -80px;
-  left: -200px;
-  opacity: 0;
-  transform: rotate(-20deg);
-  filter: blur(1px);
-  pointer-events: none;
-}
-
-.meteorActive {
-  animation: meteorFly 1s ease;
-}
-
-@keyframes meteorFly {
-  0% {
-    opacity: 0;
-    transform: translate(-200px, -100px) rotate(-20deg);
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: translate(800px, 300px) rotate(-20deg);
-  }
+.next{
+    color:#c6c7f8;
 }
 
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
-  <div id="meteor"></div>
-  <div class="title">📋 CURRENT MISSION</div>
-  <div class="task" id="taskText">Preparing Aurora Operations</div>
-  <div class="complete" id="completeText">✨ MISSION COMPLETE ✨</div>
+<div class="status-bar">
+
+    <span id="currentTask" class="now">
+        🌟 NOW: Loading...
+    </span>
+
+    <span class="separator">|</span>
+
+    <span id="nextTask" class="next">
+        🌙 NEXT: Loading...
+    </span>
+
 </div>
 
 <script>
 
-function adjustTaskSize(el) {
-  let size = 42;
-  el.style.fontSize = size + "px";
-
-  while (el.scrollWidth > window.innerWidth * 0.8 && size > 26) {
-    size--;
-    el.style.fontSize = size + "px";
-  }
-}
-
 async function fetchTaskData() {
-  try {
-    const res = await fetch("/data/aurora-task.json?nocache=" + Date.now());
-    if (!res.ok) throw new Error("Task file not found");
 
-    const data = await res.json();
+    try {
 
-    const taskText = document.getElementById("taskText");
-    const completeText = document.getElementById("completeText");
+        const res = await fetch(
+            "/data/aurora-task.json?nocache=" + Date.now()
+        );
 
-    const currentTask = data.task || "✨ No active mission";
+        if (!res.ok) {
+            throw new Error("Task file not found");
+        }
 
-    taskText.textContent = currentTask;
-    adjustTaskSize(taskText);
+        const data = await res.json();
 
-    if (currentTask === "✨ All missions complete ✨") {
-      completeText.classList.remove("showComplete");
-      void completeText.offsetWidth;
-      completeText.classList.add("showComplete");
+        document.getElementById("currentTask").textContent =
+            "🌟 NOW: " + (data.task || "Awaiting Assignment");
 
-      setTimeout(() => {
-        completeText.classList.remove("showComplete");
-      }, 2000);
+        document.getElementById("nextTask").textContent =
+            "🌙 NEXT: " + (data.next || "Awaiting Assignment");
 
-      const meteor = document.getElementById("meteor");
-      meteor.classList.remove("meteorActive");
-      void meteor.offsetWidth;
-      meteor.classList.add("meteorActive");
     }
 
-  } catch (err) {
-    console.error("Error fetching task data:", err);
-    document.getElementById("taskText").textContent = "Mission signal unavailable";
-  }
+    catch(err) {
+
+        console.error(err);
+
+        document.getElementById("currentTask").textContent =
+            "🌟 NOW: Mission signal unavailable";
+
+        document.getElementById("nextTask").textContent =
+            "🌙 NEXT: ---";
+
+    }
+
 }
 
 fetchTaskData();
@@ -168,3 +117,4 @@ setInterval(fetchTaskData, 60000);
 
 </body>
 </html>
+

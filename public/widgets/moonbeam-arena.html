@@ -24,26 +24,6 @@ body{
   overflow:hidden;
 }
 
-/* SOFT AURORA / ATMOSPHERE */
-#arena::before{
-  content:"";
-  position:absolute;
-  inset:-20%;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(127,135,255,.14), transparent 35%),
-    radial-gradient(circle at 75% 25%, rgba(0,169,186,.12), transparent 35%),
-    radial-gradient(circle at 50% 80%, rgba(198,199,248,.08), transparent 45%);
-  filter:blur(60px);
-  animation:auroraFloat 18s ease-in-out infinite alternate;
-  pointer-events:none;
-  z-index:0;
-}
-
-@keyframes auroraFloat{
-  from{ transform:translateX(-2%) translateY(0); }
-  to{ transform:translateX(2%) translateY(-1%); }
-}
-
 /* MAIN PANEL */
 .overlay{
   position:absolute;
@@ -58,9 +38,6 @@ body{
   z-index:2;
   padding:6px 12px 10px 6px;
   box-sizing:border-box;
-  filter:
-    drop-shadow(0 0 18px rgba(127,135,255,.22))
-    drop-shadow(0 0 28px rgba(0,169,186,.14));
 }
 
 /* GLASS PANEL SYSTEM */
@@ -70,51 +47,15 @@ body{
   border:1px solid rgba(203,236,245,.12);
   border-radius:14px;
   padding:10px 14px;
-  backdrop-filter:blur(14px) saturate(1.15);
-  -webkit-backdrop-filter:blur(14px) saturate(1.15);
-  box-shadow:
-    0 8px 24px rgba(0,0,0,.22),
-    0 0 12px rgba(127,135,255,.10),
-    inset 0 1px 0 rgba(255,255,255,.06);
   overflow:hidden;
   isolation:isolate;
 }
 
-.panel::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:14px;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255,255,255,.10),
-      rgba(255,255,255,.025) 28%,
-      transparent 60%
-    );
-  pointer-events:none;
-}
 
-.panel::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:14px;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0,169,186,.14) 0%,
-      transparent 18%,
-      transparent 82%,
-      rgba(127,135,255,.16) 100%
-    );
-  opacity:.75;
-  pointer-events:none;
-}
 
 /* HEADER */
 #title{
-  font-size:13px;
+  font-size:18px;
   letter-spacing:2.2px;
   text-transform:uppercase;
   opacity:.86;
@@ -191,7 +132,7 @@ body{
 }
 
 .team{
-  font-size:18px;
+  font-size:30px;
   font-weight:600;
   white-space:nowrap;
   overflow:hidden;
@@ -219,7 +160,7 @@ body{
 }
 
 #score{
-  font-size:30px;
+  font-size:38px;
   font-weight:700;
   letter-spacing:1px;
   text-shadow:
@@ -442,7 +383,6 @@ body{
 
       <div class="scoreRow">
         <div class="teamWrap left">
-          <img id="logoA" class="teamLogo" src="images/nba/timberwolves.png" alt="Team A logo">
           <div class="team left" id="teamA">MIN</div>
         </div>
 
@@ -450,7 +390,6 @@ body{
 
         <div class="teamWrap right">
           <div class="team right" id="teamB">OPP</div>
-          <img id="logoB" class="teamLogo" src="images/nba/nba.png" alt="Team B logo">
         </div>
       </div>
 
@@ -467,17 +406,12 @@ body{
       </div>
     </div>
 
-    <div class="panel">
-      <div class="twinkle"></div>
-      <div id="footer">Audio: Solomonster-approved</div>
-    </div>
-
   </div>
 </div>
 
 <script>
 // 🌙 MODE SWITCH
-let mode = "wolves";
+let mode = "vikings";
 // "aew" | "wolves" | "lynx" | "vikings"
 
 // =========================

@@ -2,34 +2,104 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const Parser = require("rss-parser");
+const parser = new Parser();
 const path = require("path");
 const fs = require("fs");
 const fetch = require("node-fetch");
+const tarotDeck = require("./tarot-deck");
 const xml2js = require("xml2js");
 const ical = require("node-ical");
-const tmi = require("tmi.js");   // ✅ MUST be here
+const { getObservatory } = require("./services/observatory-service");
+const tmi = require("tmi.js");
+const relationship = require("./relationshipMessages");
+const http = require("http");
+const { Server } = require("socket.io");
 
 const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(cors());
-/* -------------------------
-   TWITCH CHAT RELAY
-------------------------- */
+
+// ==========================
+// RSS SINGLE-FEED ROUTE
+// ==========================
+
+app.get("/rss", async (req, res) => {
+  try {
+    const url = req.query.url;
+    if (!url) return res.json([]);
+
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/rss+xml, application/xml;q=0.9, */*;q=0.8"
+      }
+    });
+
+    if (!response.ok) return res.json([]);
+
+    const xml = await response.text();
+
+    let feed;
+    try {
+      feed = await parser.parseString(xml);
+    } catch (parseErr) {
+      console.warn("RSS parse failed, skipping:", url);
+      return res.json([]);
+    }
+
+    const items = (feed?.items || feed?.item || [])
+      .slice(0, 3)
+      .map(item => ({
+        title: item.title || "Untitled",
+        link: item.link || "",
+        pubDate: item.pubDate || ""
+      }));
+
+    res.json(items);
+
+  } catch (err) {
+    console.error("RSS route error:", err.message);
+    res.json([]); // IMPORTANT: never break ticker
+  }
+});
+
+/* =========================================================
+   🌙 CHAT OVERLAY STREAM (SSE + TWITCH RELAY)
+   ========================================================= */
 
 const TWITCH_CHANNEL = "auroramoontarot";
 
+// overlay SSE clients
+let chatClients = [];
+
+// activity tracking
+let lastChatActivityAt = Date.now();
+
+// twitch overlay client (ONLY FOR CHAT STREAM)
 const twitchClient = new tmi.Client({
   channels: [TWITCH_CHANNEL]
 });
 
-let chatClients = [];
-
+// connect
 twitchClient.connect()
-  .then(() => console.log("✨ Twitch chat relay connected"))
-  .catch(err => console.error("Twitch relay connect error:", err));
+  .then(() => console.log("✨ Chat overlay connected"))
+  .catch(err => console.error("Chat overlay error:", err));
+
+// ==============================
+// SSE ENDPOINT
+// ==============================
 
 app.get("/chatstream", (req, res) => {
   res.writeHead(200, {
@@ -38,66 +108,224 @@ app.get("/chatstream", (req, res) => {
     "Connection": "keep-alive"
   });
 
-  res.write(`data: ${JSON.stringify({ type: "status", text: "connected" })}\n\n`);
+  res.write(`data: ${JSON.stringify({
+    type: "status",
+    text: "connected"
+  })}\n\n`);
 
   chatClients.push(res);
 
   req.on("close", () => {
-    chatClients = chatClients.filter(client => client !== res);
+    chatClients = chatClients.filter(c => c !== res);
   });
 });
 
+// ==============================
+// BROADCAST
+// ==============================
+
+function broadcastChat(payload) {
+  const data = `data: ${JSON.stringify(payload)}\n\n`;
+
+  for (const client of chatClients) {
+    try {
+      client.write(data);
+    } catch (err) {
+      console.error("chatstream write failed:", err.message);
+    }
+  }
+}
+
+// optional compatibility hook
+function emitSkyMessage(payload) {
+  broadcastChat({
+    type: "message",
+    text: payload.text || payload.message || "",
+    user: payload.user || "Moonbeam"
+  });
+}
+
+// ==============================
+// CONSTELLATION SSE
+// ==============================
+
+let constellationClients = [];
+
+
+app.get("/constellationstream", (req, res) => {
+
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache, no-transform",
+    "Connection": "keep-alive"
+  });
+
+
+  res.write(`data: ${JSON.stringify({
+    type: "status",
+    text: "constellation connected"
+  })}\n\n`);
+
+
+  constellationClients.push(res);
+
+
+  req.on("close", () => {
+
+    constellationClients =
+      constellationClients.filter(
+        client => client !== res
+      );
+
+  });
+
+});
+
+
+
+function broadcastConstellation(payload) {
+
+  const data =
+    `data: ${JSON.stringify(payload)}\n\n`;
+
+
+  for (const client of constellationClients) {
+
+    try {
+
+      client.write(data);
+
+    } catch (err) {
+
+      console.error(
+        "constellation stream failed:",
+        err.message
+      );
+
+    }
+
+  }
+
+}
+
+// ==============================
+// HELPERS
+// ==============================
+
+function stripCommand(message, command) {
+  return String(message || "")
+    .replace(new RegExp(`^!${command}\\s*`, "i"), "")
+    .trim();
+}
+
+function randomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function speakOverlay(text, mode = "astrea") {
+  const clean = String(text || "").trim();
+  if (!clean) return;
+
+  broadcastChat({
+    type: mode,
+    text: clean,
+    mode
+  });
+}
+
+// ==============================
+// ASTREA COOLDOWN (LOCAL SAFE VERSION)
+// ==============================
+
 let lastAstreaAutoAt = 0;
-const ASTREA_AUTO_COOLDOWN_MS = 45 * 60 * 1000; // 45 minutes
+const ASTREA_COOLDOWN_MS = 45 * 60 * 1000;
 
 function canTriggerAstreaAuto() {
-  return Date.now() - lastAstreaAutoAt >= ASTREA_AUTO_COOLDOWN_MS;
+  return Date.now() - lastAstreaAutoAt >= ASTREA_COOLDOWN_MS;
 }
 
 function markAstreaAutoTriggered() {
   lastAstreaAutoAt = Date.now();
 }
 
-function broadcastChat(payload) {
-  const data = `data: ${JSON.stringify(payload)}\n\n`;
-  chatClients.forEach(client => client.write(data));
-}
+let hasSentFirstSignal = false;
+
+// ==============================
+// TWITCH MESSAGE HANDLER
+// ==============================
 
 twitchClient.on("message", (channel, tags, message, self) => {
   if (self) return;
 
+  const clean = String(message || "").trim();
+  const lower = clean.toLowerCase();
+
   const username = (tags.username || "").toLowerCase();
-  const isBroadcaster =
-    !!(tags.badges && tags.badges.broadcaster) ||
-    username === TWITCH_CHANNEL;
+  const displayName = tags["display-name"] || "Moonbeam";
+
+  lastChatActivityAt = Date.now();
+
+  // ==============================
+  // SEND CHAT TO OVERLAY
+  // ==============================
 
   broadcastChat({
-    type: "message",
-    user: tags["display-name"] || tags.username || "Moonbeam",
+    type: "chat",
+    user: displayName,
     username,
-    text: message,
-    mod: !!tags.mod,
-    subscriber: !!tags.subscriber,
-    broadcaster: isBroadcaster
+    message: clean,
+    timestamp: Date.now(),
+    color: tags.color || null,
+    badges: tags.badges || null
   });
+
+  // ==============================
+  // COMMANDS
+  // ==============================
+
+  if (lower.startsWith("!astrea")) {
+    const text = stripCommand(clean, "astrea");
+    if (text) {
+      speakOverlay(text, "astrea");
+      markAstreaAutoTriggered();
+    }
+    return;
+  }
+
+  if (lower.startsWith("!aurora")) {
+    const text = stripCommand(clean, "aurora");
+    if (text) {
+      speakOverlay(text, "aurora");
+    }
+    return;
+  }
+
+  // ==============================
+  // FIRST SIGNAL
+  // ==============================
+
+  if (!hasSentFirstSignal && canTriggerAstreaAuto()) {
+    hasSentFirstSignal = true;
+
+    setTimeout(() => {
+      if (canTriggerAstreaAuto()) {
+        const line = randomItem([
+          "Signal received. Welcome, Moonbeams.",
+          "Transmission online. The shuttle is listening.",
+          "Cosmic frequency locked. You are received."
+        ]);
+
+        speakOverlay(line, "astrea");
+        markAstreaAutoTriggered();
+      }
+    }, 1500);
+  }
 });
 
-function stripCommand(message, command) {
-  return String(message || "")
-    .trim()
-    .replace(new RegExp(`^!${command}\\s*`, "i"), "")
-    .trim();
-}
+const CHAT_IDLE_MS = 90 * 1000;
 
-function speakOverlay(text, mode = "astrea") {
-  const cleanText = String(text || "").trim();
-  if (!cleanText) return;
-
-  broadcastChat({
-    type: mode === "aurora" ? "aurora" : "astrea",
-    text: cleanText,
-    mode
-  });
+function isChatIdle() {
+  return Date.now() - lastChatActivityAt > CHAT_IDLE_MS;
 }
 
 
@@ -126,6 +354,26 @@ const SPOTIFY_AUTO_DATA = path.join(DATA_DIR, "spotify-auto.json");
 const CARD_DRAWS_DATA = path.join(DATA_DIR, "card-draws.json");
 const GRATITUDE_JAR_DATA = path.join(DATA_DIR, "gratitude-jar.json");
 const MOODS_DATA = path.join(DATA_DIR, "moods.json");
+const PAGER_QUEUE_DATA =
+  path.join(DATA_DIR, "pager-queue.json");
+const ADVENTURE_LOG_DATA = path.join(
+  DATA_DIR,
+  "adventure-log.json"
+);
+const CONSTELLATION_DATA = path.join(
+  DATA_DIR,
+  "constellation.json"
+);
+
+const MOONBEAM_LIBRARY_DATA = path.join(
+  DATA_DIR,
+  "moonbeam-library.json"
+);
+
+const DAILY_BOOK_DATA = path.join(
+  DATA_DIR,
+  "moonbeam-daily-book.json"
+);
 
 /* -------------------------
    HELPERS
@@ -414,7 +662,7 @@ const moonPhaseLines = {
   "waxing gibbous": [
     "Luna is waxing gibbous. Energy is growing fuller.",
     "The moon is swelling toward fullness.",
-    "Luna is nearly full now. The field feels brightening."
+    "Luna is nearly full now. The field feels brighter."
   ],
   "full moon": [
     "Luna is full. The whole shuttle feels illuminated tonight.",
@@ -498,6 +746,14 @@ async function checkMoonPhaseTrigger() {
     return false;
   }
 }
+
+setInterval(() => {
+  broadcastChat({
+    type: "mode",
+    mode: isChatIdle() ? "adventure" : "chat",
+    timestamp: Date.now()
+  });
+}, 5000);
 
 setInterval(() => {
   checkMoonPhaseTrigger();
@@ -593,9 +849,6 @@ client.on("error", (err) => {
 
 const BROADCASTER_USERNAME = "auroramoontarot"; // your actual Twitch chat username in lowercase
 
-let lastChatActivityAt = Date.now();
-let hasSentFirstSignal = false;
-
 client.on("message", (channel, tags, message, self) => {
   if (self) return;
 
@@ -626,6 +879,381 @@ client.on("message", (channel, tags, message, self) => {
     }
     return;
   }
+
+  // --- RELATIONSHIP SYSTEM ---
+  if (lowerMessage === "!boo") return sendToChat(relationship.boo());
+  if (lowerMessage === "!back") return sendToChat(relationship.back());
+  if (lowerMessage === "!date") return sendToChat(relationship.date());
+  if (lowerMessage === "!ship") return sendToChat(relationship.ship());
+  if (lowerMessage === "!kiss") return sendToChat(relationship.kiss());
+
+// ==============================
+// 🌙 LURK COMMAND
+// ==============================
+
+if (lowerMessage.startsWith("!lurk")) {
+
+  const user =
+    tags["display-name"] ||
+    tags.username ||
+    "Moonbeam";
+
+  const lurkMessages = [
+    `🌙 ${user} is drifting into the moonlight to lurk. Scatter some stardust while they're away! ✨`,
+    `✨ ${user} has entered stealth mode. The Moonbeams will keep the fire glowing. 🌌`,
+    `☕ ${user} is taking a cozy lurk break. We'll save a little moonlight for your return. 💜`,
+    `🌲 ${user} wandered into the enchanted forest. May your lurk be peaceful and full of good vibes. 🍄`,
+    `💫 ${user} has become one with the constellations. We'll see you among the stars! ⭐`,
+    `🌧️ ${user} is enjoying a rainy lurk. Stay cozy, Moonbeam! ☔`,
+    `🦉 ${user} has quietly perched in the observatory. Happy lurking! 🔭`,
+    `🌙 ${user} has activated Spoonie Energy Saver Mode™. Rest well—we'll be here when you return. 💙`,
+    `✨ ${user} faded into the aurora... but their stardust remains. 🌌`,
+    `🌌 ${user} is off on a tiny side quest. Safe travels, Moonbeam!`,
+    `🔮 The cards say ${user} is destined for a peaceful lurk. We'll keep the magic going. ✨`,
+    `🌠 ${user} scattered a little stardust and slipped quietly into lurk mode.`
+  ];
+
+  const message =
+    lurkMessages[Math.floor(Math.random() * lurkMessages.length)];
+
+  sendToChat(message);
+
+  return;
+}
+
+/* -------------------------
+   MOOD COMMAND
+------------------------- */
+
+if (lowerMessage.startsWith("!mood")) {
+
+  const moodText = cleanMessage
+    .replace(/^!mood\s*/i, "")
+    .trim();
+
+  const user =
+    tags["display-name"] ||
+    tags.username ||
+    "Moonbeam";
+
+  // no mood entered
+  if (!moodText) {
+
+    const data = readJsonFile(MOODS_DATA, {
+      statuses: []
+    });
+
+    const existing = (data.statuses || []).find(
+      m =>
+        String(m.user || "").toLowerCase() ===
+        user.toLowerCase()
+    );
+
+    if (existing) {
+      sendToChat(
+        `🌙 ${user} is feeling: ${existing.message}`
+      );
+    } else {
+      sendToChat(
+        `🌙 ${user}, you haven't set a mood yet. Try !mood cozy coworking`
+      );
+    }
+
+    return;
+  }
+
+  const data = readJsonFile(MOODS_DATA, {
+    statuses: []
+  });
+
+  const statuses = Array.isArray(data.statuses)
+    ? data.statuses
+    : [];
+
+  const filtered = statuses.filter(
+    s =>
+      String(s.user || "").toLowerCase() !==
+      user.toLowerCase()
+  );
+
+  filtered.unshift({
+    user,
+    message: moodText,
+    createdAt: Date.now()
+  });
+
+  data.statuses = filtered.slice(0, 50);
+
+  writeJsonFile(MOODS_DATA, data);
+
+  sendToChat(
+    `✨ ${user} is feeling: ${moodText}`
+  );
+
+  return;
+}
+
+if (lowerMessage.startsWith("!star")) {
+
+  const starText = cleanMessage
+    .replace(/^!star\s*/i, "")
+    .trim();
+
+  if (!starText) {
+    sendToChat(
+      "🌌 Share a little stardust with !star your message here"
+    );
+    return;
+  }
+
+  const user =
+    tags["display-name"] ||
+    tags.username ||
+    "Moonbeam";
+
+  const jar = readJsonFile(
+    GRATITUDE_JAR_DATA,
+    []
+  );
+
+  jar.push({
+    text: starText,
+    type: "moonbeam",
+    user,
+    date: new Date()
+      .toISOString()
+      .slice(0,10),
+    createdAt: new Date().toISOString()
+  });
+
+  writeJsonFile(
+    GRATITUDE_JAR_DATA,
+    jar
+  );
+
+  sendToChat(
+  `✨ A new star now shines in the Constellation Jar thanks to ${user}.`
+);
+
+  return;
+}
+
+if (lowerMessage.startsWith("!page")) {
+
+  const pageText = cleanMessage
+    .replace(/^!page\s*/i, "")
+    .trim();
+
+  if (!pageText) {
+
+    sendToChat(
+      "📟 Send a page with !page your message here"
+    );
+
+    return;
+  }
+
+  const user =
+    tags["display-name"] ||
+    tags.username ||
+    "Moonbeam";
+
+  const queue = readJsonFile(
+    PAGER_QUEUE_DATA,
+    []
+  );
+
+  queue.push({
+    user,
+    message: pageText,
+    createdAt: new Date().toISOString()
+  });
+
+  writeJsonFile(
+    PAGER_QUEUE_DATA,
+    queue
+  );
+
+  sendToChat(
+    `📟 Page received from ${user}`
+  );
+
+  return;
+}
+
+// ==============================
+// 🌙 BOOK COLLECTION STORAGE
+// ==============================
+
+const BOOK_COLLECTIONS_FILE = "./book-collections.json";
+
+// Load collections safely
+function loadCollections() {
+  if (!fs.existsSync(BOOK_COLLECTIONS_FILE)) {
+    return { users: {} };
+  }
+
+  try {
+    return JSON.parse(fs.readFileSync(BOOK_COLLECTIONS_FILE, "utf8"));
+  } catch (err) {
+    console.error("Failed to load book collections:", err);
+    return { users: {} };
+  }
+}
+
+// Save collections safely
+function saveCollections(data) {
+  fs.writeFileSync(
+    BOOK_COLLECTIONS_FILE,
+    JSON.stringify(data, null, 2)
+  );
+}
+
+// ==============================
+// 📚 !BOOK COMMAND
+// ==============================
+
+if (lowerMessage.startsWith("!book")) {
+
+  const user =
+    tags["display-name"] ||
+    tags.username ||
+    "Moonbeam";
+
+  const library = JSON.parse(
+    fs.readFileSync(MOONBEAM_LIBRARY_DATA, "utf8")
+  );
+
+  const result = getDailyBook(library);
+  const book = result.book;
+
+  const bookId =
+    book.id ||
+    `${book.title}-${book.author}`
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+
+  // LOAD COLLECTIONS
+  const collections = loadCollections();
+  const userData = collections.users[user] || {
+    booksCollected: 0,
+    collection: []
+  };
+
+  // ONLY COUNT UNIQUE BOOKS
+  if (!userData.collection.includes(bookId)) {
+    userData.collection.push(bookId);
+    userData.booksCollected += 1;
+  }
+
+  collections.users[user] = userData;
+  saveCollections(collections);
+
+  // CHAT MESSAGE
+  sendToChat(
+    `👻 Cosmo drifts through the stacks... 🌙 ` +
+    `He selects: "${book.title}" by ${book.author} ✨ (Shelf: ${book.shelf}) | ` +
+    `📚 Books discovered: ${userData.booksCollected}`
+  );
+
+  // COSMO EVENT
+  triggerCosmo("book", user, {
+  bookId,
+  title: book.title,
+  author: book.author,
+  shelf: book.shelf
+});
+
+  return;
+}
+
+app.get("/library-card", (req, res) => {
+
+  const user =
+    req.query.user ||
+    "Moonbeam";
+
+  const collections = loadCollections();
+
+  const data = collections.users[user] || {
+    booksCollected: 0,
+    collection: []
+  };
+
+  res.json({
+    user,
+    booksCollected: data.booksCollected,
+    collection: data.collection
+  });
+});
+
+  // =============================
+  // 👻 COSMO COMMANDS
+  // =============================
+
+  if (lowerMessage.startsWith("!pet")) {
+
+    const user = tags["display-name"] || tags.username || "Moonbeam";
+    sendToChat(`👻 Cosmo curls around ${user}, leaving soft stardust purrs 🌙✨`);
+    triggerCosmo("pet", user);
+
+    return;
+  }
+
+  if (lowerMessage.startsWith("!drink")) {
+
+    const user = tags["display-name"] || tags.username || "Moonbeam";
+    sendToChat(`🥤 Cosmo slides a glowing cosmic drink to ${user} ✨`);
+    triggerCosmo("drink", user);
+
+    return;
+  }
+
+  if (lowerMessage.startsWith("!love")) {
+
+    const user = tags["display-name"] || tags.username || "Moonbeam";
+    sendToChat(`💜 Cosmo wraps ${user} in a nebula hug of starlight 🌙`);
+    triggerCosmo("love", user);
+
+    return;
+  }
+
+  if (lowerMessage.startsWith("!hey")) {
+
+    const user = tags["display-name"] || tags.username || "Moonbeam";
+    sendToChat(`✨ Cosmo waves from the cosmic stacks at ${user} 👋`);
+    triggerCosmo("hey", user);
+
+    return;
+  }
+
+  if (lowerMessage.startsWith("!play")) {
+
+    const user = tags["display-name"] || tags.username || "Moonbeam";
+    sendToChat(`🎮 Cosmo zooms into play mode with ${user}, scattering stardust 🚀`);
+    triggerCosmo("play", user);
+
+    return;
+  }
+
+  if (lowerMessage.startsWith("!sleep")) {
+
+    const user = tags["display-name"] || tags.username || "Moonbeam";
+    sendToChat(`🌙 Cosmo dims the lights... sleep mode for ${user} ✨`);
+    triggerCosmo("sleep", user);
+
+    return;
+  }
+
+  if (lowerMessage.startsWith("!angry")) {
+
+    const user = tags["display-name"] || tags.username || "Moonbeam";
+    sendToChat(`👻 Cosmo huffs stardust dramatically at ${user} 😤✨`);
+    triggerCosmo("angry", user);
+
+    return;
+  }
+
 
   // --- YOUR THOUGHT BUBBLE ---
   if (username === BROADCASTER_USERNAME && !cleanMessage.startsWith("!")) {
@@ -821,10 +1449,6 @@ app.post("/astrea/transmit", (req, res) => {
     res.status(500).json({ success: false, error: "Failed to transmit" });
   }
 });
-
-/* -------------------------
-   WEATHER
-------------------------- */
 
 /* -------------------------
    WEATHER
@@ -1084,6 +1708,84 @@ app.get("/moonphase", (req, res) => {
 });
 
 /* -------------------------
+   SACRED TIME
+------------------------- */
+
+app.get("/sacred-time", async (req, res) => {
+
+  try {
+
+    const now = new Date();
+
+    const hebrewDate = now.toLocaleDateString(
+      "en-u-ca-hebrew",
+      {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }
+    );
+
+    let season = "✨ Quiet Sacred Skies";
+
+    if (hebrewDate.includes("Adar")) {
+      season = "🎭 Purim Season";
+    }
+    else if (hebrewDate.includes("Nisan")) {
+      season = "🕊 Passover Season";
+    }
+    else if (hebrewDate.includes("Tishri")) {
+      season = "🍎 High Holy Days";
+    }
+    else if (hebrewDate.includes("Kislev")) {
+      season = "🕎 Hanukkah Season";
+    }
+
+    const response = await fetch(
+      "https://www.hebcal.com/shabbat?cfg=json&zip=55426&m=50"
+    );
+
+    if (!response.ok) {
+      throw new Error(`Hebcal HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    const candleEvent =
+      data.items?.find(
+        item => item.category === "candles"
+      );
+
+    const havdalahEvent =
+      data.items?.find(
+        item => item.category === "havdalah"
+      );
+
+    res.json({
+      hebrewDate,
+      season,
+      candleLighting:
+        candleEvent?.date || null,
+      havdalah:
+        havdalahEvent?.date || null
+    });
+
+  } catch (err) {
+
+    console.error(
+      "Sacred Time error:",
+      err
+    );
+
+    res.status(500).json({
+      error: "Sacred time unavailable"
+    });
+
+  }
+
+});
+
+/* -------------------------
    AURORA STREAM
 ------------------------- */
 
@@ -1125,30 +1827,56 @@ app.get("/calendar", async (req, res) => {
     const data = await ical.async.fromURL(url);
 
     const now = new Date();
-    const futureWindow = new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000);
-    const events = [];
 
-    for (const key in data) {
-      const ev = data[key];
-      if (ev.type !== "VEVENT") continue;
+const pastWindow = new Date(
+  now.getTime() - 24 * 60 * 60 * 1000
+);
 
-      if (ev.rrule) {
-        const dates = ev.rrule.between(now, futureWindow, true);
+const futureWindow = new Date(
+  now.getTime() + 60 * 24 * 60 * 60 * 1000
+);
 
-        dates.forEach((date) => {
-          events.push({
-            title: ev.summary || "Untitled event",
-            start: date,
-          });
-        });
-      } else if (ev.start && ev.start > now) {
-        events.push({
-          title: ev.summary || "Untitled event",
-          start: ev.start,
-        });
-      }
-    }
+const events = [];
 
+for (const key in data) {
+
+  const ev = data[key];
+
+  if (ev.type !== "VEVENT") continue;
+
+
+  if (ev.rrule) {
+
+    const dates = ev.rrule.between(
+  pastWindow,
+  futureWindow,
+  true
+);
+
+    dates.forEach((date) => {
+
+      events.push({
+        title: ev.summary || "Untitled event",
+        start: date,
+        end: new Date(
+          date.getTime() + (ev.end - ev.start)
+        )
+      });
+
+    });
+
+
+  } else if (ev.start) {
+
+    events.push({
+      title: ev.summary || "Untitled event",
+      start: ev.start,
+      end: ev.end
+    });
+
+  }
+
+}
     events.sort((a, b) => new Date(a.start) - new Date(b.start));
 
     const seen = new Set();
@@ -1159,7 +1887,15 @@ app.get("/calendar", async (req, res) => {
       return true;
     });
 
-    res.json(deduped.slice(0, 3));
+    const upcomingOnly = deduped.filter(event => {
+  return new Date(event.end) >= now;
+});
+
+upcomingOnly.sort((a,b) =>
+  new Date(a.start) - new Date(b.start)
+);
+
+res.json(upcomingOnly);
   } catch (err) {
     console.error("Calendar fetch error:", err);
     res.status(500).json({ error: "Calendar fetch failed" });
@@ -1167,43 +1903,27 @@ app.get("/calendar", async (req, res) => {
 });
 
 /* -------------------------
-   RSS
+   OBSERVATORY
 ------------------------- */
 
-app.get("/rss", async (req, res) => {
+app.get("/observatory", async (req, res) => {
+
   try {
-    const rssUrl = req.query.url;
 
-    if (!rssUrl) {
-      return res.status(400).json({ error: "Missing rss url" });
-    }
+    const data = await getObservatory();
 
-    const response = await fetch(rssUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0",
-      },
-    });
+    res.json(data);
 
-    if (!response.ok) {
-      throw new Error(`RSS HTTP ${response.status} for ${rssUrl}`);
-    }
-
-    const xml = await response.text();
-
-    xml2js.parseString(xml, { explicitArray: false }, (err, result) => {
-      if (err) {
-        console.error("Error parsing RSS feed:", rssUrl, err);
-        return res.status(500).json({ error: "RSS feed parsing failed" });
-      }
-
-      const items = result?.rss?.channel?.item || result?.feed?.entry || [];
-      const normalized = Array.isArray(items) ? items : [items];
-      res.json(normalized.slice(0, 10));
-    });
   } catch (err) {
-    console.error("RSS fetch error:", err.message);
-    res.status(500).json({ error: "RSS fetch failed" });
+
+    console.error("Observatory error:", err);
+
+    res.status(500).json({
+      error: "Observatory unavailable"
+    });
+
   }
+
 });
 
 /* -------------------------
@@ -1257,13 +1977,51 @@ app.get("/spaceweather", async (req, res) => {
 /* -------------------------
    TAROT
 ------------------------- */
+function drawDailyTarot() {
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const chosen = tarotDeck[
+        Math.floor(Math.random() * tarotDeck.length)
+    ];
+
+    const dailyTarot = {
+        date: today,
+        symbol: chosen.symbol,
+        title: chosen.title,
+        keyword: chosen.keyword,
+        message: chosen.message,
+        action: chosen.action
+    };
+
+    writeJsonFile(TAROT_DATA, dailyTarot);
+
+    console.log(
+        `🔮 Daily tarot updated: ${chosen.symbol} ${chosen.title}`
+    );
+
+    return dailyTarot;
+}
+
+function ensureDailyTarot() {
+
+    const today = new Date().toISOString().split("T")[0];
+
+    const current = readJsonFile(TAROT_DATA, {});
+
+    if (current.date !== today) {
+        drawDailyTarot();
+    }
+
+}
+
+
+
 
 app.get("/tarot-current", (req, res) => {
   try {
-    const data = readJsonFile(TAROT_DATA, { card: "" });
-    res.json({
-      card: data.card || "",
-    });
+    const data = readJsonFile(TAROT_DATA, {});
+    res.json(data);
   } catch (err) {
     console.error("Tarot load error:", err);
     res.status(500).json({ error: "Failed to load tarot card" });
@@ -1272,16 +2030,43 @@ app.get("/tarot-current", (req, res) => {
 
 app.get("/set-tarot", (req, res) => {
   try {
-    const card = String(req.query.card || "").trim();
-    const updated = { card };
+    const title = String(req.query.card || "").trim();
+
+    const chosen = tarotDeck.find(
+      card => card.title.toLowerCase() === title.toLowerCase()
+    );
+
+    if (!chosen) {
+      return res.status(404).json({
+        success: false,
+        error: "Tarot card not found"
+      });
+    }
+
+    const updated = {
+      date: new Date().toISOString().split("T")[0],
+      symbol: chosen.symbol,
+      title: chosen.title,
+      keyword: chosen.keyword,
+      message: chosen.message,
+      action: chosen.action
+    };
+
     writeJsonFile(TAROT_DATA, updated);
-    res.json({ success: true, data: updated });
+
+    res.json({
+      success: true,
+      data: updated
+    });
+
   } catch (err) {
     console.error("Set tarot error:", err);
-    res.status(500).json({ success: false, error: "Failed to set tarot card" });
+    res.status(500).json({
+      success: false,
+      error: "Failed to set tarot card"
+    });
   }
 });
-
 
 /* -------------------------
    DATA GET ROUTES
@@ -1490,14 +2275,81 @@ app.get("/moods", (req, res) => {
   }
 });
 
+app.get("/test", (req, res) => {
+
+  console.log("TEST HIT");
+  console.log(req.query);
+
+  res.send("OK");
+
+});
+
+app.get("/adventure-log", (req, res) => {
+
+  const data = readJsonFile(
+    ADVENTURE_LOG_DATA,
+    {
+      title:"",
+      status:"",
+      friendPlatform:"",
+      friendName:"",
+      showAdventure:false
+    }
+  );
+
+  res.json(data);
+
+});
+
+app.post("/adventure-log", (req, res) => {
+
+  try{
+
+    const data = {
+      title: req.body.title || "",
+      status: req.body.status || "",
+      friendPlatform: req.body.friendPlatform || "",
+      friendName: req.body.friendName || "",
+      showAdventure: true
+    };
+
+    writeJsonFile(
+      ADVENTURE_LOG_DATA,
+      data
+    );
+
+    res.json({
+      success:true
+    });
+
+  }catch(err){
+
+    console.error(err);
+
+    res.status(500).json({
+      success:false
+    });
+  }
+});
+
+
+
 /* -------------------------
    SINGLE TASK WIDGET
 ------------------------- */
 
 app.get("/task", (req, res) => {
   try {
-    const data = readJsonFile(AURORA_TASK_DATA, { task: "" });
-    res.json({ task: data.task || "" });
+    const data = readJsonFile(AURORA_TASK_DATA, {
+      task: "",
+      next: ""
+    });
+
+    res.json({
+      task: data.task || "",
+      next: data.next || ""
+    });
+
   } catch (err) {
     console.error("Task load error:", err);
     res.status(500).json({ error: "Failed to load task" });
@@ -1507,7 +2359,10 @@ app.get("/task", (req, res) => {
 app.get("/settask", (req, res) => {
   try {
     const task = String(req.query.task || "").trim();
-    const updated = { task };
+    const updated = {
+  task,
+  next: ""
+};
 
     writeJsonFile(AURORA_TASK_DATA, updated);
 
@@ -1577,9 +2432,14 @@ app.post("/reorderquests", (req, res) => {
 
 app.get("/newtask", (req, res) => {
   try {
+
     const task = String(req.query.task || "").trim();
+
     if (!task) {
-      return res.status(400).json({ success: false, error: "Missing task" });
+      return res.status(400).json({
+        success: false,
+        error: "Missing task"
+      });
     }
 
     const data = readJsonFile(AURORA_QUESTS_DATA, {
@@ -1587,21 +2447,38 @@ app.get("/newtask", (req, res) => {
       queue: []
     });
 
-    const queue = Array.isArray(data.queue) ? data.queue : [];
+    const queue = Array.isArray(data.queue)
+      ? data.queue
+      : [];
 
     if (!data.current) {
       data.current = task;
-      writeJsonFile(AURORA_TASK_DATA, { task: task });
     } else {
       queue.push(task);
       data.queue = queue;
     }
 
     writeJsonFile(AURORA_QUESTS_DATA, data);
-    res.json({ success: true, data });
+
+    writeJsonFile(AURORA_TASK_DATA, {
+      task: data.current,
+      next: data.queue?.[0] || ""
+    });
+
+    res.json({
+      success: true,
+      data
+    });
+
   } catch (err) {
+
     console.error("New task error:", err);
-    res.status(500).json({ success: false, error: "Failed to add task" });
+
+    res.status(500).json({
+      success: false,
+      error: "Failed to add task"
+    });
+
   }
 });
 
@@ -1617,7 +2494,10 @@ app.get("/donetask", (req, res) => {
     data.queue = queue;
 
     writeJsonFile(AURORA_QUESTS_DATA, data);
-    writeJsonFile(AURORA_TASK_DATA, { task: data.current });
+    writeJsonFile(AURORA_TASK_DATA, {
+  task: data.current,
+  next: data.queue?.[0] || ""
+});
 
     res.json({ success: true, data });
   } catch (err) {
@@ -1643,7 +2523,10 @@ app.get("/nexttask", (req, res) => {
     data.queue = queue;
 
     writeJsonFile(AURORA_QUESTS_DATA, data);
-    writeJsonFile(AURORA_TASK_DATA, { task: data.current });
+    writeJsonFile(AURORA_TASK_DATA, {
+  task: data.current,
+  next: data.queue?.[0] || ""
+});
 
     res.json({ success: true, data });
   } catch (err) {
@@ -2573,9 +3456,30 @@ app.post("/spotify/play/:mode", async (req, res) => {
 
 app.get("/spotify/current", async (req, res) => {
   try {
-    const response = await spotifyApi("/me/player/currently-playing");
+
+    const response =
+      await spotifyApi("/me/player/currently-playing");
+
     if (response.status === 204) {
-      return res.json({ is_playing: false });
+      return res.json({
+        is_playing: false
+      });
+    }
+
+    if (response.status === 429) {
+
+      const retryAfter =
+        response.headers.get("retry-after");
+
+      console.warn(
+        `Spotify rate limited. Retry after ${retryAfter}s`
+      );
+
+      return res.status(429).json({
+        success: false,
+        error: "Spotify rate limited",
+        retryAfter
+      });
     }
 
     const data = await response.json();
@@ -2585,9 +3489,19 @@ app.get("/spotify/current", async (req, res) => {
     }
 
     res.json(data);
+
   } catch (err) {
-    console.error("Spotify current track error:", err);
-    res.status(500).json({ success: false, error: "Failed to fetch current Spotify track" });
+
+    console.error(
+      "Spotify current track error:",
+      err
+    );
+
+    res.status(500).json({
+      success: false,
+      error:
+        "Failed to fetch current Spotify track"
+    });
   }
 });
 
@@ -2667,6 +3581,7 @@ app.get("/cardstream", (req, res) => {
   });
 });
 
+
 function broadcastCard(payload) {
   const data = `data: ${JSON.stringify(payload)}\n\n`;
 
@@ -2679,25 +3594,38 @@ function broadcastCard(payload) {
   });
 }
 
+
 app.get("/card-draws", (req, res) => {
   try {
     const data = readJsonFile(CARD_DRAWS_DATA, { draws: [] });
+
     res.json({
       draws: Array.isArray(data.draws) ? data.draws : []
     });
+
   } catch (err) {
     console.error("Card draws load error:", err);
-    res.status(500).json({ success: false, error: "Failed to load card draws" });
+
+    res.status(500).json({
+      success:false,
+      error:"Failed to load card draws"
+    });
   }
 });
 
+
 app.post("/card-draw", (req, res) => {
   try {
+
     const existing = readJsonFile(CARD_DRAWS_DATA, { draws: [] });
-    const draws = Array.isArray(existing.draws) ? existing.draws : [];
+
+    const draws = Array.isArray(existing.draws)
+      ? existing.draws
+      : [];
+
 
     const draw = {
-      id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      id: `${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
       deck: String(req.body?.deck || "Unknown").trim(),
       title: String(req.body?.title || "").trim(),
       keyword: String(req.body?.keyword || "").trim(),
@@ -2709,43 +3637,107 @@ app.post("/card-draw", (req, res) => {
       time: new Date().toISOString()
     };
 
+
     if (!draw.title) {
-      return res.status(400).json({ success: false, error: "Missing card title" });
+      return res.status(400).json({
+        success:false,
+        error:"Missing card title"
+      });
     }
+
 
     draws.unshift(draw);
 
+
     const updated = {
-      updatedAt: new Date().toISOString(),
-      draws: draws.slice(0, 40)
+      updatedAt:new Date().toISOString(),
+      draws:draws.slice(0,40)
     };
 
-    writeJsonFile(CARD_DRAWS_DATA, updated);
-    broadcastCard({ type: "new", draw });
 
-    res.json({ success: true, draw });
-  } catch (err) {
-    console.error("Card draw error:", err);
-    res.status(500).json({ success: false, error: "Failed to save card draw" });
+    writeJsonFile(CARD_DRAWS_DATA, updated);
+
+    broadcastCard({
+      type:"new",
+      draw
+    });
+
+
+    res.json({
+      success:true,
+      draw
+    });
+
+
+  } catch(err){
+
+    console.error("Card draw error:",err);
+
+    res.status(500).json({
+      success:false,
+      error:"Failed to save card draw"
+    });
+
   }
 });
 
-app.post("/clear-card-board", (req, res) => {
+
+app.post("/clear-card-board", (req,res)=>{
+
   try {
+
     const updated = {
-      updatedAt: new Date().toISOString(),
-      draws: []
+      updatedAt:new Date().toISOString(),
+      draws:[]
     };
 
-    writeJsonFile(CARD_DRAWS_DATA, updated);
-    broadcastCard({ type: "clear" });
 
-    res.json({ success: true, data: updated });
-  } catch (err) {
-    console.error("Clear card board error:", err);
-    res.status(500).json({ success: false, error: "Failed to clear card board" });
+    writeJsonFile(CARD_DRAWS_DATA, updated);
+
+    broadcastCard({
+      type:"clear"
+    });
+
+
+    res.json({
+      success:true,
+      data:updated
+    });
+
+
+  } catch(err){
+
+    console.error("Clear card board error:",err);
+
+    res.status(500).json({
+      success:false,
+      error:"Failed to clear card board"
+    });
+
   }
+
 });
+
+
+function createCardDraw(deckName, chosen){
+
+  return {
+    id:`${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
+    deck:deckName,
+    title:chosen.title,
+    keyword:chosen.keyword,
+    message:chosen.message,
+    action:chosen.action,
+    symbol:chosen.symbol,
+    position:"",
+    spread:"",
+    time:new Date().toISOString()
+  };
+
+}
+
+
+
 
 /* -------------------------
    MOONBEAM PAGER
@@ -2848,24 +3840,248 @@ app.post("/pager/clear", (req, res) => {
 
 });
 
+app.get("/pager/next", (req, res) => {
+
+  const queue = readJsonFile(
+    PAGER_QUEUE_DATA,
+    []
+  );
+
+  if (!queue.length) {
+    return res.json({
+      page: null
+    });
+  }
+
+  res.json({
+    page: queue[0]
+  });
+});
+
+app.post("/pager/complete", (req, res) => {
+
+  const queue = readJsonFile(
+    PAGER_QUEUE_DATA,
+    []
+  );
+
+  if (queue.length) {
+    queue.shift();
+
+    writeJsonFile(
+      PAGER_QUEUE_DATA,
+      queue
+    );
+  }
+
+  res.json({
+    success: true
+  });
+});
+
+app.get("/api/constellation", (req, res) => {
+
+  try {
+
+    const data = readJsonFile(
+      CONSTELLATION_DATA,
+      {
+        games: [],
+        streamers: [],
+        stardust: ""
+      }
+    );
+
+    res.json(data);
+
+  } catch (err) {
+
+    console.error(
+      "Constellation load error:",
+      err
+    );
+
+    res.status(500).json({
+      error: "Failed to load constellation log"
+    });
+
+  }
+
+});
+
+app.post("/api/constellation", (req, res) => {
+
+  try {
+
+    writeJsonFile(
+      CONSTELLATION_DATA,
+      {
+        games: req.body.games || [],
+        streamers: req.body.streamers || [],
+        stardust: req.body.stardust || ""
+      }
+    );
+
+    res.json({
+      success: true
+    });
+
+  } catch (err) {
+
+    console.error(
+      "Constellation save error:",
+      err
+    );
+
+    res.status(500).json({
+      error: "Failed to save constellation log"
+    });
+
+  }
+
+});
+
+/* =========================
+   DAILY BOOK CORE LOGIC
+========================= */
+
+function getRandomBook(library) {
+  const shelves = Object.keys(library.shelves);
+
+  const randomShelf =
+    shelves[Math.floor(Math.random() * shelves.length)];
+
+  const books = library.shelves[randomShelf];
+
+  const book =
+    books[Math.floor(Math.random() * books.length)];
+
+  return {
+    shelf: randomShelf,
+    ...book
+  };
+}
+
+function getDailyBook(library) {
+  const today = new Date().toISOString().split("T")[0];
+
+  let daily = {};
+
+  if (fs.existsSync(DAILY_BOOK_DATA)) {
+    daily = JSON.parse(fs.readFileSync(DAILY_BOOK_DATA, "utf8"));
+  }
+
+  if (daily.date === today && daily.book) {
+    return {
+      date: today,
+      book: daily.book
+    };
+  }
+
+  const book = getRandomBook(library);
+
+  const newDaily = {
+    date: today,
+    book
+  };
+
+  fs.writeFileSync(
+    DAILY_BOOK_DATA,
+    JSON.stringify(newDaily, null, 2)
+  );
+
+  return {
+    date: today,
+    book
+  };
+}
+
+/* =========================
+   DAILY BOOK ROUTES
+========================= */
+
+app.get("/dailybook", (req, res) => {
+  try {
+    const library = JSON.parse(
+      fs.readFileSync(MOONBEAM_LIBRARY_DATA, "utf8")
+    );
+
+    const result = getDailyBook(library);
+
+    res.json({
+      date: result.date,
+      ...result.book
+    });
+
+  } catch (err) {
+    console.error("Daily book error:", err);
+    res.status(500).json({ error: "Failed to load daily book" });
+  }
+});
+
+app.get("/chat/dailybook", (req, res) => {
+  try {
+    const library = JSON.parse(
+      fs.readFileSync(MOONBEAM_LIBRARY_DATA, "utf8")
+    );
+
+    const result = getDailyBook(library);
+    const book = result.book;
+
+    res.send(
+      `🌙 Moonbeam Daily Book: "${book.title}" by ${book.author} ✨ (Shelf: ${book.shelf})`
+    );
+
+  } catch (err) {
+    console.error("Chat book error:", err);
+    res.send("🌙 The library is resting right now.");
+  }
+});
+
+const { getRelationshipDays } = require("./relationship");
+const booMessages = require("./booMessages");
+
+function fillTemplate(text, vars) {
+    return text.replace(/{{(.*?)}}/g, (_, key) => {
+        return vars[key.trim()] ?? "";
+    });
+}
+
+/* =========================
+   COSMO EVENT SYSTEM
+========================= */
+
+function triggerCosmo(event, user = "Moonbeam", extra = {}) {
+  if (!io) return;
+
+  io.emit("cosmo-event", {
+    event,
+    user,
+    extra
+  });
+}
+
 /* -------------------------
-   404
+   OBSERVATORY REFRESH
 ------------------------- */
 
-app.use((req, res) => {
-  res.status(404).send("Not found");
-});
+getObservatory();
 
-process.on("unhandledRejection", (err) => {
-  console.error("Unhandled Promise Rejection:", err);
-});
+setInterval(() => {
+  getObservatory();
+}, 15 * 60 * 1000);
 
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
-});
+ensureDailyTarot();
+
+setInterval(ensureDailyTarot, 60000);
+
+
+/* =========================
+   SERVER START
+========================= */
 
 console.log("🌌 Starting Aurora Moon systems...");
 
-app.listen(PORT, "0.0.0.0", () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`🌙 MoonSpace server running on port ${PORT}`);
 });

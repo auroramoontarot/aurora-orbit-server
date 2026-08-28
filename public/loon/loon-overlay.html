@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: transparent;
+}
+
+#loon-container {
+    position: absolute;
+    left: 105%;
+    bottom: 51%;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+#loon {
+    width: 90px;
+    display: block;
+    animation: bob 2.5s ease-in-out infinite;
+}
+
+.swim {
+    animation: swimAcross 30s linear forwards;
+}
+
+.bob {
+    animation: bob 2.5s ease-in-out infinite;
+}
+
+@keyframes swimAcross {
+    from {
+        left: 105%;
+    }
+
+    to {
+        left: -10%;
+    }
+}
+@keyframes bob {
+    0%,100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.sparkle {
+    position: absolute;
+    font-size: 20px;
+    pointer-events: none;
+    animation: sparkleFade 2s forwards;
+}
+
+@keyframes sparkleFade {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loon-container">
+    <img id="loon" src="/images/loon.png" alt="Loon">
+</div>
+
+<script>
+
+const loonContainer = document.getElementById("loon-container");
+const loon = document.getElementById("loon");
+let isSwimming = false;
+
+function createSparkle() {
+
+    const sparkle = document.createElement("div");
+
+    sparkle.className = "sparkle";
+    sparkle.innerHTML = "✨";
+
+    const rect = loon.getBoundingClientRect();
+
+    sparkle.style.left = (rect.left + 120) + "px";
+    sparkle.style.top = (rect.top + 100) + "px";
+
+    document.body.appendChild(sparkle);
+
+    setTimeout(() => {
+        sparkle.remove();
+    }, 2000);
+}
+
+function sendLoonAcross(type = "ambient") {
+
+    if (isSwimming) return;
+
+    isSwimming = true;
+
+    loonContainer.classList.remove("swim");
+    void loon.offsetWidth;
+
+    loonContainer.style.bottom =
+    (25 + Math.random() * 3) + "%";
+
+    loonContainer.classList.add("swim");
+
+    if (type !== "ambient") {
+
+        const sparkleInterval = setInterval(() => {
+
+            if (!isSwimming) {
+                clearInterval(sparkleInterval);
+                return;
+            }
+
+            createSparkle();
+
+        }, 750);
+    }
+
+    setTimeout(() => {
+
+        loonContainer.classList.remove("swim");
+loonContainer.style.left = "105%";
+        isSwimming = false;
+
+    }, 30000);
+}
+
+function scheduleAmbientLoon() {
+
+    sendLoonAcross();
+
+    const nextTime =
+    (180 + Math.random() * 120) * 1000;
+
+    setTimeout(scheduleAmbientLoon, nextTime);
+}
+
+window.triggerFollowLoon = () => {
+    sendLoonAcross("follow");
+};
+
+window.triggerSubLoon = () => {
+    sendLoonAcross("sub");
+};
+
+window.triggerRaidLoon = () => {
+
+    sendLoonAcross("raid");
+
+    setTimeout(() => {
+        sendLoonAcross("raid");
+    }, 3000);
+};
+
+setTimeout(scheduleAmbientLoon, 10000);
+sendLoonAcross();
+
+</script>
+
+</body>
+</html>

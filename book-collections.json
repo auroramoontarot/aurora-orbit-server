@@ -1,0 +1,58 @@
+{
+  "users": {
+    "AuroraMoonTarot": {
+      "booksCollected": 5,
+      "collection": [
+        "love-hypothesis",
+        "emily-wilde-1",
+        "prayer-crown-shy",
+        "wintering",
+        "coraline"
+      ]
+    },
+    "AstreaStardust": {
+      "booksCollected": 33,
+      "collection": [
+        "prayer-crown-shy",
+        "long-way-angry-planet",
+        "emily-wilde-1",
+        "reasons-to-stay",
+        "graveyard-book",
+        "book-lovers",
+        "once-future-witches",
+        "comfort-book",
+        "fortunate",
+        "evvie-drake",
+        "hobbit",
+        "ove",
+        "what-moves-dead",
+        "psalm-wild-built",
+        "wintering",
+        "night-circus",
+        "anne-avonlea",
+        "love-hypothesis",
+        "house-good-bones",
+        "anxious-people",
+        "starling-house",
+        "flatshare",
+        "secret-garden",
+        "whispering-door",
+        "beach-read",
+        "anne-green-gables",
+        "royal-blue",
+        "hollow-places",
+        "irregular-witches",
+        "practical-magic",
+        "midnight-library",
+        "atomic-habits",
+        "coraline"
+      ]
+    },
+    "Sailor_Moon_Kitty": {
+      "booksCollected": 1,
+      "collection": [
+        "wintering"
+      ]
+    }
+  }
+}

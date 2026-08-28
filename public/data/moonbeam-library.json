@@ -1,0 +1,80 @@
+{
+  "shelves": {
+    "Cozy Fantasy": [
+      { "id": "legends-lattes", "title": "Legends & Lattes", "author": "Travis Baldree" },
+      { "id": "bookshops-bonedust", "title": "Bookshops & Bonedust", "author": "Travis Baldree" },
+      { "id": "cerulean-sea", "title": "The House in the Cerulean Sea", "author": "TJ Klune" },
+      { "id": "whispering-door", "title": "Under the Whispering Door", "author": "TJ Klune" },
+      { "id": "irregular-witches", "title": "The Very Secret Society of Irregular Witches", "author": "Sangu Mandanna" },
+      { "id": "emily-wilde-1", "title": "Emily Wilde’s Encyclopaedia of Faeries", "author": "Heather Fawcett" },
+      { "id": "emily-wilde-2", "title": "Emily Wilde’s Map of the Otherlands", "author": "Heather Fawcett" },
+      { "id": "spellshop", "title": "The Spellshop", "author": "Sarah Beth Durst" }
+    ],
+
+    "Cottagecore": [
+      { "id": "anne-green-gables", "title": "Anne of Green Gables", "author": "L.M. Montgomery" },
+      { "id": "anne-avonlea", "title": "Anne of Avonlea", "author": "L.M. Montgomery" },
+      { "id": "psalm-wild-built", "title": "A Psalm for the Wild-Built", "author": "Becky Chambers" },
+      { "id": "prayer-crown-shy", "title": "A Prayer for the Crown-Shy", "author": "Becky Chambers" },
+      { "id": "enchanted-april", "title": "The Enchanted April", "author": "Elizabeth von Arnim" },
+      { "id": "garden-spells", "title": "Garden Spells", "author": "Sarah Addison Allen" },
+      { "id": "girl-drank-moon", "title": "The Girl Who Drank the Moon", "author": "Kelly Barnhill" },
+      { "id": "secret-garden", "title": "The Secret Garden", "author": "Frances Hodgson Burnett" }
+    ],
+
+    "Mystical": [
+      { "id": "piranesi", "title": "Piranesi", "author": "Susanna Clarke" },
+      { "id": "night-circus", "title": "The Night Circus", "author": "Erin Morgenstern" },
+      { "id": "starless-sea", "title": "The Starless Sea", "author": "Erin Morgenstern" },
+      { "id": "practical-magic", "title": "Practical Magic", "author": "Alice Hoffman" },
+      { "id": "book-of-doors", "title": "The Book of Doors", "author": "Gareth Brown" },
+      { "id": "once-future-witches", "title": "The Once and Future Witches", "author": "Alix E. Harrow" },
+      { "id": "ninth-house", "title": "Ninth House", "author": "Leigh Bardugo" },
+      { "id": "starling-house", "title": "Starling House", "author": "Alix E. Harrow" }
+    ],
+
+    "Romance": [
+      { "id": "flatshare", "title": "The Flatshare", "author": "Beth O’Leary" },
+      { "id": "book-lovers", "title": "Book Lovers", "author": "Emily Henry" },
+      { "id": "beach-read", "title": "Beach Read", "author": "Emily Henry" },
+      { "id": "vacation", "title": "People We Meet on Vacation", "author": "Emily Henry" },
+      { "id": "love-hypothesis", "title": "The Love Hypothesis", "author": "Ali Hazelwood" },
+      { "id": "evvie-drake", "title": "Evvie Drake Starts Over", "author": "Linda Holmes" },
+      { "id": "royal-blue", "title": "Red, White & Royal Blue", "author": "Casey McQuiston" },
+      { "id": "one-last-stop", "title": "One Last Stop", "author": "Casey McQuiston" }
+    ],
+
+    "Healing": [
+      { "id": "ove", "title": "A Man Called Ove", "author": "Fredrik Backman" },
+      { "id": "anxious-people", "title": "Anxious People", "author": "Fredrik Backman" },
+      { "id": "midnight-library", "title": "The Midnight Library", "author": "Matt Haig" },
+      { "id": "reasons-to-stay", "title": "Reasons to Stay Alive", "author": "Matt Haig" },
+      { "id": "wintering", "title": "Wintering", "author": "Katherine May" },
+      { "id": "atomic-habits", "title": "Atomic Habits", "author": "James Clear" },
+      { "id": "braiding-sweetgrass", "title": "Braiding Sweetgrass", "author": "Robin Wall Kimmerer" },
+      { "id": "comfort-book", "title": "The Comfort Book", "author": "Matt Haig" }
+    ],
+
+    "Soft Spooky": [
+      { "id": "coraline", "title": "Coraline", "author": "Neil Gaiman" },
+      { "id": "graveyard-book", "title": "The Graveyard Book", "author": "Neil Gaiman" },
+      { "id": "something-wicked", "title": "Something Wicked This Way Comes", "author": "Ray Bradbury" },
+      { "id": "mexican-gothic", "title": "Mexican Gothic", "author": "Silvia Moreno-Garcia" },
+      { "id": "nettle-bone", "title": "Nettle & Bone", "author": "T. Kingfisher" },
+      { "id": "what-moves-dead", "title": "What Moves the Dead", "author": "T. Kingfisher" },
+      { "id": "house-good-bones", "title": "A House With Good Bones", "author": "T. Kingfisher" },
+      { "id": "hollow-places", "title": "The Hollow Places", "author": "T. Kingfisher" }
+    ],
+
+    "Adventure": [
+      { "id": "howls-moving-castle", "title": "Howl’s Moving Castle", "author": "Diana Wynne Jones" },
+      { "id": "good-omens", "title": "Good Omens", "author": "Neil Gaiman & Terry Pratchett" },
+      { "id": "hobbit", "title": "The Hobbit", "author": "J.R.R. Tolkien" },
+      { "id": "stardust", "title": "Stardust", "author": "Neil Gaiman" },
+      { "id": "long-way-angry-planet", "title": "The Long Way to a Small Angry Planet", "author": "Becky Chambers" },
+      { "id": "record-spaceborn", "title": "Record of a Spaceborn Few", "author": "Becky Chambers" },
+      { "id": "fortunate", "title": "To Be Taught, If Fortunate", "author": "Becky Chambers" },
+      { "id": "martian", "title": "The Martian", "author": "Andy Weir" }
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+html,
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: transparent;
+    width: 100%;
+    height: 100%;
+}
+
+#loon {
+    position: absolute;
+    bottom: 30px;
+    right: -250px;
+    width: 180px;
+    pointer-events: none;
+}
+
+/* swimming across */
+.swim {
+    animation: swimAcross 20s linear forwards;
+}
+
+/* gentle floating */
+.bob {
+    animation: bob 2.5s ease-in-out infinite;
+}
+
+@keyframes swimAcross {
+    from {
+        right: -250px;
+    }
+
+    to {
+        right: calc(100vw + 250px);
+    }
+}
+
+@keyframes bob {
+    0%,100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<img id="loon" src="../images/loon.png">
+
+<script>
+const loon = document.getElementById("loon");
+
+function sendLoonAcross() {
+
+    loon.classList.remove("swim");
+
+    void loon.offsetWidth;
+
+    loon.style.bottom =
+        (25 + Math.random() * 50) + "px";
+
+    loon.classList.add("swim");
+}
+
+/* random appearances */
+
+function randomLoon() {
+
+    sendLoonAcross();
+
+    const nextTime =
+        (60 + Math.random() * 180) * 1000;
+
+    setTimeout(randomLoon, nextTime);
+}
+
+randomLoon();
+</script>
+
+</body>
+</html>

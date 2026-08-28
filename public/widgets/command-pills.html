@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+.command-pills {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: "Quicksand", sans-serif;
+}
+
+.command-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 5px 12px;
+    min-height: 32px;
+
+    border: 1px solid rgba(203, 236, 245, 0.55);
+    border-radius: 999px;
+
+    background: rgba(127, 135, 255, 0.18);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    box-shadow:
+        0 0 10px rgba(127, 135, 255, 0.22),
+        inset 0 0 8px rgba(203, 236, 245, 0.08);
+
+    color: #cbecf5;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+
+    white-space: nowrap;
+}
+
+.checkin-pill {
+    background: rgba(0, 169, 186, 0.20);
+    border-color: rgba(0, 169, 186, 0.6);
+}
+
+.rotating-pill {
+    transition:
+        opacity 0.35s ease,
+        transform 0.35s ease;
+}
+
+.rotating-pill.fade-out {
+    opacity: 0;
+    transform: translateY(2px);
+}
+
+.rotating-pill.fade-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+</style>
+</head>
+<body>
+<div class="command-pills">
+    <div class="command-pill checkin-pill">
+        🌕 !checkin
+    </div>
+
+    <div class="command-pill rotating-pill" id="rotatingCommand">
+        ✨ !streak
+    </div>
+</div>
+</body>
+<script>
+const rotatingCommands = [
+    "✨ !streak",
+    "🌙 !profile",
+    "🎂 !birthday",
+    "✅ !task",
+    "☕ !coffee",
+    "💫 !orbit",
+    "🪩 !disco",
+    "🔮 !tarot",
+    "🎴 !card",
+    "🤪 !mood",
+    "👻 !lurk",
+    "🫶🏻 !hug",
+    "🌠 !wish",
+    "🛌 !tuck",
+    "💡 !suggest",
+    "🧂 !salty",
+    "☠️ !badass",
+    "🥄 !spoonie",
+    "🤖 !mascots",
+    "🐕‍🦺 !koda",
+    "🐟 !fish",
+    "👕 !merch",
+    "🚀 !discord",
+    "❗ !commands"
+];
+
+let rotatingCommandIndex = 0;
+
+const rotatingCommand = document.getElementById("rotatingCommand");
+
+function rotateCommand() {
+    rotatingCommand.classList.add("fade-out");
+
+    setTimeout(() => {
+        rotatingCommandIndex =
+            (rotatingCommandIndex + 1) % rotatingCommands.length;
+
+        rotatingCommand.textContent =
+            rotatingCommands[rotatingCommandIndex];
+
+        rotatingCommand.classList.remove("fade-out");
+        rotatingCommand.classList.add("fade-in");
+
+        setTimeout(() => {
+            rotatingCommand.classList.remove("fade-in");
+        }, 350);
+
+    }, 350);
+}
+
+// Change command every 5 seconds
+setInterval(rotateCommand, 5000);
+</script>
+</html>

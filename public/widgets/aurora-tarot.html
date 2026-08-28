@@ -520,6 +520,22 @@ function drawCard(){
 
 drawCard();
 
+window.addEventListener("storage", (event) => {
+    if(event.key === "tarotDrawRequest"){
+        drawCard();
+    }
+});
+
+const auroraChannel = new BroadcastChannel("aurora-controls");
+
+auroraChannel.onmessage = (event) => {
+    if(event.data === "draw-tarot"){
+        drawCard();
+    }
+};
+
+
+
 /* Auto-refresh every 10 minutes */
 setInterval(drawCard, 10 * 60 * 1000);
 </script>

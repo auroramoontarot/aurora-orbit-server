@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Very Important Moonbeams</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --lavender:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --accent:#c6c7f8;
+  --deep:#2b2772;
+  --gold:#f6b437;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:transparent;
+  font-family:'Quicksand', sans-serif;
+}
+
+
+/* =====================================================
+   VIM TICKER BAR
+   ===================================================== */
+
+.vim-bar{
+
+  position:absolute;
+
+  top:0;
+  left:0;
+
+  width:100%;
+  height:50px;
+
+  display:flex;
+  align-items:center;
+
+  overflow:hidden;
+
+  background:rgba(203,236,245,.94);
+
+  border-top:3px solid rgba(127,135,255,.55);
+
+  border-bottom:2px solid rgba(127,135,255,.75);
+
+}
+
+
+/* =====================================================
+   TICKER
+   ===================================================== */
+
+.ticker{
+
+  width:100%;
+
+  overflow:hidden;
+
+  white-space:nowrap;
+
+}
+
+
+.ticker-track{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  white-space:nowrap;
+
+  will-change:transform;
+
+  animation:
+    vimScroll 360s
+    linear
+    infinite;
+
+}
+
+
+.ticker-item{
+
+  display:inline-flex;
+
+  align-items:center;
+
+  gap:10px;
+
+  margin-right:70px;
+
+  font-size:22px;
+
+  font-weight:600;
+
+  color:var(--deep);
+
+}
+
+
+.ticker-item strong{
+
+  font-weight:700;
+
+  color:var(--lavender);
+
+}
+
+
+/* =====================================================
+   MOOD ITEMS
+   ===================================================== */
+
+.ticker-item.mood strong{
+
+  color:var(--teal);
+
+}
+
+
+.ticker-item.mood{
+
+  opacity:.95;
+
+}
+
+
+/* =====================================================
+   SEPARATOR
+   ===================================================== */
+
+.ticker-separator{
+
+  color:var(--gold);
+
+  font-size:22px;
+
+}
+
+
+/* =====================================================
+   SCROLL ANIMATION
+   ===================================================== */
+
+@keyframes vimScroll{
+
+  0%{
+    transform:translateX(0);
+  }
+
+  100%{
+    transform:translateX(-50%);
+  }
+
+}
+
+
+/* =====================================================
+   EMPTY STATE
+   ===================================================== */
+
+.ticker-empty{
+
+  width:100%;
+
+  text-align:center;
+
+  font-size:22px;
+
+  font-weight:600;
+
+  color:var(--deep);
+
+  opacity:.8;
+
+}
+
+
+/* =====================================================
+   MOBILE / SMALLER DISPLAY
+   ===================================================== */
+
+@media(max-width:900px){
+
+  .vim-bar{
+    height:65px;
+  }
+
+  .ticker-item{
+    font-size:21px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     VIM TICKER
+     ===================================================== -->
+
+<div class="vim-bar">
+
+  <div class="ticker">
+
+    <div
+      id="tickerTrack"
+      class="ticker-track"
+    ></div>
+
+    <div
+      id="tickerEmpty"
+      class="ticker-empty"
+      style="display:none;"
+    >
+      ✨ The Moonbeam ribbon is resting ✨
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   SERVER
+   ===================================================== */
+
+const API_BASE =
+  "http://localhost:3000";
+
+
+
+/* =====================================================
+   ⭐ VERY IMPORTANT MOONBEAMS ⭐
+
+   THIS IS THE ONLY SECTION YOU NEED TO EDIT
+   FOR VIMS.
+
+   Add, remove, or change VIMs here.
+
+   Each VIM needs:
+
+   name    = Moonbeam's Twitch name
+   message = Your special VIM message
+
+   ===================================================== */
+
+
+const VIMS = [
+
+  {
+    name: "Moonbeam Birthdays",
+    message: "Command example: !birthday Nov 13"
+  },
+  {
+    name: "aevilcovfefe",
+    message: "Newbeam Spotlight: joined our crew, becoming our 100th Moonbeam on Twitch ✨"
+  },
+
+  {
+    name: "rednyx11",
+    message: "Goal Getter: completed our 200th task last week 🎯"
+  },
+
+  {
+    name: "Seaturtlelove",
+    message: "Raid Captain: Reef Raid on Wander Wednesday 🚀"
+  },
+
+  {
+    name: "rednyx11",
+    message: "Stardust Wizard: scattered sub gift stardust 🫶"
+  },
+
+  {
+    name: "kurix5011",
+    message: "Unicorn Mod: monitors our rainbow for kindness and inclusivity 🌈"
+  },
+
+  {
+    name: "rednyx11",
+    message: "Morrígan Mod: protects the haven while collecting shiny treasure 🐦‍⬛"
+  },
+
+  {
+    name: "Spirit Animal Oracle",
+    message: "Nightingale Spirit: Love is all around 🪶"
+  }
+
+];
+
+
+
+/* =====================================================
+   SETTINGS
+   ===================================================== */
+
+
+/*
+   How long one complete ticker cycle takes.
+
+   Higher = slower
+   Lower = faster
+*/
+
+const TICKER_SPEED = 360;
+
+
+/*
+   How many recent !mood check-ins
+   should appear at once.
+*/
+
+const MAX_MOODS = 5;
+
+
+/*
+   How often moods refresh.
+
+   60000 = 1 minute
+*/
+
+const MOOD_REFRESH = 60000;
+
+
+
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const track =
+  document.getElementById("tickerTrack");
+
+const emptyState =
+  document.getElementById("tickerEmpty");
+
+
+
+/* =====================================================
+   ESCAPE HTML
+   ===================================================== */
+
+function escapeHtml(str){
+
+  return String(str)
+
+    .replace(/&/g, "&amp;")
+
+    .replace(/</g, "&lt;")
+
+    .replace(/>/g, "&gt;")
+
+    .replace(/"/g, "&quot;")
+
+    .replace(/'/g, "&#039;");
+
+}
+
+
+
+/* =====================================================
+   GET MOONBEAM MOODS
+   ===================================================== */
+
+async function getMoonbeamMoods(){
+
+  try{
+
+    const response =
+      await fetch(
+        `${API_BASE}/moods?nocache=${Date.now()}`
+      );
+
+
+    if(!response.ok){
+
+      throw new Error(
+        "Mood endpoint unavailable"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    const statuses =
+      Array.isArray(data?.statuses)
+        ? data.statuses
+        : [];
+
+
+    return statuses
+
+      .slice(0, MAX_MOODS)
+
+      .map(mood => ({
+
+        name:
+          `✨ ${mood.user}`,
+
+        message:
+          `feeling ${mood.message}`,
+
+        type:
+          "mood"
+
+      }));
+
+
+  }catch(err){
+
+    console.log(
+      "Moonbeam moods unavailable:",
+      err
+    );
+
+    return [];
+
+  }
+
+}
+
+
+
+/* =====================================================
+   BUILD TICKER
+   ===================================================== */
+
+async function buildTicker(){
+
+
+  /* ===================================================
+     GET CURRENT MOODS
+     =================================================== */
+
+  const moonbeamMoods =
+    await getMoonbeamMoods();
+
+
+
+  /* ===================================================
+     PREPARE VIMS
+     =================================================== */
+
+  const vimItems =
+    VIMS.map(vim => ({
+
+      ...vim,
+
+      type:"vim"
+
+    }));
+
+
+
+  /* ===================================================
+     COMBINE COMMUNITY ITEMS
+     =================================================== */
+
+  const tickerItems = [
+
+    ...vimItems,
+
+    ...moonbeamMoods
+
+  ];
+
+
+
+  /* ===================================================
+     EMPTY STATE
+     =================================================== */
+
+  if(!tickerItems.length){
+
+    track.innerHTML = "";
+
+    emptyState.style.display =
+      "block";
+
+    return;
+
+  }
+
+
+  emptyState.style.display =
+    "none";
+
+
+
+  /* ===================================================
+     CREATE TICKER ITEMS
+     =================================================== */
+
+  const tickerHTML =
+    tickerItems.map(item => {
+
+
+      const itemClass =
+        item.type === "mood"
+          ? "ticker-item mood"
+          : "ticker-item";
+
+
+      return `
+
+        <span class="${itemClass}">
+
+          <strong>
+            ${escapeHtml(item.name)}
+          </strong>
+
+          <span class="ticker-separator">
+            ✦
+          </span>
+
+          <span>
+            ${escapeHtml(item.message)}
+          </span>
+
+        </span>
+
+      `;
+
+
+    }).join("");
+
+
+
+  /* ===================================================
+     DUPLICATE FOR SEAMLESS SCROLL
+     =================================================== */
+
+  track.innerHTML =
+    tickerHTML + tickerHTML;
+
+
+
+  /* ===================================================
+     APPLY SPEED
+     =================================================== */
+
+  track.style.animationDuration =
+    `${TICKER_SPEED}s`;
+
+}
+
+
+
+/* =====================================================
+   START
+   ===================================================== */
+
+buildTicker();
+
+
+
+/* =====================================================
+   REFRESH MOODS
+   ===================================================== */
+
+setInterval(
+  buildTicker,
+  MOOD_REFRESH
+);
+
+
+</script>
+
+
+</body>
+</html>

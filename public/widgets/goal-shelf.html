@@ -10,6 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
+/* =========================================
+   RESET
+========================================= */
 
 *{
     margin:0;
@@ -23,129 +26,160 @@ body{
     font-family:'Quicksand',sans-serif;
 }
 
+
 /* =========================================
    MAIN CART
 ========================================= */
 
 .cart-widget{
+
     position:relative;
-    width:920px;
-    height:760px;
+
+    width:1100px;
+
+    height:900px;
+
     overflow:visible;
+
 }
 
+
+.cart{
+
+    position:absolute;
+
+    inset:0;
+
+}
+
+
 /* =========================================
-   FLOATY PARTICLES
+   FLOATING PARTICLES
 ========================================= */
 
 .particles{
+
     position:absolute;
+
     inset:-40px 0 0 0;
 
     pointer-events:none;
+
     overflow:hidden;
 
     z-index:1;
+
 }
+
 
 .sparkle{
-    position:absolute;
-    width:4px;
-    height:4px;
-    border-radius:50%;
-    background:rgba(255,255,255,.9);
 
-box-shadow:
-    0 0 6px rgba(255,255,255,.8),
-    0 0 12px rgba(203,236,245,.6);
+    position:absolute;
+
+    width:4px;
+
+    height:4px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.9);
+
+    box-shadow:
+
+        0 0 6px rgba(255,255,255,.8),
+
+        0 0 12px rgba(203,236,245,.6);
+
     opacity:.5;
 
-    animation:floatUp linear infinite;
+    animation:
+        floatUp linear infinite;
+
 }
+
 
 @keyframes floatUp{
 
     from{
+
         transform:
-            translateY(0px)
-            translateX(0px)
+            translateY(0)
+            translateX(0)
             scale(.5);
 
         opacity:0;
+
     }
+
 
     15%{
+
         opacity:1;
+
     }
 
+
     to{
+
         transform:
+
             translateY(-260px)
+
             translateX(
                 calc((var(--drift) - .5) * 60px)
             )
+
             scale(1.4);
 
         opacity:0;
+
     }
+
 }
 
 
-
-
 /* =========================================
-   HEADER
+   STATUS / TOP RIGHT
 ========================================= */
 
-.cart-header{
+.footer{
 
     position:absolute;
-    top:12px;
-    left:22px;
 
-    display:flex;
-    align-items:center;
-    gap:12px;
+    right:24px;
 
-    z-index:5;
+    top:18px;
+
+    text-align:right;
+
 }
 
-.moon{
-    width:38px;
-    height:38px;
-    border-radius:50%;
 
-    background:
-        radial-gradient(circle at 30% 30%, white, #cbecf5 70%, #7f87ff);
+.goal{
 
-    box-shadow:
-        0 0 18px rgba(203,236,245,.75);
+    font-size:18px;
 
-    animation:moonFloat 6s ease-in-out infinite;
-}
-
-@keyframes moonFloat{
-    0%{transform:translateY(0px);}
-    50%{transform:translateY(-6px);}
-    100%{transform:translateY(0px);}
-}
-
-.header-text h1{
-
-    font-size:28px;
-    color:#4c4c88;
     font-weight:700;
+
+    color:#50517d;
+
 }
 
-.header-text p{
 
-    font-size:12px;
-    letter-spacing:2px;
-    color:#5f648f;
+.progress{
+
+    margin-top:4px;
+
+    font-size:15px;
+
+    color:#6466a0;
+
 }
+
 
 /* =========================================
-   SHELF
+   SHELF AREA
 ========================================= */
 
 .shelf-area{
@@ -153,19 +187,74 @@ box-shadow:
     position:absolute;
 
     left:40px;
+
     right:40px;
 
     bottom:70px;
 
     height:140px;
+
 }
+
+
+
+/* =========================================
+   BOOKS
+========================================= */
+
+.books{
+
+    position:absolute;
+
+    bottom:12px;
+    left:220px;
+    right:220px;
+    justify-content:center;
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:8px;
+
+    overflow:hidden;
+
+    z-index:2;
+
+}
+
+
+.book{
+
+    width:32px;
+
+    flex-shrink:0;
+
+    border-radius:
+        2px 2px 0 0;
+
+    position:relative;
+
+    box-shadow:
+        0 0 10px rgba(255,255,255,.2);
+
+    animation:
+        bookAppear .5s ease;
+
+}
+
+/* =========================================
+   WOOD SHELF
+========================================= */
 
 .shelf-board{
 
     position:absolute;
+
     bottom:0;
 
     width:100%;
+
     height:14px;
 
     border-radius:12px;
@@ -179,73 +268,98 @@ box-shadow:
 
     box-shadow:
         0 4px 10px rgba(0,0,0,.25);
+
+    z-index:3;
+
 }
 
 /* =========================================
-   BOOKS
+   MOONBEAM LIBRARY PLAQUE
 ========================================= */
 
-.books{
+.shelf-label{
+
     position:absolute;
-    bottom:12px;
-    left:130px;
-    right:18px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    bottom:-60px;
 
     display:flex;
-    align-items:flex-end;
-    gap:3px;
 
-    overflow:hidden;
-}
+    align-items:center;
 
-.book{
+    gap:10px;
 
-    width:28px;
+    padding:8px 16px;
 
-    border-radius:
-        2px 2px 0 0;
+    border-radius:18px;
 
-    position:relative;
+
+    background:
+        rgba(40,50,90,.82);
+
+
+    border:
+        2px solid rgba(203,236,245,.25);
+
 
     box-shadow:
-        0 0 10px rgba(255,255,255,.2);
+        0 0 16px rgba(127,135,255,.18);
 
-    animation:bookAppear .5s ease;
+
+    z-index:10;
+
 }
 
-.book::after{
 
-    content:'';
+.moon-small{
 
-    position:absolute;
+    width:24px;
 
-    left:4px;
-    top:6px;
+    height:24px;
 
-    width:2px;
-    height:70%;
+    border-radius:50%;
 
-    border-radius:2px;
 
-    background:rgba(255,255,255,.45);
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            white,
+            #cbecf5 70%,
+            #7f87ff
+        );
+
+
+    box-shadow:
+        0 0 10px rgba(203,236,245,.5);
+
 }
 
-@keyframes bookAppear{
 
-    from{
-        opacity:0;
-        transform:
-            translateY(16px)
-            scale(.8);
-    }
+.library-name{
 
-    to{
-        opacity:1;
-        transform:
-            translateY(0)
-            scale(1);
-    }
+    font-size:13px;
+
+    font-weight:700;
+
+    color:#cbecf5;
+
 }
+
+
+.library-progress{
+
+    margin-top:2px;
+
+    font-size:13px;
+
+    color:#c6c7f8;
+
+}
+
 
 /* =========================================
    DECOR ITEMS
@@ -256,260 +370,924 @@ box-shadow:
     position:absolute;
 
     bottom:18px;
-    left:18px;
+
+    left:24px;
 
     display:flex;
+
     align-items:flex-end;
-    gap:12px;
 
-    z-index:3;
+    gap:11px;
+
+    z-index:4;
+
 }
 
-.crystal{
-    font-size:50px;
-    filter:drop-shadow(0 0 8px rgba(127,135,255,.45));
-}
 
-.plant{
-    font-size:50px;
-}
+/* =========================================
+   MOONBEAM MAGIC CANDLE
+========================================= */
 
-.crystal,
-.plant{
-    line-height:1;
+.candle{
+
+    position:relative;
+
+    width:65px;
+
+    height:125px;
+
     transform:translateY(6px);
+
 }
+
+
+.candle-glow{
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:45px;
+
+    width:110px;
+
+    height:110px;
+
+    transform:translateX(-50%);
+
+    border-radius:50%;
+
+
+    background:
+
+        radial-gradient(
+            circle,
+            rgba(198,199,248,.45),
+            rgba(127,135,255,.18),
+            transparent 70%
+        );
+
+
+    animation:
+
+        candleGlow 2s infinite ease-in-out;
+
+}
+
+
+@keyframes candleGlow{
+
+    0%,100%{
+
+        opacity:.55;
+
+        transform:
+            translateX(-50%)
+            scale(1);
+
+    }
+
+
+    50%{
+
+        opacity:.9;
+
+        transform:
+            translateX(-50%)
+            scale(1.15);
+
+    }
+
+}
+
+
+.wax{
+
+    position:absolute;
+
+    bottom:0;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:58px;
+
+    height:90px;
+
+    border-radius:
+
+        14px 14px 10px 10px;
+
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #e8e5ff,
+            #c6c7f8,
+            #f4f2ff
+        );
+
+
+    box-shadow:
+
+        inset -8px 0 12px rgba(127,135,255,.18),
+
+        0 0 20px rgba(127,135,255,.45);
+
+}
+
+
+.drip{
+
+    position:absolute;
+
+    top:-2px;
+
+    background:#cbecf5;
+
+    border-radius:
+
+        0 0 10px 10px;
+
+}
+
+
+.drip-one{
+
+    left:12px;
+
+    width:10px;
+
+    height:28px;
+
+}
+
+
+.drip-two{
+
+    left:30px;
+
+    width:8px;
+
+    height:18px;
+
+}
+
+
+.drip-three{
+
+    right:10px;
+
+    width:12px;
+
+    height:35px;
+
+}
+
+
+.wick{
+
+    position:absolute;
+
+    bottom:86px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:4px;
+
+    height:14px;
+
+    background:#5b3e32;
+
+    border-radius:4px;
+
+}
+
+
+.flame{
+
+    position:absolute;
+
+    bottom:99px;
+
+    left:50%;
+
+    width:32px;
+
+    height:48px;
+
+    transform:translateX(-50%);
+
+
+    background:
+
+        radial-gradient(
+            ellipse at bottom,
+            #ffffff 0%,
+            #fff7c2 25%,
+            #ffd166 55%,
+            #ff9f43 75%,
+            transparent 72%
+        );
+
+
+    border-radius:
+
+        50% 50% 45% 45%;
+
+
+    filter:
+
+        drop-shadow(0 0 8px #fff1a8)
+
+        drop-shadow(0 0 22px #ffcc66);
+
+
+    animation:
+
+        flameDance 1.4s infinite ease-in-out;
+
+    transform-origin:center bottom;
+
+}
+
+
+@keyframes flameDance{
+
+    0%{
+
+        transform:
+            translateX(-50%)
+            rotate(-4deg)
+            scale(1);
+
+    }
+
+    25%{
+
+        transform:
+            translateX(-46%)
+            rotate(5deg)
+            scale(1.1);
+
+    }
+
+    50%{
+
+        transform:
+            translateX(-53%)
+            rotate(-6deg)
+            scale(.95);
+
+    }
+
+    75%{
+
+        transform:
+            translateX(-48%)
+            rotate(3deg)
+            scale(1.08);
+
+    }
+
+    100%{
+
+        transform:
+            translateX(-50%)
+            rotate(-4deg)
+            scale(1);
+
+    }
+
+}
+
+
+.flame span{
+
+    position:absolute;
+
+    bottom:8px;
+
+    left:50%;
+
+    width:8px;
+
+    height:18px;
+
+    transform:translateX(-50%);
+
+    background:#fff;
+
+    border-radius:50%;
+
+    opacity:.8;
+
+}
+
+
+.flame::before,
+.flame::after{
+
+    content:"✦";
+
+    position:absolute;
+
+    color:#fff4b0;
+
+    font-size:10px;
+
+    text-shadow:
+
+        0 0 8px #ffd166;
+
+
+    animation:
+
+        emberFloat 3s infinite ease-in-out;
+
+}
+
+
+.flame::before{
+
+    left:-18px;
+
+    bottom:30px;
+
+}
+
+
+.flame::after{
+
+    right:-16px;
+
+    bottom:45px;
+
+    animation-delay:1.5s;
+
+}
+
+
+@keyframes emberFloat{
+
+    0%{
+
+        opacity:0;
+
+        transform:
+            translateY(10px)
+            scale(.6);
+
+    }
+
+
+    30%{
+
+        opacity:1;
+
+    }
+
+
+    100%{
+
+        opacity:0;
+
+        transform:
+            translateY(-45px)
+            scale(1.2);
+
+    }
+
+}
+
+
+/* =========================================
+   PLANT
+========================================= */
+
+.plant{
+
+    font-size:100px;
+
+    line-height:1;
+
+    transform:translateY(6px);
+
+}
+
+
+/* =========================================
+   GRATITUDE JAR
+========================================= */
 
 .mini-jar{
 
     position:relative;
+bottom:-3px;
 
-    width:46px;
-    height:58px;
+    width:105px;
+
+    height:130px;
 
     border-radius:
+
         12px 12px 18px 18px;
 
+
     border:
+
         2px solid rgba(203,236,245,.45);
 
+
     background:
-        linear-gradient(
-            180deg,
-            rgba(203,236,245,.14),
-            rgba(127,135,255,.08)
-        );
+
+        rgba(203,236,245,.12);
+
 
     box-shadow:
+
         0 0 16px rgba(127,135,255,.22);
+
 
     overflow:hidden;
 
-    backdrop-filter:blur(6px);
 }
+
 
 .mini-jar::before{
 
-    content:'';
+    content:"";
 
     position:absolute;
 
     top:-6px;
-    left:9px;
 
-    width:24px;
-    height:10px;
+    left:50%;
+
+    width:61%;
+
+    height:14px;
+
+    transform:translateX(-50%);
 
     border-radius:10px;
 
+
     border:
+
         2px solid rgba(203,236,245,.4);
 
+
     background:
+
         rgba(255,255,255,.08);
+
 }
+
 
 .jar-star{
 
     position:absolute;
 
     animation:
+
         miniFloat ease-in-out infinite;
 
     opacity:.9;
 
     text-shadow:
-        0 0 8px currentColor;
+
+        0 0 13px currentColor;
 
     pointer-events:none;
+
 }
+
 
 @keyframes miniFloat{
 
     0%,100%{
+
         transform:
-            translateY(0px)
+            translateY(0)
             scale(1);
+
     }
 
     50%{
+
         transform:
             translateY(-3px)
             scale(1.08);
+
     }
+
+}
+
+
+/* =========================================
+   TAROT MINI CARD
+========================================= */
+
+.tarot-mini{
+
+    width:70px;
+
+    height:105px;
+
+    border-radius:12px;
+
+    padding:8px;
+
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(127,135,255,.5),
+            rgba(43,39,114,.8)
+        );
+
+
+    border:
+
+        1px solid rgba(203,236,245,.3);
+
+
+    box-shadow:
+
+        0 0 14px rgba(127,135,255,.4);
+
+
+    transform:
+
+        rotate(-7deg)
+        translateY(5px);
+
+
+    animation:
+
+        cardFloat 5s ease-in-out infinite;
+
+}
+
+
+.mini-card-symbol{
+
+    font-size:32px;
+
+}
+
+
+.mini-card-title{
+
+    margin-top:5px;
+
+    font-size:10px;
+
+    text-align:center;
+
+    color:#cbecf5;
+
+}
+
+
+@keyframes cardFloat{
+
+    0%,100%{
+
+        transform:
+            rotate(-7deg)
+            translateY(5px);
+
+    }
+
+
+    50%{
+
+        transform:
+            rotate(-7deg)
+            translateY(-3px);
+
+    }
+
+}
+
+/* =========================================
+   MAGIC TELESCOPE
+========================================= */
+
+.telescope{
+
+    position:absolute;
+
+    right:175px;
+
+    bottom:14px;
+
+    font-size:111px;
+
+    line-height:1;
+
+    z-index:4;
+
+    filter:
+
+        drop-shadow(0 0 8px rgba(203,236,245,.6))
+
+        drop-shadow(0 0 18px rgba(127,135,255,.35));
+
+    animation:
+
+        telescopeFloat 5s ease-in-out infinite;
+
+}
+
+
+@keyframes telescopeFloat{
+
+    0%,100%{
+
+        transform:
+            translateY(0);
+
+    }
+
+    50%{
+
+        transform:
+            translateY(-4px);
+
+    }
+
+}
+
+.potion{
+
+    position:absolute;
+
+    right:165px;
+    bottom:12px;
+
+    width:62px;
+    height:92px;
+
+    z-index:4;
+
+    border-radius:
+        16px 16px 18px 18px;
+
+    background:
+        rgba(203,236,245,.14);
+
+    border:
+        2px solid rgba(203,236,245,.45);
+
+    overflow:hidden;
+
+    box-shadow:
+        0 0 12px rgba(0,169,186,.35),
+        0 0 24px rgba(127,135,255,.25),
+        inset 0 0 10px rgba(255,255,255,.15);
+
+}
+
+.cork{
+
+    position:absolute;
+
+    left:50%;
+    top:-8px;
+
+    width:22px;
+    height:14px;
+
+    transform:translateX(-50%);
+
+    background:#8b6a52;
+
+    border-radius:4px;
+
+}
+
+.liquid{
+
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:58%;
+
+    background:
+        linear-gradient(
+            #00d4ff,
+            #7f87ff
+        );
+
+    animation:
+        potionWave 5s ease-in-out infinite;
+
+}
+
+@keyframes potionWave{
+
+    0%,100%{
+
+        height:58%;
+
+    }
+
+    50%{
+
+        height:62%;
+
+    }
+
+}
+
+.bubble{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.7);
+
+    animation:
+        bubbleFloat linear infinite;
+
+}
+
+.b1{
+
+    width:8px;
+    height:8px;
+
+    left:22px;
+    bottom:20px;
+
+    animation-duration:3s;
+
+}
+
+.b2{
+
+    width:5px;
+    height:5px;
+
+    left:38px;
+    bottom:12px;
+
+    animation-duration:2.2s;
+
+    animation-delay:.7s;
+
+}
+
+@keyframes bubbleFloat{
+
+    from{
+
+        transform:
+            translateY(0);
+
+        opacity:0;
+
+    }
+
+    20%{
+
+        opacity:1;
+
+    }
+
+    to{
+
+        transform:
+            translateY(-38px);
+
+        opacity:0;
+
+    }
+
 }
 
 /* =========================================
    FAIRY LIGHTS
 ========================================= */
 
-.lights{
+.lights {
 
     position:absolute;
 
-    left:50%;
-    transform:translateX(-50%);
+    top:50px;
 
-    top:14px;
+    left:80px;
 
-    display:flex;
-    gap:18px;
+    right:80px;
 
-    padding-top:10px;
-
-    border-top:
-        2px solid rgba(255,255,255,.14);
-
-    z-index:3;
-}
-
-.light{
-
-    width:8px;
-    height:8px;
-    border-radius:50%;
-
-    background:#fff7c2;
-
-    box-shadow:
-        0 0 10px #fff7c2,
-        0 0 18px #fff7c2;
-
-    animation:twinkle 2s infinite alternate;
-}
-
-.light:nth-child(2){animation-delay:.5s;}
-.light:nth-child(3){animation-delay:1s;}
-.light:nth-child(4){animation-delay:1.5s;}
-.light:nth-child(5){animation-delay:2s;}
-
-@keyframes twinkle{
-    from{
-        opacity:.4;
-    }
-
-    to{
-        opacity:1;
-    }
-}
-
-.shelf-label{
-
-    position:absolute;
-
-    left:50%;
-    transform:translateX(-50%);
-
-    bottom:-52px;
+    height:50px;
 
     display:flex;
-    align-items:center;
-    gap:10px;
 
-    padding:8px 16px;
+    justify-content:space-between;
 
-    border-radius:18px;
+    align-items:flex-start;
 
-    background:
-        rgba(18,27,62,.72);
+    z-index:5;
 
-    backdrop-filter:blur(8px);
-
-    border:
-        2px solid rgba(203,236,245,.25);
-
-    box-shadow:
-        0 0 16px rgba(127,135,255,.18);
-
-    z-index:10;
 }
 
-.moon-small{
 
-    width:24px;
-    height:24px;
+.light {
+
+    width:12px;
+
+    height:12px;
 
     border-radius:50%;
 
     background:
         radial-gradient(
-            circle at 30% 30%,
-            white,
-            #cbecf5 70%,
-            #7f87ff
+            circle,
+            #ffffff 0%,
+            #cbecf5 35%,
+            #7f87ff 70%,
+            transparent 100%
         );
 
+
     box-shadow:
-        0 0 10px rgba(203,236,245,.5);
+
+        0 0 8px #cbecf5,
+
+        0 0 18px #7f87ff,
+
+        0 0 30px rgba(203,236,245,.8);
+
+
+    animation:
+
+        fairyGlow 2.5s infinite ease-in-out;
+
 }
 
-.library-name{
 
-    font-size:13px;
-    font-weight:700;
-
-    color:#cbecf5;
+.light:nth-child(2n){
+    animation-delay:.4s;
 }
 
-.library-progress{
-
-    margin-top:2px;
-
-    font-size:13px;
-
-    color:#c6c7f8;
+.light:nth-child(3n){
+    animation-delay:.8s;
 }
 
-/* =========================================
-   FOOTER
-========================================= */
-
-.footer{
-
-    position:absolute;
-    right:24px;
-    top:18px;
-
-    text-align:right;
+.light:nth-child(4n){
+    animation-delay:1.2s;
 }
 
-.goal{
 
-    font-size:18px;
-    font-weight:700;
-    color:#50517d;
-}
+@keyframes fairyGlow {
 
-.progress{
+    0%,100% {
 
-    margin-top:4px;
+        opacity:.65;
 
-    font-size:15px;
-    color:#6466a0;
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+
+    50% {
+
+        opacity:1;
+
+        transform:
+            translateY(3px)
+            scale(1.25);
+
+    }
+
 }
 
 </style>
-</head>
 
 <body>
 
@@ -519,40 +1297,121 @@ box-shadow:
 
     <div class="cart">
 
+        <!-- FAIRY LIGHTS -->
+
         <div class="lights">
+
             <div class="light"></div>
             <div class="light"></div>
             <div class="light"></div>
             <div class="light"></div>
             <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+
         </div>
+
+
+
+
+
+
+        <!-- SHELF -->
 
         <div class="shelf-area">
 
-            <div class="books" id="books"></div>
+    <!-- Books -->
+    <div class="books" id="books"></div>
 
-            <div class="decor">
-                <div class="plant">🪴</div>
-                <div class="mini-jar" id="miniJar"></div>
-                <div class="crystal">🔮</div>
+    <!-- Left Decor -->
+    <div class="decor">
+
+        <div class="plant">
+            🪴
+        </div>
+
+        <div
+            class="mini-jar"
+            id="miniJar">
+        </div>
+
+        <div class="candle">
+
+            <div class="candle-glow"></div>
+
+            <div class="flame">
+                <span></span>
             </div>
 
-            <div class="shelf-board"></div>
+            <div class="wick"></div>
 
-            <div class="shelf-label">
+            <div class="wax">
+                <div class="drip drip-one"></div>
+                <div class="drip drip-two"></div>
+                <div class="drip drip-three"></div>
+            </div>
 
-                <div class="moon-small"></div>
+        </div>
 
-                <div class="label-text">
-                    <div class="library-name">
-                        Moonbeam Library
-                    </div>
+        <div class="tarot-mini">
 
-                    <div class="library-progress" id="progressText">
-                        0 / 50 Books Shelved
-                    </div>
-                </div>
+            <div
+                class="mini-card-symbol"
+                id="miniCardSymbol">
+                🌙
+            </div>
 
+            <div
+                class="mini-card-title"
+                id="miniCardTitle">
+                The Moon
+            </div>
+
+        </div>
+
+    </div>
+
+<!-- Magic Telescope -->
+
+<div class="telescope">
+    🔭
+</div>
+
+    <!-- Right Potion Bottle -->
+    <div class="potion">
+
+        <div class="cork"></div>
+
+        <div class="liquid"></div>
+
+        <div class="bubble b1"></div>
+
+        <div class="bubble b2"></div>
+
+    </div>
+
+    <!-- Shelf -->
+    <div class="shelf-board"></div>
+
+    <!-- Shelf Label -->
+    <div class="shelf-label">
+
+        <div class="moon-small"></div>
+
+        <div class="label-text">
+
+            <div class="library-name">
+                Moonbeam Library
+            </div>
+
+            <div
+                class="library-progress"
+                id="progressText">
+                0 Books • 0 Moonbeams
             </div>
 
         </div>
@@ -561,20 +1420,106 @@ box-shadow:
 
 </div>
 
+
+    </div>
+
+</div>
+
+
+
+
+
 <script>
 
+
 /* =========================================
-   EDIT THESE
+   MOONBEAM SHELF DATA
 ========================================= */
 
-const currentGoal = 57;
-const maxGoal = 60;
+
+let currentGoal = 0;
+
+let maxGoal = 0;
+
+
+
+async function loadMoonbeams(){
+
+
+    try{
+
+    const response =
+    await fetch(
+        '../data/moonbeams.json?t='
+        + Date.now()
+    );
+
+
+
+        const data =
+            await response.json();
+
+
+
+
+        maxGoal =
+            Number(
+                data.goal || 0
+            );
+
+
+
+
+        currentGoal =
+            Object.values(
+                data.platforms || {}
+            )
+            .reduce(
+                (total,value)=>{
+
+                    return total + Number(value || 0);
+
+                },
+                0
+            );
+
+
+
+
+        buildShelf();
+
+
+
+    }catch(error){
+
+
+        console.error(
+            "Moonbeam Shelf Error:",
+            error
+        );
+
+
+        buildShelf();
+
+
+    }
+
+
+}
+
+
+
+
+
+
 
 /* =========================================
    BOOK COLORS
 ========================================= */
 
+
 const colors = [
+
     '#7f87ff',
     '#00a9ba',
     '#cbecf5',
@@ -582,164 +1527,520 @@ const colors = [
     '#ffcce6',
     '#8da0ff',
     '#82dfe8'
+
 ];
 
-/* =========================================
-   CREATE BOOKS
-========================================= */
 
-const booksContainer =
-    document.getElementById('books');
 
-const maxVisibleBooks = 18;
 
-const visibleBooks =
-    Math.min(currentGoal, maxVisibleBooks);
 
-for(let i = 0; i < visibleBooks; i++){
 
-    const book =
-        document.createElement('div');
 
-    book.classList.add('book');
+function buildShelf(){
 
-    const height =
-        Math.floor(Math.random() * 38) + 40;
 
-    const color =
-        colors[
-            Math.floor(Math.random() * colors.length)
-        ];
+    const booksContainer =
+        document.getElementById(
+            "books"
+        );
 
-    book.style.height = height + 'px';
-    book.style.background = color;
 
-    booksContainer.appendChild(book);
+
+    if(!booksContainer){
+
+        return;
+
+    }
+
+
+
+    booksContainer.innerHTML = "";
+
+
+
+
+    const maxVisibleBooks = 20;
+
+
+
+
+    /*
+        100 Moonbeams = 1 book
+    */
+
+    const visibleBooks =
+        Math.min(
+            Math.floor(currentGoal / 100),
+            maxVisibleBooks
+        );
+
+
+
+
+
+
+    for(
+        let i = 0;
+        i < visibleBooks;
+        i++
+    ){
+
+
+
+        const book =
+            document.createElement(
+                "div"
+            );
+
+
+
+        book.className =
+            "book";
+
+
+
+        book.style.height =
+            (
+                Math.floor(
+                    Math.random() * 60
+                )
+                + 60
+            )
+            + "px";
+
+
+
+        book.style.background =
+            colors[
+                Math.floor(
+                    Math.random()
+                    *
+                    colors.length
+                )
+            ];
+
+
+
+        booksContainer.appendChild(
+            book
+        );
+
+
+    }
+
+
+
+
+
+    const progress =
+        document.getElementById(
+            "progressText"
+        );
+
+
+
+    if(progress){
+
+
+        progress.innerText =
+            `${visibleBooks} Books • ${currentGoal} Moonbeams`;
+
+
+    }
+
+
 }
 
-/* =========================================
-   PROGRESS TEXT
-========================================= */
 
-document.getElementById('progressText')
-.innerText =
-`${currentGoal} / ${maxGoal}`;
+
+
+
+loadMoonbeams();
+
+
+
+
+
+
 
 /* =========================================
    PARTICLES
 ========================================= */
 
+
 function createSparkle(){
 
-    const sparkle =
-        document.createElement('div');
 
-    sparkle.classList.add('sparkle');
+    const container =
+        document.getElementById(
+            "particles"
+        );
+
+
+
+    if(!container){
+
+        return;
+
+    }
+
+
+
+    const sparkle =
+        document.createElement(
+            "div"
+        );
+
+
+
+    sparkle.className =
+        "sparkle";
+
+
 
     sparkle.style.left =
-        Math.random() * 920 + 'px';
+        Math.random() * 920 + "px";
+
+
 
     sparkle.style.top =
-        (Math.random() * 540) + 20 + 'px';
+        (
+            Math.random() * 540
+            + 20
+        )
+        + "px";
+
+
 
     sparkle.style.animationDuration =
-    (Math.random() * 4 + 3) + 's';
+        (
+            Math.random() * 4
+            + 3
+        )
+        + "s";
 
-sparkle.style.setProperty(
-    '--drift',
-    Math.random()
-);
 
-document.getElementById('particles')
-    .appendChild(sparkle);
+
+    sparkle.style.setProperty(
+        "--drift",
+        Math.random()
+    );
+
+
+
+    container.appendChild(
+        sparkle
+    );
+
+
 
     setTimeout(()=>{
+
         sparkle.remove();
+
     },7000);
+
+
 }
 
-setInterval(createSparkle,400);
+
+
+setInterval(
+    createSparkle,
+    400
+);
+
+
+
+
+
+
+
+
+
+/* =========================================
+   GRATITUDE MINI JAR
+========================================= */
+
+
 const miniJar =
-    document.getElementById('miniJar');
+    document.getElementById(
+        "miniJar"
+    );
+
+
+
+
 
 async function loadConstellationJar(){
 
+
+    if(!miniJar){
+
+        return;
+
+    }
+
+
+
     try{
 
-        const res =
-            await fetch('/data/gratitude-jar.json?t=' + Date.now());
+
+        const response =
+            await fetch(
+                '/data/gratitude-jar.json?t='
+                + Date.now()
+            );
+
+
 
         const entries =
-            await res.json();
+            await response.json();
 
-        generateMiniJar(entries.length);
 
-    }catch(err){
+
+        generateMiniJar(
+            Array.isArray(entries)
+            ? entries.length
+            : 0
+        );
+
+
+
+    }catch(error){
+
 
         console.error(
-            'Mini jar failed:',
-            err
+            "Mini jar failed:",
+            error
         );
+
+
+        generateMiniJar(0);
+
+
     }
+
+
 }
+
+
+
+
+
 
 function generateMiniJar(total){
 
-    miniJar.innerHTML = '';
+
+    if(!miniJar){
+
+        return;
+
+    }
+
+
+
+    miniJar.innerHTML = "";
+
+
 
     const visibleStars =
-        Math.min(total, 18);
+        Math.min(
+            total,
+            30
+        );
 
-    for(let i = 0; i < visibleStars; i++){
+
+
+    const symbols = [
+        "✦",
+        "✧",
+        "⋆",
+        "·"
+    ];
+
+
+
+    const starColors = [
+        "#cbecf5",
+        "#7f87ff",
+        "#c6c7f8",
+        "#00a9ba"
+    ];
+
+
+
+
+
+    for(
+        let i = 0;
+        i < visibleStars;
+        i++
+    ){
+
+
 
         const star =
-            document.createElement('div');
+            document.createElement(
+                "div"
+            );
 
-        star.classList.add('jar-star');
 
-        const symbols =
-            ['✦','✧','⋆','·'];
+
+        star.className =
+            "jar-star";
+
+
 
         star.innerText =
             symbols[
                 Math.floor(
-                    Math.random() * symbols.length
+                    Math.random()
+                    *
+                    symbols.length
                 )
             ];
 
-        const colors = [
-            '#cbecf5',
-            '#7f87ff',
-            '#c6c7f8',
-            '#00a9ba'
-        ];
+
 
         star.style.color =
-            colors[
+            starColors[
                 Math.floor(
-                    Math.random() * colors.length
+                    Math.random()
+                    *
+                    starColors.length
                 )
             ];
 
+
+
         star.style.left =
-            (Math.random() * 28 + 6) + 'px';
+            (
+                Math.random() * 72 + 8
+            )
+            + "px";
+
+
 
         star.style.bottom =
-            (Math.random() * 38 + 4) + 'px';
+            (
+                Math.random() * 80 + 8
+            )
+            + "px";
+
+
 
         star.style.fontSize =
-            (8 + Math.random() * 6) + 'px';
+            (
+                8 +
+                Math.random() * 6
+            )
+            + "px";
+
+
 
         star.style.animationDuration =
-            (3 + Math.random() * 3) + 's';
+            (
+                3 +
+                Math.random() * 3
+            )
+            + "s";
 
-        miniJar.appendChild(star);
+
+
+        miniJar.appendChild(
+            star
+        );
+
+
     }
+
+
 }
+
+
+
+
 
 loadConstellationJar();
 
+/* =========================================
+   CURRENT TAROT CARD
+========================================= */
+
+async function loadCurrentTarot(){
+
+    try{
+
+        const response =
+            await fetch(
+                '/tarot-current?t='
+                + Date.now()
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Tarot data unavailable"
+            );
+
+        }
+
+        const card =
+            await response.json();
+
+        const symbol =
+            document.getElementById(
+                "miniCardSymbol"
+            );
+
+        const title =
+            document.getElementById(
+                "miniCardTitle"
+            );
+
+        if(symbol){
+
+            symbol.innerText =
+                card.symbol ||
+                "🌙";
+
+        }
+
+        if(title){
+
+            title.innerText =
+                card.title ||
+                "The Moon";
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Tarot mini card failed:",
+            error
+        );
+
+    }
+
+}
+
+/* initial load */
+
+loadCurrentTarot();
+
+/* refresh every minute */
+
+setInterval(
+    loadCurrentTarot,
+    60000
+);
+
+
 </script>
+
 
 </body>
 </html>

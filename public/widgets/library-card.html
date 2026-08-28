@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* 🌙 Library Card */
+#libraryCard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+
+  padding: 24px 28px;
+  border-radius: 16px;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+
+  border: 1px solid rgba(255,255,255,0.2);
+
+  color: white;
+  text-align: center;
+
+  transition: all 0.6s ease;
+}
+
+/* show animation */
+#libraryCard.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* text styles */
+#cardUser {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+#cardCount {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+#cardTitle {
+  font-size: 14px;
+  margin-top: 10px;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 📚 COSMO LIBRARY CARD -->
+<div id="libraryCard">
+  <div>👻 Cosmo’s Library Card</div>
+  <div id="cardUser">---</div>
+  <div id="cardCount">0</div>
+  <div id="cardTitle">Books Discovered</div>
+</div>
+
+<script>
+async function showLibraryCard(user) {
+
+  const res = await fetch(`/library-card?user=${encodeURIComponent(user)}`);
+  const data = await res.json();
+
+  document.getElementById("cardUser").innerText = data.user;
+  document.getElementById("cardCount").innerText = data.booksCollected;
+
+  const card = document.getElementById("libraryCard");
+
+  // show
+  card.classList.add("show");
+
+  // auto hide
+  setTimeout(() => {
+    card.classList.remove("show");
+  }, 5000);
+}
+
+/* 🧪 TEMP TEST (remove later) */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "b") {
+    showLibraryCard("Moonbeam");
+  }
+});
+</script>
+
+</body>
+</html>

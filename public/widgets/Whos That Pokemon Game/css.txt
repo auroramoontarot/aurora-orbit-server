@@ -1,0 +1,93 @@
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&display=swap");
+
+.main-container {
+  width: 100vw;
+  height: 66vw;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("https://raw.githubusercontent.com/ljfrancis/pokemon-chat-assets/main/pokemon_game_assets/pokemon_bg_striped.gif");
+  z-index: 1;
+  opacity: 0;
+}
+
+#rules {
+  position: absolute;
+  width: 100vw;
+  top:  61vw;
+  padding: 1vw;
+  color: yellow;
+  font-family: 'Lilita One', sans-serif;
+  font-size: 4vw;
+  text-align: center;
+  background: black;
+}
+
+#silhouette {
+  position: absolute;
+  width: calc(240/600 * 100vw);
+  top:  calc(40/400 * 100vw);
+  left: calc(65/600 * 100vw);
+  z-index: 2;
+}
+
+#silhouette.shadow {
+  -webkit-filter: grayscale(100%) brightness(0);
+  filter: grayscale(100%) brightness(0);
+}
+
+#winnerName {
+  position: absolute;
+  width: calc(280/600 * 100vw);
+  top:  calc(80/400 * 100vw);
+  left: calc(50/600 * 100vw);
+  z-index: 2;
+  color: #ffcc01;
+  font-family: 'Lilita One', sans-serif;
+  font-size: 6vw;
+  text-align: center;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: #2f60b0;
+  display: none;
+  overflow-wrap: break-word;
+  white-space: pre-wrap
+}
+
+.winners {
+  text-align: left;
+  margin-top: calc(-40/600 * 100vw);
+  margin-left: 3vw;
+  font-size: 5vw;
+  overflow-wrap: normal;
+}
+
+
+#name {
+  position: absolute;
+  width: calc(100/600 * 100vw);
+  top:  calc(60/400 * 100vw);
+  left: calc(420/600 * 100vw);
+  z-index: 2;
+}
+
+#pokemon_label {
+  position: absolute;
+  width: calc(240/600 * 100vw);
+  top:  calc(160/400 * 100vw);
+  left: calc(340/600 * 100vw);
+  z-index: 2;
+}
+
+#countdown {
+  position: absolute;
+  width: calc(100/600 * 100vw);
+  top:  calc(10/400 * 100vw);
+  left: calc(480/600 * 100vw);
+  z-index: 2;
+  color: #ffcc01;
+  font-family: 'Lilita One', sans-serif;
+  font-size: 8vw;
+  text-align: right;
+  -webkit-text-stroke-width: 3px;
+  -webkit-text-stroke-color: #2f60b0;
+  overflow-wrap: break-word;
+}

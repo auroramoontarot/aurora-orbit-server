@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Moonbeam Chat Overlay</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+  font-family: "Quicksand", sans-serif;
+}
+
+/* CHAT WRAPPER */
+#chat {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* BASE MESSAGE */
+.msg {
+  padding: 10px 14px;
+  border-radius: 16px;
+  max-width: 100%;
+  word-wrap: break-word;
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.3;
+
+  backdrop-filter: blur(10px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+
+  animation: popIn 0.25s ease, fadeOut 0.6s ease forwards;
+  animation-delay: 0s, 25s;
+}
+
+/* TYPES */
+.chat {
+  background: rgba(198, 199, 248, 0.22);
+  border: 1px solid rgba(198, 199, 248, 0.35);
+  color: #fff;
+}
+
+.status {
+  background: rgba(0, 169, 186, 0.18);
+  border: 1px solid rgba(0, 169, 186, 0.35);
+  color: #cbecf5;
+  font-style: italic;
+}
+
+.astrea {
+  background: rgba(127, 135, 255, 0.18);
+  border: 1px solid rgba(127, 135, 255, 0.35);
+  color: white;
+}
+
+.aurora {
+  background: rgba(0, 169, 186, 0.18);
+  border: 1px solid rgba(0, 169, 186, 0.35);
+  color: white;
+}
+
+/* ANIMATION */
+@keyframes popIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  to { opacity: 0; transform: translateY(10px); }
+}
+</style>
+</head>
+
+<body>
+
+<div id="chat"></div>
+
+<script>
+const chat = document.getElementById("chat");
+
+const es = new EventSource("/chatstream");
+
+// prevent duplicate renders
+let lastMessageHash = "";
+
+function safeString(v) {
+  return (v ?? "").toString().trim();
+}
+
+function hashMessage(obj) {
+  return JSON.stringify(obj);
+}
+
+es.onmessage = (event) => {
+  if (!event.data) return;
+
+  let data;
+  try {
+    data = JSON.parse(event.data);
+  } catch (err) {
+    return; // kill malformed SSE packets (this is your "weird lines")
+  }
+
+  if (!data || typeof data !== "object") return;
+
+  const type = data.type || "chat";
+
+  const msgText =
+    safeString(data.message) ||
+    safeString(data.text);
+
+  const user = safeString(data.user) || "Moonbeam";
+
+  // 🚨 CRITICAL FIX: ignore empty ghost packets
+  if (!msgText && type === "chat") return;
+  if (!msgText && type !== "status") return;
+
+  // prevent duplicate renders
+  const hash = hashMessage(data);
+  if (hash === lastMessageHash) return;
+  lastMessageHash = hash;
+
+  const el = document.createElement("div");
+  el.classList.add("msg", type);
+
+  let text = "";
+
+  if (type === "status") {
+    text = `✨ ${msgText || "connected"}`;
+  }
+
+  else if (type === "chat") {
+    text = `💬 ${user}: ${msgText}`;
+  }
+
+  else {
+    text = msgText;
+  }
+
+  el.textContent = text;
+
+  chat.appendChild(el);
+
+  // cap messages
+  if (chat.children.length > 12) {
+    chat.removeChild(chat.firstChild);
+  }
+
+  // auto cleanup
+  setTimeout(() => {
+    el.remove();
+  }, 30000);
+};
+
+// reconnect safety
+es.onerror = () => {
+  console.warn("Chatstream disconnected — retrying...");
+};
+</script>
+
+</body>
+</html>

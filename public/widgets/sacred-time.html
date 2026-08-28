@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+  --lav:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+}
+
+html,
+body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+  font-family:'Quicksand',sans-serif;
+}
+
+.widget{
+
+  width:100%;
+  height:100%;
+
+  padding:12px;
+
+  border-radius:18px;
+
+  background:
+    rgba(12,16,40,.45);
+
+  border:
+    1px solid rgba(203,236,245,.18);
+
+  backdrop-filter:
+    blur(8px);
+
+  box-sizing:border-box;
+
+  color:white;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.title{
+
+  font-size:11px;
+
+  font-weight:700;
+
+  letter-spacing:2px;
+
+  text-transform:uppercase;
+
+  color:var(--soft);
+
+  margin-bottom:6px;
+}
+
+.hebrew{
+
+  font-size:15px;
+
+  font-weight:700;
+
+  margin-bottom:4px;
+}
+
+.season{
+
+  font-size:12px;
+
+  color:var(--ice);
+
+  margin-bottom:8px;
+}
+
+.shabbat{
+
+  font-size:13px;
+
+  color:white;
+}
+
+.time{
+
+  color:var(--teal);
+  font-weight:700;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="widget">
+
+  <div class="title">
+    🕯 Sacred Time
+  </div>
+
+  <div class="hebrew" id="hebrew">
+    Loading...
+  </div>
+
+  <div class="season" id="season"></div>
+
+  <div class="shabbat" id="shabbat"></div>
+
+</div>
+
+<script>
+
+function formatTime(dateString){
+
+  if(!dateString) return "";
+
+  return new Date(dateString)
+    .toLocaleTimeString(
+      "en-US",
+      {
+        hour:"numeric",
+        minute:"2-digit"
+      }
+    );
+}
+
+async function loadSacredTime(){
+
+  try{
+
+    const response =
+      await fetch("/sacred-time");
+
+    const data =
+      await response.json();
+
+    document.getElementById("hebrew")
+      .textContent =
+      data.hebrewDate || "";
+
+    document.getElementById("season")
+      .textContent =
+      data.season || "";
+
+    const now = new Date();
+
+    const candle =
+      new Date(data.candleLighting);
+
+    const havdalah =
+      new Date(data.havdalah);
+
+    let text = "";
+
+    if(now >= candle && now <= havdalah){
+
+      text =
+        `🌙 Shabbat Shalom • Until ${formatTime(data.havdalah)}`;
+
+    }else{
+
+      text =
+        `🕯 Next Shabbat • ${formatTime(data.candleLighting)}`;
+
+    }
+
+    document.getElementById("shabbat")
+      .innerHTML = text;
+
+  }catch(err){
+
+    console.error(err);
+
+    document.getElementById("hebrew")
+      .textContent =
+      "Sacred skies unavailable";
+  }
+}
+
+loadSacredTime();
+
+setInterval(
+  loadSacredTime,
+  3600000
+);
+
+</script>
+
+</body>
+</html>

@@ -651,8 +651,19 @@ function drawCard(){
 }, 180);
 }
 
-/* Optional: auto-draw a fresh card when the overlay loads */
-drawCard();
+window.addEventListener("storage", (event) => {
+    if(event.key === "oracleDrawRequest"){
+        drawCard();
+    }
+});
+
+const auroraChannel = new BroadcastChannel("aurora-controls");
+
+auroraChannel.onmessage = (event) => {
+    if(event.data === "draw-oracle"){
+        drawCard();
+    }
+};
 
 /* Optional: auto-refresh every 10 minutes */
 setInterval(drawCard, 10 * 60 * 1000);

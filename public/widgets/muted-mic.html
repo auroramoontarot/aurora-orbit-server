@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+body{
+    margin:0;
+    padding:30px;
+    background:transparent;
+    overflow:visible;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.icon{
+    width:50px;
+    height:50px;
+
+    animation:pulse 2s ease-in-out infinite;
+
+    filter:
+        drop-shadow(0 0 3px rgba(255,61,191,.7))
+        drop-shadow(0 0 8px rgba(255,61,191,.5));
+}
+
+.icon g{
+    stroke:#ff3dbf;
+}
+
+@keyframes pulse{
+    0%,100%{
+        opacity:.35;
+        transform:scale(1);
+    }
+
+    50%{
+        opacity:.85;
+        transform:scale(1.05);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<svg class="icon" viewBox="0 0 64 64">
+    <g fill="none"
+       stroke="#ff3dbf"
+       stroke-width="4"
+       stroke-linecap="round"
+       stroke-linejoin="round">
+
+        <!-- Mic -->
+        <rect x="22" y="8" width="20" height="28" rx="10"/>
+
+        <!-- Stand -->
+        <path d="M32 40v10"/>
+        <path d="M24 54h16"/>
+
+        <!-- Mic base curve -->
+        <path d="M16 28v4c0 9 7 16 16 16s16-7 16-16v-4"/>
+
+        <!-- Mute slash -->
+        <line x1="14" y1="14" x2="50" y2="50"/>
+    </g>
+</svg>
+
+</body>
+</html>

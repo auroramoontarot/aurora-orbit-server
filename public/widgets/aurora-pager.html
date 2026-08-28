@@ -57,6 +57,7 @@ body{
 /* WRAP */
 
 .wrap{
+  background:transparent !important;
   position:relative;
   width:280px;
   height:440px;
@@ -97,28 +98,26 @@ body{
 
 .pager{
   position:relative;
+  isolation:isolate;
   width:100%;
   height:100%;
   border-radius:42px;
 
   background:
-  linear-gradient(
-    145deg,
-    rgba(60,70,110,.82),
-    rgba(95,110,170,.72)
-  );
+    linear-gradient(
+      145deg,
+      rgba(35,40,65,.95),
+      rgba(20,24,40,.98)
+    );
 
-  backdrop-filter:blur(16px);
-
-  border:2px solid rgba(255,255,255,.18);
+  border:2px solid rgba(127,135,255,.25);
 
   overflow:hidden;
 
   box-shadow:
-  inset 0 0 25px rgba(255,255,255,.12),
-  inset 0 -18px 30px rgba(0,0,0,.18),
-  0 0 40px rgba(127,135,255,.22),
-  0 12px 35px rgba(0,0,0,.28);
+    inset 0 0 20px rgba(255,255,255,.04),
+    inset 0 -10px 25px rgba(0,0,0,.45),
+    0 0 25px rgba(127,135,255,.15);
 }
 
 .pager::before{
@@ -317,7 +316,7 @@ body{
 }
 
 .page-header{
-  font-size:18px;
+  font-size:13px;
   font-weight:700;
   color:#355b4e;
   margin-bottom:20px;
@@ -483,7 +482,7 @@ body{
         </div>
 
         <div class="from" id="from">
-          MoonbeamJen
+          EchoLoon
         </div>
 
         <div class="message" id="message">
@@ -556,12 +555,12 @@ const modes = {
 
   brb:{
     title:"Aurora will<br>return shortly",
-    sub:"grabbing tea ☕"
+    sub:"stardust break ✨"
   },
 
   tarot:{
     title:"Cosmic transmission<br>in progress",
-    sub:"tarot frequencies occupied ✦"
+    sub:"tarot frequencies occupied ✨"
   },
 
   coding:{
@@ -571,12 +570,12 @@ const modes = {
 
   sleep:{
     title:"Pager docked for<br>night cycle",
-    sub:"moonbeam offline mode 🌙"
+    sub:"sleep mode engaged🌙"
   },
 
   cafe:{
     title:"Cafe operator<br>temporarily away",
-    sub:"restocking celestial snacks ☕"
+    sub:"brewing up magic ☕"
   }
 };
 
@@ -625,51 +624,129 @@ loadPagerState();
 
 setInterval(loadPagerState,3000);
 
-/* DEMO PAGE SYSTEM */
-/* Replace later with Wizebot data */
+let pageShowing = false;
+
+async function checkRealPages(){
+
+  if(pageShowing) return;
+
+  try{
+
+    const res =
+      await fetch("/pager/next");
+
+    const data =
+      await res.json();
+
+    if(!data.page) return;
+
+    pageShowing = true;
+
+    triggerPage({
+      from:data.page.user,
+      message:data.page.message
+    }, true);
+
+    await fetch("/pager/complete",{
+      method:"POST"
+    });
+
+  }catch(err){
+
+    console.error(
+      "Pager queue failed:",
+      err
+    );
+  }
+}
+
+setInterval(
+  checkRealPages,
+  5000
+);
 
 const demoPages = [
   {
-    from:"MoonbeamJen",
+    from:"EchoLoon",
     message:"hydrate ☕"
   },
   {
-    from:"StarCorgi",
-    message:"stretch reminder ✨"
+    from:"KodaCorgi",
+    message:"stretch reminder 🧘🏻‍♀️"
   },
   {
-    from:"NebulaCat",
+    from:"LunaMoon",
+    message:"save those spoons 🥄"
+  },
+  {
+    from:"StellaStar",
+    message:"scatter stardust ✨"
+  },
+  {
+    from:"CosmoGhost",
+    message:"👻👻👻"
+  },
+  {
+    from:"AstreaStardust [mod]",
+    message:"orbit looks calm 💫"
+  },
+  {
+    from:"LumenCrystal",
     message:"you missed shiny loot 👀"
   }
 ];
 
-function triggerPage(data){
+function triggerPage(data, isReal = false){
 
   const page = document.getElementById("page");
   const status = document.getElementById("status");
   const pager = document.getElementById("pager");
   const led = document.getElementById("led");
 
-  document.getElementById("from").innerText = data.from;
-  document.getElementById("message").innerText = data.message;
+  document.getElementById("from").innerText =
+    data.from;
+
+  document.getElementById("message").innerText =
+    data.message;
 
   status.style.opacity = "0";
 
   page.classList.add("show");
 
-  pager.classList.add("vibrate");
+  if(isReal){
 
-  led.classList.add("flash");
+    pager.classList.add("vibrate");
+
+    led.classList.add("flash");
+
+    const chime =
+      document.getElementById("pagerChime");
+
+    if(chime){
+
+      chime.currentTime = 0;
+
+      chime.play().catch(()=>{});
+    }
+
+    setTimeout(()=>{
+      pager.classList.remove("vibrate");
+    },500);
+  }
 
   setTimeout(()=>{
-    pager.classList.remove("vibrate");
-  },500);
 
-  setTimeout(()=>{
-    page.classList.remove("show");
-    status.style.opacity = "1";
-    led.classList.remove("flash");
-  },10000);
+  page.classList.remove("show");
+
+  status.style.opacity = "1";
+
+  led.classList.remove("flash");
+
+  if(isReal){
+    pageShowing = false;
+  }
+
+},10000);
 }
 
 /* DEMO EVERY 35 SECONDS */
@@ -679,18 +756,22 @@ setInterval(()=>{
   const random =
     demoPages[Math.floor(Math.random() * demoPages.length)];
 
-  triggerPage(random);
+  if(!pageShowing){
+    triggerPage(random,false);
+  }
 
 },35000);
 
 /* OPTIONAL MANUAL TEST */
 /*
 triggerPage({
-  from:"MoonbeamJen",
+  from:"EchoLoon",
   message:"hydrate ☕"
 });
 */
 </script>
-
+<audio id="pagerChime">
+  <source src="sounds/moonbeam.mp3" type="audio/mpeg">
+</audio>
 </body>
 </html>

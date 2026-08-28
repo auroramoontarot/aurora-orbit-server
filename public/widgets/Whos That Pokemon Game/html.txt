@@ -1,0 +1,11 @@
+<div class="main-container">
+  <div id="rules">Type {answerCommand} [Pokemon Name] into the chat to win!</div>
+  <div id="countdown"></div>
+  <img id="silhouette"/>
+  <div id="winnerName"></div>
+  <img id="name" src="https://raw.githubusercontent.com/ljfrancis/pokemon-chat-assets/main/pokemon_game_assets/question_mark.png"/>
+  <img id="pokemon_label" src="https://raw.githubusercontent.com/ljfrancis/pokemon-chat-assets/main/pokemon_game_assets/pokemon.png"/>
+</div>
+
+<audio id="audio" src="https://raw.githubusercontent.com/ljfrancis/pokemon-chat-assets/main/pokemon_game_assets/whos_that.wav"></audio>
+<audio id="victory" volume="0.7" src="https://raw.githubusercontent.com/ljfrancis/pokemon-chat-assets/main/pokemon_game_assets/victory.mp3"></audio>

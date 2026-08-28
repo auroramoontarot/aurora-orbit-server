@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+html, body{
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    background:transparent;
+    font-family:'Quicksand',sans-serif;
+}
+
+:root{
+    --primary:#7f87ff;
+    --aurora:#00a9ba;
+    --soft:#cbecf5;
+    --lavender:#c6c7f8;
+}
+
+.widget{
+    width:350px;
+    padding:3px;
+    border-radius:24px;
+    color:white;
+}
+
+.title{
+    text-align:center;
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:50px;
+}
+
+.tank{
+    position:relative;
+    height:100px;
+    border-radius:22px;
+    background:rgba(255,255,255,.06);
+    border:2px solid rgba(255,255,255,.25);
+    overflow:hidden;
+    box-shadow:
+        inset 0 0 15px rgba(255,255,255,.08);
+}
+
+.fill{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    height:0;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(127,135,255,.35),
+            rgba(0,169,186,.35)
+        );
+
+    transition:height .8s ease;
+}
+
+.star{
+    position:absolute;
+    color:white;
+    animation:twinkle 3s infinite ease-in-out;
+}
+
+@keyframes twinkle{
+    0%,100%{
+        opacity:.4;
+        transform:scale(.9);
+    }
+    50%{
+        opacity:1;
+        transform:scale(1.15);
+    }
+}
+
+.float-star{
+    position:absolute;
+    bottom:10px;
+    color:#fff;
+    animation:floatUp 8s linear infinite;
+}
+
+@keyframes floatUp{
+    from{
+        transform:translateY(0);
+        opacity:0;
+    }
+
+    20%{
+        opacity:1;
+    }
+
+    to{
+        transform:translateY(-120px);
+        opacity:0;
+    }
+}
+
+.stats{
+    text-align:center;
+    margin-top:5px;
+}
+
+.count{
+    font-size:20px;
+    font-weight:700;
+}
+
+.goal{
+    font-size:11px;
+    color:var(--soft);
+    margin-top:4px;
+}
+
+.footer{
+    text-align:center;
+    margin-top:5px;
+    color:#fff8c9;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="widget">
+
+    <div class="title">
+        🌙 Moonbeams Orbiting
+    </div>
+
+    <div class="tank">
+
+        <div class="fill" id="fill"></div>
+
+        <!-- Stars -->
+        <div class="star" style="left:8%;bottom:15%;">✨</div>
+        <div class="star" style="left:22%;bottom:30%;animation-delay:1s;">⭐</div>
+        <div class="star" style="left:37%;bottom:50%;animation-delay:2s;">✨</div>
+        <div class="star" style="left:52%;bottom:70%;animation-delay:1.5s;">⭐</div>
+        <div class="star" style="left:70%;bottom:40%;animation-delay:.5s;">✨</div>
+        <div class="star" style="left:84%;bottom:80%;animation-delay:2.5s;">⭐</div>
+
+        <div class="star" style="left:15%;bottom:75%;">⭐</div>
+        <div class="star" style="left:45%;bottom:25%;">✨</div>
+        <div class="star" style="left:65%;bottom:60%;">⭐</div>
+        <div class="star" style="left:90%;bottom:20%;">✨</div>
+
+        <!-- Floating Stars -->
+        <div class="float-star" style="left:20%;animation-delay:0s;">✨</div>
+        <div class="float-star" style="left:55%;animation-delay:3s;">⭐</div>
+        <div class="float-star" style="left:80%;animation-delay:6s;">✨</div>
+
+    </div>
+
+    <div class="stats">
+        <div class="count" id="count"></div>
+
+        <div class="goal" id="percent"></div>
+    </div>
+
+    <div class="footer" id="remaining"></div>
+
+</div>
+
+<script>
+
+function loadMoonbeams() {
+
+    fetch('../data/moonbeams.json')
+        .then(response => response.json())
+        .then(data => {
+
+            const goal = data.goal;
+
+            const current =
+                Object.values(data.platforms)
+                    .reduce((total, value) => total + value, 0);
+
+            const percentage =
+                Math.min((current / goal) * 100, 100);
+
+            const remaining =
+                Math.max(goal - current, 0);
+
+            document.getElementById('fill').style.height =
+                percentage + '%';
+
+            document.getElementById('count').textContent =
+                `${current} / ${goal}`;
+
+            document.getElementById('percent').textContent =
+                `${percentage.toFixed(1)}% Complete`;
+
+            document.getElementById('remaining').textContent =
+                remaining === 0
+                    ? '🌟 New constellation unlocked!'
+                    : `✨ ${remaining} until the next constellation`;
+
+        })
+        .catch(error => {
+
+            console.error('Moonbeam data error:', error);
+
+            document.getElementById('count').textContent =
+                'Moonbeams Lost In The Nebula';
+
+            document.getElementById('percent').textContent = '';
+
+            document.getElementById('remaining').textContent =
+                '✨ Awaiting stardust...';
+
+        });
+
+}
+
+loadMoonbeams();
+
+/* Refresh every 5 minutes */
+setInterval(loadMoonbeams, 300000);
+
+</script>
+</body>
+</html>

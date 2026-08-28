@@ -267,6 +267,31 @@ select:focus{
     inset 0 1px 0 rgba(255,255,255,.03);
 }
 
+.control-section{
+  margin-top:18px;
+  padding:14px;
+  background:rgba(25,30,48,0.92);
+  border:1px solid var(--line);
+  border-radius:14px;
+  box-shadow:
+    0 0 14px rgba(127,135,255,0.12),
+    inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+.control-section h3{
+  margin:0 0 10px;
+  font-size:14px;
+  letter-spacing:1px;
+  color:var(--soft);
+  opacity:.95;
+}
+
+.control-section button{
+  margin-top:8px;
+  width:100%;
+  padding:10px 12px;
+}
+
 .section-title,
 .spotify-card h3{
   font-size:14px;
@@ -547,10 +572,12 @@ select:focus{
     flex:1;
   }
 
-  .world-stats-mini{
-    grid-template-columns:1fr;
-  }
+.world-stats-mini{
+  grid-template-columns:1fr;
 }
+
+}
+
 </style>
 </head>
 
@@ -609,15 +636,208 @@ select:focus{
 <div class="current-media" id="pagerStatus">
   Pager ready for transmissions ✦
 </div>
-  <div class="section compact-world">
-    <h2>🌍 Aurora World</h2>
 
-    <div id="worldStatsMini" class="world-stats-mini">
-      Loading world telemetry...
+<div class="control-section">
+  <h3>☁ Current Moonbeam Vibe</h3>
+
+  <input
+    id="moodInput"
+    type="text"
+    maxlength="80"
+    placeholder="low spoons but still creating..."
+  />
+<button onclick="updateMood()">
+  ☁ Update Mood
+</button>
+  <div class="cosmic-buttons">
+  <button onclick="quickMood('🥄 low spoons but still creating')">🥄 Low Spoons</button>
+  <button onclick="quickMood('☕ cozy coworking')">☕ Coworking</button>
+  <button onclick="quickMood('🔮 tarot hour')">🔮 Tarot</button>
+  <button onclick="quickMood('🎮 cozy gaming')">🎮 Gaming</button>
+</div>
+</div>
+
+<div class="cosmic-controls">
+  <div class="section-title">🎮 Aurora's Adventure Log</div>
+
+  <div class="media-fields">
+
+<select
+  id="gameProfile"
+  onchange="selectGameProfile()"
+>
+  <option value="">Select Game...</option>
+</select>
+
+
+
+<input
+      id="adventureStatus"
+      placeholder="Status..."
+    >
+
+    <input
+      id="adventureTitle"
+      placeholder="Current Adventure..."
+    >
+
+<input
+  id="friendPlatform"
+  placeholder="Platform..."
+>
+
+<input
+  id="friendName"
+  placeholder="Character • Friend ID"
+>
+
+  </div>
+
+<div class="media-row">
+  <button onclick="saveAdventureLog()">
+    ✨ Update Adventure
+  </button>
+
+  <button onclick="addCurrentGameToConstellation()">
+    ⭐ Add To Story
+  </button>
+
+  <button onclick="clearAdventureLog()">
+    🧹 Clear
+  </button>
+</div>
+
+  <div class="current-media" id="adventurePreview">
+    Adventure log ready for exploration ✦
+  </div>
+</div>
+
+
+<div class="cosmic-controls">
+  <div class="section-title">🌌 Constellation Log</div>
+
+  <div class="media-fields">
+
+    <div class="current-media" id="constellationGames">
+  No games logged yet ✦
+</div>
+
+<select id="streamerProfile" onchange="selectStreamerProfile()">
+  <option value="">Select Streamer...</option>
+</select>
+
+<input
+  id="streamerSighting"
+  placeholder="Streamer visited..."
+>
+
+<div class="media-row">
+  <button onclick="addStreamerSighting()">
+    ✨ Add Sighting
+  </button>
+</div>
+
+<div class="current-media" id="constellationStreamers">
+  No Moonbeam sightings yet ✦
+</div>
+
+    <input
+      id="collectedStardust"
+      placeholder="Favorite moment from today..."
+    >
+
+  </div>
+
+  <div class="media-row">
+  <button onclick="generateConstellationLog()">
+    ✨ Generate Story
+  </button>
+
+  <button onclick="copyConstellationLog()">
+    📋 Copy
+  </button>
+
+  <button onclick="clearConstellationLog()">
+    🧹 Clear
+  </button>
+</div>
+
+  <div class="current-media" id="constellationPreview">
+    Today's discoveries await...
+  </div>
+</div>
+
+<div class="cosmic-controls">
+  <div class="section-title">☄ Constellation Jar</div>
+
+  <div class="media-fields">
+    <input
+      id="jarEntry"
+      placeholder="Scatter a tiny joy into the jar..."
+    >
+
+    <select id="jarType">
+      <option value="tiny-joy">✨ Tiny Joy</option>
+      <option value="affirmation">🌙 Affirmation</option>
+      <option value="comfort">💜 Comfort Thought</option>
+      <option value="spoonie-win">🥄 Spoonie Win</option>
+      <option value="moonbeam">🌌 Moonbeam Moment</option>
+      <option value="tiny-victory">⭐ Tiny Victory</option>
+      <option value="cozy">☕ Cozy Moment</option>
+      <option value="chaos-goblin">🪐 Chaos Goblin</option>
+    </select>
+  </div>
+
+  <div class="media-row">
+    <button onclick="addJarEntry()">
+      ✨ Scatter Stardust
+    </button>
+
+    <button onclick="openJarControl()">
+      ☄ Open Jar
+    </button>
+  </div>
+
+  <div class="current-media" id="jarStatus">
+    The constellation is waiting for stardust...
+  </div>
+</div>
+<div class="cosmic-controls">
+  <div class="section-title">🔮 Tarot + Oracle Board</div>
+
+  <div class="cosmic-buttons">
+
+    <button onclick="openTarotWidget()">🌙 Open Tarot</button>
+    <button class="draw-button" onclick="drawTarot()">🃏 Draw Tarot</button>
+
+    <button onclick="openOracleWidget()">✨ Open Oracle</button>
+    <button class="draw-button" onclick="drawOracle()">🌌 Draw Oracle</button>
+
+    <button onclick="openReadingBoard()">📜 Open Board</button>
+    <button onclick="clearReadingBoard()">🧹 Clear Board</button>
+
+  </div>
+
+  <div class="current-media" id="readingBoardStatus">
+    Loading latest reading...
+  </div>
+</div>
+
+  <div class="cosmic-controls">
+    <div class="section-title">📺 Now Watching</div>
+
+    <div class="media-fields">
+      <input id="watchTitle" placeholder="Show / stream / movie title...">
+      <input id="watchDetail" placeholder="Episode / Live / detail...">
     </div>
 
-    <div class="small-note">
-      Shared orbit stats
+    <div class="media-row">
+      <button onclick="updateWatching()">Update Watching</button>
+      <button onclick="clearWatching()">Clear</button>
+    </div>
+
+    <div class="current-media" id="currentWatching">
+      Current watching: —
     </div>
   </div>
 
@@ -652,21 +872,16 @@ select:focus{
     <div class="spotify-status" id="spotifyStatus">Ready to brew a vibe.</div>
   </div>
 
-  <div class="cosmic-controls">
-    <div class="section-title">📺 Now Watching</div>
 
-    <div class="media-fields">
-      <input id="watchTitle" placeholder="Show / stream / movie title...">
-      <input id="watchDetail" placeholder="Episode / Live / detail...">
+  <div class="section compact-world">
+    <h2>🌍 Aurora World</h2>
+
+    <div id="worldStatsMini" class="world-stats-mini">
+      Loading world telemetry...
     </div>
 
-    <div class="media-row">
-      <button onclick="updateWatching()">Update Watching</button>
-      <button onclick="clearWatching()">Clear</button>
-    </div>
-
-    <div class="current-media" id="currentWatching">
-      Current watching: —
+    <div class="small-note">
+      Shared orbit stats
     </div>
   </div>
 
@@ -807,21 +1022,6 @@ select:focus{
     </div>
   </div>
 
-<div class="cosmic-controls">
-  <div class="section-title">🔮 Tarot + Oracle Board</div>
-
-  <div class="cosmic-buttons">
-    <button onclick="openTarotWidget()">🌙 Open Tarot</button>
-    <button onclick="openOracleWidget()">✨ Open Oracle</button>
-    <button onclick="openReadingBoard()">📜 Open Board</button>
-    <button onclick="clearReadingBoard()">🧹 Clear Board</button>
-  </div>
-
-  <div class="current-media" id="readingBoardStatus">
-    Loading latest reading...
-  </div>
-</div>
-
   <div class="cosmic-controls">
     <div class="section-title">🔄 Daily Reset</div>
 
@@ -838,6 +1038,139 @@ const API_BASE = window.location.origin;
 let pokemonStatusTimer = null;
 let spotifyAutoMode = false;
 let lastAutoModeApplied = "";
+let gameProfiles = [];
+let streamerProfiles = [];
+let constellationGames = [];
+let constellationStreamers = [];
+
+async function saveConstellationData(){
+
+  const stardust =
+    document.getElementById(
+      "collectedStardust"
+    )?.value || "";
+
+  localStorage.setItem(
+    "auroraConstellationGames",
+    JSON.stringify(constellationGames)
+  );
+
+  localStorage.setItem(
+    "auroraConstellationStreamers",
+    JSON.stringify(constellationStreamers)
+  );
+
+  localStorage.setItem(
+    "auroraConstellationStardust",
+    stardust
+  );
+
+  try{
+
+    await fetch(
+      `${API_BASE}/api/constellation`,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          games: constellationGames,
+          streamers: constellationStreamers,
+          stardust: stardust
+        })
+      }
+    );
+
+  }catch(err){
+
+    console.error(
+      "Constellation save failed:",
+      err
+    );
+
+  }
+}
+
+async function loadConstellationData(){
+
+  try{
+
+    const res =
+      await fetch(
+        `${API_BASE}/api/constellation?nocache=${Date.now()}`
+      );
+
+    const data =
+      await res.json();
+
+    constellationGames =
+      data.games || [];
+
+    constellationStreamers =
+      data.streamers || [];
+
+    const stardustBox =
+      document.getElementById(
+        "collectedStardust"
+      );
+
+    if(stardustBox){
+      stardustBox.value =
+        data.stardust || "";
+    }
+
+    constellationGames.sort();
+    constellationStreamers.sort();
+
+    renderConstellationLists();
+
+  }catch(err){
+
+    console.error(
+      "Constellation load failed:",
+      err
+    );
+  }
+}
+
+async function loadStreamerProfiles(){
+  try{
+    const res = await fetch(
+      "/data/streamer-profiles.json?nocache=" + Date.now()
+    );
+
+    streamerProfiles = await res.json();
+
+    console.log("Streamer Profiles:", streamerProfiles);
+
+    renderStreamerMenu(); // 🔥 THIS IS WHAT YOU’RE MISSING
+
+  }catch(err){
+    console.error("Streamer profiles load failed:", err);
+    streamerProfiles = [];
+  }
+}
+
+function selectStreamerProfile() {
+  const index = document.getElementById("streamerProfile").value;
+  if (index === "") return;
+
+  const profile = streamerProfiles[index];
+  if (!profile) return;
+
+  document.getElementById("streamerSighting").value =
+    profile.displayName;
+}
+
+function openConstellationStory(){
+
+  window.open(
+    "constellation-story.html",
+    "_blank"
+  );
+
+}
 
 /* -------------------------
    SPOTIFY
@@ -901,9 +1234,9 @@ async function loadSpotifyAutoState() {
     if (btn) btn.classList.toggle("active", spotifyAutoMode);
 
     if (spotifyAutoMode) {
-      setSpotifyStatus("Auto vibes restored.");
-      runSpotifyAutoCheck(true);
-    }
+    setSpotifyStatus("Auto vibes restored.");
+}
+
   } catch (err) {
     console.error("Load spotify auto state failed:", err);
   }
@@ -1032,8 +1365,8 @@ function toggleSpotifyAuto() {
   saveSpotifyAutoState();
 
   if (spotifyAutoMode) {
-    runSpotifyAutoCheck(true);
-  }
+  runSpotifyAutoCheck();
+}
 }
 
 async function runSpotifyAutoCheck(force = false) {
@@ -1268,6 +1601,274 @@ async function clearPager(){
   }
 }
 
+async function loadGameProfiles(){
+
+  try{
+
+    const res = await fetch(
+      "/data/game-profiles.json?nocache=" + Date.now()
+    );
+
+    gameProfiles = await res.json();
+
+console.log("Game Profiles:", gameProfiles);
+
+    const select =
+      document.getElementById("gameProfile");
+
+    select.innerHTML =
+      '<option value="">Select Game...</option>';
+
+    gameProfiles.forEach((game,index)=>{
+
+      const option =
+        document.createElement("option");
+
+      option.value = index;
+
+      option.textContent = game.game;
+
+      select.appendChild(option);
+
+    });
+
+  }catch(err){
+
+    console.error(
+      "Game profiles load failed:",
+      err
+    );
+  }
+}
+
+function selectGameProfile(){
+
+  const index =
+    document.getElementById("gameProfile").value;
+
+  if(index === "") return;
+
+  const game =
+    gameProfiles[index];
+
+  if(!game) return;
+
+  document.getElementById(
+    "adventureTitle"
+  ).value =
+    game.game || "";
+
+  document.getElementById(
+    "friendPlatform"
+  ).value =
+    game.platform || "";
+
+  document.getElementById(
+    "friendName"
+  ).value =
+    `${game.character || ""}${
+      game.friendId
+        ? " • " + game.friendId
+        : ""
+    }`;
+
+}
+
+
+async function addJarEntry(){
+
+  const text =
+    document.getElementById("jarEntry")
+    .value
+    .trim();
+
+  const type =
+    document.getElementById("jarType")
+    .value;
+
+  if(!text) return;
+
+  try{
+
+    const entry = {
+      text,
+      type,
+      date:new Date()
+        .toISOString()
+        .slice(0,10),
+      createdAt:new Date()
+        .toISOString()
+    };
+
+    const res = await fetch(
+      `${API_BASE}/api/gratitude-jar`,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify(entry)
+      }
+    );
+
+    if(!res.ok)
+      throw new Error();
+
+    document.getElementById("jarEntry")
+      .value = "";
+
+    document.getElementById("jarStatus")
+      .innerHTML =
+      "✨ Stardust scattered into the constellation";
+
+  }catch(err){
+
+    document.getElementById("jarStatus")
+      .innerHTML =
+      "☄ Jar transmission failed";
+  }
+}
+
+function openJarControl(){
+  window.open(
+    `${API_BASE}/constellation-jar-control.html`,
+    "_blank"
+  );
+}
+
+/* -------------------------
+   MOONBEAM VIBE
+------------------------- */
+
+async function updateMood(){
+
+  const input =
+    document.getElementById("moodInput");
+
+  const message =
+    input.value.trim();
+
+  if(!message) return;
+
+  try{
+
+    const res = await fetch(
+      `${API_BASE}/mood`,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          user:"✨ AuroraMoon",
+          message
+        })
+      }
+    );
+
+    if(!res.ok){
+      throw new Error();
+    }
+
+    input.value = "";
+
+    alert("☁ Mood updated!");
+
+  }catch(err){
+
+    console.error(err);
+
+    alert("Mood update failed.");
+  }
+}
+
+async function quickMood(text){
+
+  document.getElementById("moodInput").value = text;
+
+  await updateMood();
+}
+
+async function saveAdventureLog(){
+
+  const title =
+    document.getElementById("adventureTitle")
+    .value.trim();
+
+  const status =
+    document.getElementById("adventureStatus")
+    .value.trim();
+
+  const friendPlatform =
+    document.getElementById("friendPlatform")
+    .value.trim();
+
+  const friendName =
+    document.getElementById("friendName")
+    .value.trim();
+
+  try{
+
+    await fetch(
+      `${API_BASE}/adventure-log`,
+      {
+        method:"POST",
+        headers:{
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          title,
+          status,
+          friendPlatform,
+          friendName
+        })
+      }
+    );
+
+    loadAdventureLog();
+
+  }catch(err){
+
+    console.error(err);
+  }
+}
+
+async function loadAdventureLog(){
+
+  try{
+
+    const res =
+      await fetch(
+        `${API_BASE}/adventure-log?nocache=${Date.now()}`
+      );
+
+    const data =
+      await res.json();
+
+    document.getElementById(
+      "adventurePreview"
+    ).innerHTML = `
+      🎮 ${data.title || "No Adventure"}<br>
+      ✨ ${data.status || ""}<br>
+      👥 ${data.friendPlatform || ""} ${data.friendName || ""}
+    `;
+
+  }catch(err){
+
+    console.error(err);
+  }
+}
+
+async function clearAdventureLog(){
+
+  document.getElementById("adventureTitle").value="";
+  document.getElementById("adventureStatus").value="";
+  document.getElementById("friendPlatform").value="";
+  document.getElementById("friendName").value="";
+
+  await saveAdventureLog();
+}
+
 /* -------------------------
    AURA / HABITS
 ------------------------- */
@@ -1302,8 +1903,31 @@ async function setEnergy(btn, val) {
 }
 
 async function resetDay() {
-  if (!confirm("Reset all habits and energy for the day?")) return;
+
+  if(
+    !confirm(
+      "Reset all habits, energy, and constellation data for the day?"
+    )
+  ) return;
+
   await fetch(`${API_BASE}/resetday`);
+
+  localStorage.removeItem(
+    "auroraConstellationGames"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationStreamers"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationStardust"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationDate"
+  );
+
   location.reload();
 }
 
@@ -1343,6 +1967,18 @@ async function loadHabitState() {
     console.error("Habit state load failed:", err);
   }
 }
+
+const auroraChannel = new BroadcastChannel("aurora-controls");
+
+function drawTarot(){
+    auroraChannel.postMessage("draw-tarot");
+}
+
+function drawOracle(){
+    auroraChannel.postMessage("draw-oracle");
+}
+
+
 
 /* -------------------------
    WATCHING
@@ -1683,6 +2319,231 @@ async function clearReadingBoard(){
   loadReadingBoardStatus();
 }
 
+function generateConstellationLog(){
+
+  const games =
+    constellationGames.join("\n");
+
+  const streamers =
+    constellationStreamers.join("\n");
+
+  const stardust =
+    document.getElementById(
+      "collectedStardust"
+    ).value.trim();
+
+  const today =
+    new Date().toLocaleDateString(
+      "en-US",
+      {
+        month:"long",
+        day:"numeric",
+        year:"numeric"
+      }
+    );
+
+  const output =
+`🌌 Constellation Log — ${today}
+
+⭐ Stars Explored
+${games || "None recorded"}
+
+✨ Constellations Visited
+${streamers || "None recorded"}
+
+🌙 Collected Stardust
+${stardust || "A quiet evening beneath the stars."}
+
+Until tomorrow, Moonbeams.`;
+
+  document.getElementById(
+    "constellationPreview"
+  ).innerText = output;
+}
+
+function addCurrentGameToConstellation(){
+
+  const title =
+    document.getElementById(
+      "adventureTitle"
+    ).value.trim();
+
+  if(!title) return;
+
+  if(
+    !constellationGames.includes(title)
+  ){
+    constellationGames.push(title);
+  }
+
+  constellationGames.sort();
+
+renderConstellationLists();
+saveConstellationData();
+}
+
+function addStreamerSighting(){
+
+  const name =
+    document.getElementById(
+      "streamerSighting"
+    ).value.trim();
+
+  if(!name) return;
+
+  if(
+    !constellationStreamers.includes(name)
+  ){
+    constellationStreamers.push(name);
+  }
+
+document.getElementById(
+  "streamerSighting"
+).value = "";
+
+document.getElementById(
+  "streamerSighting"
+).focus();
+
+constellationStreamers.sort((a, b) => {
+  const an = (typeof a === "string" ? a : a.displayName).toLowerCase();
+  const bn = (typeof b === "string" ? b : b.displayName).toLowerCase();
+  return an.localeCompare(bn);
+});
+
+renderConstellationLists();
+saveConstellationData();
+
+}
+
+function renderStreamerMenu() {
+  const select = document.getElementById("streamerProfile");
+
+  if (!select) return;
+
+  select.innerHTML = '<option value="">Select Streamer...</option>';
+
+  streamerProfiles.forEach((profile, index) => {
+    const option = document.createElement("option");
+
+    option.value = index;
+    option.textContent = profile.displayName;
+
+    select.appendChild(option);
+  });
+}
+
+function renderConstellationLists(){
+
+  document.getElementById(
+    "constellationGames"
+  ).innerHTML =
+    constellationGames.length
+      ? constellationGames.map(
+          g => `⭐ ${g}`
+        ).join("<br>")
+      : "No games logged yet ✦";
+
+  document.getElementById(
+    "constellationStreamers"
+  ).innerHTML =
+    constellationStreamers.length
+      ? constellationStreamers.map(s => {
+  const profile = streamerProfiles.find(p =>
+    p.displayName === s || p.id === s
+  );
+
+  const name = profile?.displayName || s;
+  const twitch = profile?.twitch;
+
+  return twitch
+    ? `✨ <a href="https://twitch.tv/${twitch}" target="_blank">${name}</a>`
+    : `✨ ${name}`;
+}).join("<br>")
+      : "No Moonbeam sightings yet ✦";
+}
+
+function checkConstellationDay(){
+
+  const today =
+    new Date().toISOString().slice(0,10);
+
+  const lastDay =
+    localStorage.getItem(
+      "auroraConstellationDate"
+    );
+
+  if(lastDay && lastDay !== today){
+
+    localStorage.removeItem(
+      "auroraConstellationGames"
+    );
+
+    localStorage.removeItem(
+      "auroraConstellationStreamers"
+    );
+
+    localStorage.removeItem(
+      "auroraConstellationStardust"
+    );
+
+    const stardustBox =
+      document.getElementById(
+        "collectedStardust"
+      );
+if(stardustBox){
+  stardustBox.value = "";
+}
+
+renderConstellationLists();
+
+  localStorage.setItem(
+    "auroraConstellationDate",
+    today
+  );
+}
+
+}
+
+function clearConstellationLog(){
+
+  if(
+    !confirm(
+      "Clear today's constellation log?"
+    )
+  ) return;
+
+  constellationGames = [];
+  constellationStreamers = [];
+
+  document.getElementById(
+    "collectedStardust"
+  ).value = "";
+
+  renderConstellationLists();
+
+  document.getElementById(
+    "constellationPreview"
+  ).innerText =
+    "Today's discoveries await...";
+
+  saveConstellationData();
+}
+
+function copyConstellationLog(){
+
+  const text =
+    document.getElementById(
+      "constellationPreview"
+    ).innerText;
+
+  navigator.clipboard.writeText(text);
+
+  alert(
+    "🌌 Constellation Log copied!"
+  );
+}
+
 /* -------------------------
    INITIAL LOADS
 ------------------------- */
@@ -1696,15 +2557,29 @@ loadSpotifyDevices();
 loadSpotifyNowPlaying();
 loadSpotifyAutoState();
 loadReadingBoardStatus();
+checkConstellationDay();
+loadAdventureLog();
+loadStreamerProfiles();
+loadGameProfiles();
+loadConstellationData();
 
 /* -------------------------
    INTERVALS
 ------------------------- */
-
-setInterval(loadSpotifyNowPlaying, 15000);
 setInterval(runSpotifyAutoCheck, 5 * 60 * 1000);
 setInterval(loadWorldStatsMini, 30000);
 setInterval(loadReadingBoardStatus, 10000);
+setInterval(
+  checkConstellationDay,
+  60000
+);
+
+document
+  .getElementById("collectedStardust")
+  .addEventListener(
+    "input",
+    saveConstellationData
+  );
 
 /* -------------------------
    ENTER KEYS
@@ -1753,6 +2628,21 @@ document.getElementById("inatImportInput").addEventListener("keypress", function
 document.getElementById("merlinImportInput").addEventListener("keypress", function(e) {
   if (e.key === "Enter") importNatureCount("merlin_calls", "merlinImportInput");
 });
+document
+  .getElementById("streamerSighting")
+  .addEventListener(
+    "keypress",
+    function(e){
+      if(e.key === "Enter"){
+        addStreamerSighting();
+      }
+    }
+  );
+
+function requestTarotDraw(){
+    localStorage.setItem("tarotDrawRequest", Date.now());
+
+}
 </script>
 </body>
 </html>

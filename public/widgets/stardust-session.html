@@ -45,6 +45,18 @@ body{
 
 }
 
+.container{
+  box-shadow:none !important;
+}
+
+.breath-glow{
+  display:none !important;
+}
+
+.status{
+  box-shadow:none !important;
+}
+
 /* =========================
    MAIN CONTAINER
 ========================= */
@@ -56,16 +68,16 @@ body{
   top:50%;
   left:50%;
 
-  width:min(720px, calc(100vw - 80px));
-  min-height:320px;
+  width:400px;
+  height: 260px;
+  
+  padding:15px 20px 18px;
 
   transform:translate(-50%, -50%);
 
   text-align:center;
 
-  padding:38px 42px 32px;
-
-  border-radius:38px;
+  border-radius:20px;
 
   background:
     linear-gradient(
@@ -95,11 +107,77 @@ body{
     0 0 80px rgba(127,135,255,.16),
     inset 0 0 28px rgba(255,255,255,.08);
 
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-
   overflow:hidden;
 
+}
+
+/* =========================
+   DATE + CLOCK
+========================= */
+
+.datetime{
+
+  position:relative;
+  z-index:2;
+
+  margin-bottom:22px;
+
+}
+
+#clock{
+
+  font-size:26px;
+  font-weight:700;
+
+  letter-spacing:1px;
+
+  color:#f2fcff;
+
+  text-shadow:
+    0 0 10px rgba(203,236,245,.55);
+
+}
+
+#date{
+
+  margin-top:8px;
+
+  font-size:20px;
+
+  color:rgba(203,236,245,.75);
+
+  letter-spacing:.8px;
+
+  text-transform:uppercase;
+
+}
+
+#worldClock{
+
+  margin-top:5px;
+
+  min-height:16px;
+
+  font-size:16px;
+  font-weight:600;
+
+  color:rgba(198,199,248,.88);
+
+  letter-spacing:.45px;
+
+  white-space:nowrap;
+
+  opacity:1;
+
+  transition:opacity .45s ease;
+
+  text-shadow:
+    0 0 10px rgba(0,169,186,.20);
+
+}
+
+#worldClock.fading{
+  opacity:0;
 }
 
 /* =========================
@@ -112,10 +190,10 @@ body{
 
   position:absolute;
 
-  top:22px;
-  right:28px;
+  top:18px;
+  right:16px;
 
-  font-size:24px;
+  font-size:20px;
 
   color:var(--soft);
 
@@ -136,12 +214,12 @@ body{
   position:relative;
   z-index:2;
 
-  font-size:112px;
+  font-size:42px;
   font-weight:700;
 
   line-height:1;
 
-  margin-bottom:13px;
+  margin-bottom:16px;
 
   letter-spacing:2px;
 
@@ -168,11 +246,13 @@ body{
   align-items:center;
   justify-content:center;
 
-  min-width:330px;
+  width:100%;
+  min-width:0;
+ 
+  padding:12px;
 
-  margin-top:13px;
-
-  padding:12px 24px;
+  margin-top:10px;
+  margin-bottom:10px;
 
   border-radius:999px;
 
@@ -184,33 +264,12 @@ body{
     inset 0 0 14px rgba(255,255,255,.08),
     0 0 20px rgba(0,169,186,.18);
 
-  font-size:44px;
+  font-size:18px;
   font-weight:700;
 
   letter-spacing:1px;
 
   opacity:.96;
-
-  transition:all .6s ease;
-
-}
-
-/* =========================
-   MOON NOTE
-========================= */
-
-.moon-note{
-
-  position:relative;
-  z-index:2;
-
-  margin-top:20px;
-
-  font-size:25px;
-
-  color:rgba(203,236,245,.82);
-
-  letter-spacing:.6px;
 
   transition:all .6s ease;
 
@@ -233,8 +292,6 @@ body{
       rgba(0,169,186,.08),
       transparent 65%
     );
-
-  filter:blur(50px);
 
   opacity:.65;
 
@@ -287,18 +344,6 @@ body{
   box-shadow:
     inset 0 0 14px rgba(255,255,255,.08),
     0 0 28px rgba(0,169,186,.42);
-
-}
-
-.break-mode .moon-note{
-
-  opacity:.95;
-
-}
-
-.focus-mode .moon-note{
-
-  opacity:.78;
 
 }
 
@@ -379,6 +424,12 @@ body{
 
   <div class="stars" id="stars"></div>
 
+  <div class="datetime">
+    <div id="clock">--:-- --</div>
+    <div id="date">Loading Date...</div>
+    <div id="worldClock">✨</div>
+  </div>
+
   <div class="timer" id="timer">
     --:--
   </div>
@@ -387,19 +438,11 @@ body{
     ✨ Focus Session
   </div>
 
-  <div class="moon-note" id="moonNote">
-    focus constellation • steady breathing • grounded productivity
-  </div>
-
 </div>
 
 <!-- =========================
      AUDIO
 ========================= -->
-
-<audio id="focusMusic" autoplay loop>
-  <source src="sounds/focus-music.mp3" type="audio/mpeg">
-</audio>
 
 <audio id="chime">
   <source src="sounds/moonbeam.mp3" type="audio/mpeg">
@@ -417,56 +460,172 @@ const timerDisplay =
 const statusDisplay =
   document.getElementById("status");
 
-const moonNote =
-  document.getElementById("moonNote");
-
-const focusMusic =
-  document.getElementById("focusMusic");
-
 const chime =
   document.getElementById("chime");
 
 const container =
   document.getElementById("container");
 
+const clockDisplay =
+  document.getElementById("clock");
+
+const dateDisplay =
+  document.getElementById("date");
+
+const worldClockDisplay =
+  document.getElementById("worldClock");
+
 /* =========================
    AUDIO
 ========================= */
 
-focusMusic.volume = 0.13;
-
 function safePlay(audio){
 
-  audio.play().catch(() => {
-    console.log("Audio blocked");
-  });
+  console.log("Chime attempting to play...");
+  console.log("Audio source:", audio.currentSrc);
+  console.log("Audio readyState:", audio.readyState);
 
-}
-
-function unlockAudio(){
-
-  focusMusic.play()
+  audio.play()
     .then(() => {
-
-      focusMusic.pause();
-      focusMusic.currentTime = 0;
-
+      console.log("✨ Chime played successfully!");
     })
-    .catch(() => {});
+    .catch(err => {
+      console.error("🔇 Chime failed:", err.name, err.message);
+    });
 
 }
 
-window.addEventListener(
-  "click",
-  unlockAudio,
-  { once:true }
-);
+/* =========================
+   DATE + TIME
+========================= */
 
-window.addEventListener(
-  "keydown",
-  unlockAudio,
-  { once:true }
-);
+function updateDateTime(){
+
+  const now = new Date();
+
+  const time =
+    now.toLocaleTimeString([],{
+      hour:"numeric",
+      minute:"2-digit"
+    });
+
+  const date =
+    now.toLocaleDateString([],{
+      weekday:"short",
+      month:"short",
+      day:"numeric"
+    });
+
+  clockDisplay.textContent = time;
+  dateDisplay.textContent = date;
+
+}
+
+/* =========================
+   WORLD TIME ROTATION
+========================= */
+
+const constellationTimes = [
+  { city:"Honolulu",    zone:"Pacific/Honolulu" },
+  { city:"Los Angeles", zone:"America/Los_Angeles" },
+  { city:"New York",    zone:"America/New_York" },
+  { city:"São Paulo",   zone:"America/Sao_Paulo" },
+  { city:"London",      zone:"Europe/London" },
+  { city:"Berlin",      zone:"Europe/Berlin" },
+  { city:"Cape Town",   zone:"Africa/Johannesburg" },
+  { city:"Mumbai",      zone:"Asia/Kolkata" },
+  { city:"Singapore",   zone:"Asia/Singapore" },
+  { city:"Tokyo",       zone:"Asia/Tokyo" },
+  { city:"Sydney",      zone:"Australia/Sydney" },
+  { city:"Auckland",    zone:"Pacific/Auckland" }
+];
+
+let constellationIndex = 0;
+
+function getLocalHour(timeZone){
+
+  const parts =
+    new Intl.DateTimeFormat("en-US",{
+      timeZone,
+      hour:"2-digit",
+      hourCycle:"h23"
+    }).formatToParts(new Date());
+
+  const hourPart =
+    parts.find(part => part.type === "hour");
+
+  return hourPart
+    ? Number(hourPart.value)
+    : 12;
+
+}
+
+function getDaypartIcon(hour){
+
+  if(hour >= 5 && hour < 8)  return "🌅";
+  if(hour >= 8 && hour < 12) return "☕";
+  if(hour >= 12 && hour < 17) return "☀️";
+  if(hour >= 17 && hour < 21) return "🌆";
+
+  return "🌙";
+
+}
+
+function renderConstellationTime(){
+
+  const place =
+    constellationTimes[constellationIndex];
+
+  const now =
+    new Date();
+
+  const time =
+    new Intl.DateTimeFormat("en-US",{
+      timeZone:place.zone,
+      hour:"numeric",
+      minute:"2-digit"
+    }).format(now);
+
+  const icon =
+    getDaypartIcon(
+      getLocalHour(place.zone)
+    );
+
+  worldClockDisplay.textContent =
+    `✨ ${place.city} ${time} ${icon}`;
+
+}
+
+function rotateConstellationTime(){
+
+  worldClockDisplay.classList.add("fading");
+
+  setTimeout(() => {
+
+    constellationIndex =
+      (constellationIndex + 1) %
+      constellationTimes.length;
+
+    renderConstellationTime();
+
+    requestAnimationFrame(() => {
+      worldClockDisplay.classList.remove("fading");
+    });
+
+  }, 450);
+
+}
+
+function startConstellationClock(){
+
+  renderConstellationTime();
+
+  setInterval(
+    rotateConstellationTime,
+    10000
+  );
+
+}
 
 /* =========================
    STAR GENERATOR
@@ -573,11 +732,6 @@ function applyFocusMode(){
   statusDisplay.textContent =
     "✨ Focus Session";
 
-  moonNote.textContent =
-    "focus constellation • steady breathing • grounded productivity";
-
-  /* Send to breathing overlay */
-
   window.parent.postMessage({
     type:"breathMode",
     mode:"focus"
@@ -593,11 +747,6 @@ function applyBreakMode(){
   statusDisplay.textContent =
     "☕ Stardust Break";
 
-  moonNote.textContent =
-    "stardust break • unclench your jaw • drift gently";
-
-  /* Send to breathing overlay */
-
   window.parent.postMessage({
     type:"breathMode",
     mode:"break"
@@ -612,6 +761,8 @@ function applyBreakMode(){
 function startAutoPomodoro(){
 
   function update(){
+
+    updateDateTime();
 
     const {
       phase,
@@ -685,9 +836,8 @@ function startAutoPomodoro(){
    INIT
 ========================= */
 
-safePlay(focusMusic);
-
 startAutoPomodoro();
+startConstellationClock();
 
 </script>
 

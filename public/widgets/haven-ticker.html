@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Aurora Mini Info Bar</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --text:#cbecf5;
+    --soft:#c6c7f8;
+    --aurora:#00a9ba;
+    --primary:#7f87ff;
+    --line:rgba(203,236,245,0.14);
+    --panel:rgba(12,16,30,0.88);
+  }
+
+  *{ box-sizing:border-box; }
+
+  html, body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:transparent;
+    font-family:'Quicksand', sans-serif;
+    color:var(--text);
+  }
+
+  body{
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    padding:15px;
+  }
+
+  .bar{
+    width:1920px;
+    transform-origin:center center;
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+    padding:12px 18px;
+
+    background:var(--panel);
+    border:1px solid rgba(255,255,255,0.06);
+
+    box-shadow:
+      0 0 24px rgba(127,135,255,0.08),
+      inset 0 0 30px rgba(0,0,0,0.25);
+
+    overflow:hidden;
+  }
+
+  .section{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-shrink:0;
+  }
+
+  .divider{
+    width:1px;
+    height:21px;
+    background:var(--line);
+  }
+
+  .label{
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--soft);
+  }
+
+  .value{
+    font-size:15px;
+    font-weight:700;
+    color:#fff;
+    line-height:1;
+  }
+
+  .sub{
+    font-size:11px;
+    opacity:.75;
+    line-height:1;
+  }
+
+  .live-dot{
+    width:13px;
+    height:13px;
+    border-radius:50%;
+    background:#00a9ba;
+    box-shadow:0 0 10px rgba(255,107,143,.8);
+    animation:pulse 2s infinite;
+  }
+
+  @keyframes pulse{
+    0%,100%{opacity:1;transform:scale(1);}
+    50%{opacity:.5;transform:scale(.8);}
+  }
+
+  .ticker-wrap{
+    flex:1;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .ticker-track{
+   display:flex;
+   width:max-content;
+   animation: scroll 180s linear infinite;
+   will-change: transform;
+  }
+ 
+  .ticker{
+    white-space:nowrap;
+    font-size:15px;
+    font-weight:600;
+    padding-right:80px;
+  }
+
+  @keyframes scroll{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+</style>
+</head>
+
+<body>
+
+<div class="bar">
+
+  <div class="section">
+    <div class="live-dot"></div>
+    <div>
+      <div class="label">Aurora Local</div>
+      <div class="sub">Moonbeam Broadcast</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="value" id="temp">63°</div>
+  </div>
+
+  <div class="section">
+    <div class="sub" id="weatherDesc">Mostly Cloudy</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <div class="ticker" id="ticker"></div>
+      <div class="ticker" id="ticker-clone"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+
+const API_BASE = "http://localhost:3000";
+
+async function buildMegaTicker() {
+
+  let weatherText = "🌤 Aurora skies calm";
+  let mediaText = "📚 Cozy media loading";
+  let worldStats = [];
+  let moonbeamMoods = [];
+
+
+  /* WEATHER */
+  try {
+    const weather = await fetch(`${API_BASE}/weather`).then(r=>r.json());
+
+    let temp=null, humidity=null, desc="Cozy Skies";
+
+    if (weather?.observations?.[0]) {
+      const obs = weather.observations[0];
+      temp = obs?.imperial?.temp ?? null;
+      humidity = obs?.humidity ?? null;
+      desc = obs?.wx_phrase || "";
+    } else if (weather?.current) {
+      temp = weather.current.temp ?? null;
+      humidity = weather.current.humidity ?? null;
+      desc = weather.current.description || "";
+    }
+
+    weatherText = `🌤 ${temp ?? "--"}° • ${humidity ?? "--"}% humidity • ${desc}`;
+
+    document.getElementById("temp").textContent = `${temp ?? "--"}°`;
+    document.getElementById("weatherDesc").textContent = desc;
+
+  } catch {
+    document.getElementById("temp").textContent = "--°";
+    document.getElementById("weatherDesc").textContent = "Weather Offline";
+  }
+
+/* MEDIA STATUS */
+try {
+
+  const media = await fetch(
+    `${API_BASE}/media-status`
+  ).then(r => r.json());
+
+  const reading =
+    media?.book?.title
+      ? `📚 Reading: ${media.book.title}`
+      : null;
+
+  const watching =
+    media?.watching?.title
+      ? `📺 Watching: ${media.watching.title}`
+      : null;
+
+  mediaText =
+    [reading, watching]
+      .filter(Boolean)
+      .join(" • ");
+
+} catch (err) {
+  console.log("Media failed", err);
+}
+
+  /* WORLD STATS */
+  try {
+    const data = await fetch(`${API_BASE}/data/aurora-moon-data.json`).then(r=>r.json());
+
+    worldStats = [
+      `🎮 Pokémon ${data.pokemon_caught || 0}`,
+      `🌀 Pokéstops ${data.pokestops_spun || 0}`,
+      `🥚 Eggs ${data.eggs_hatched || 0}`,
+      `🃏 Packs ${data.packs_opened || 0}`,
+      `✨ Rare Cards ${data.rare_cards || 0}`,
+      `💥 EX Cards ${data.ex_cards || 0}`,
+      `🌿 Nature Projects ${data.nature_projects || 0}`,
+      `🐦 Lifebirds ${data.lifebirds || 0}`,
+      `🧹 Cleanups ${data.park_cleanups || 0}`,
+      `🗑 Trash Bags ${data.trash_bags || 0}`,
+      `🤝 Volunteer ${data.volunteer_hours || 0}h`
+    ];
+  } catch {}
+
+  /* MOODS */
+  try {
+    const moods = await fetch(`${API_BASE}/moods`).then(r=>r.json());
+
+    const statuses = Array.isArray(moods?.statuses) ? moods.statuses : [];
+
+    moonbeamMoods = statuses.slice(0,5).map(m =>
+      `✨ Moonbeam Check-In • ${m.user} is feeling ${m.message}`
+    );
+  } catch {}
+
+  const finalTicker = [
+    weatherText,
+    mediaText,
+    ...moonbeamMoods,
+    ...worldStats,
+  ];
+
+  const tickerText = finalTicker.join(" • ") + " • ";
+
+  document.getElementById("ticker").textContent = tickerText;
+  document.getElementById("ticker-clone").textContent = tickerText;
+}
+
+/* INITIAL LOAD */
+buildMegaTicker();
+
+/* REFRESH MAIN DATA */
+setInterval(buildMegaTicker, 60000);
+
+</script>
+
+</body>
+</html>

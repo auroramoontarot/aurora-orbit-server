@@ -31,21 +31,40 @@
   }
 
   .release-radar {
-    position: absolute;
-    left: 40px;
-    bottom: 40px;
-    width: 420px;
-    padding: 22px 24px;
-    border-radius: 28px;
-    background:
-      linear-gradient(135deg, rgba(127,135,255,0.20), rgba(0,169,186,0.10)),
-      var(--dark);
-    border: 1px solid rgba(203,236,245,0.28);
-    box-shadow:
-      0 0 28px rgba(0,169,186,0.22),
-      inset 0 0 24px rgba(198,199,248,0.08);
-    backdrop-filter: blur(12px);
-  }
+  position: absolute;
+  left: 40px;
+  bottom: 40px;
+  width: 420px;
+  padding: 22px 24px;
+  border-radius: 28px;
+
+  background:
+  linear-gradient(
+    180deg,
+    rgba(255,255,255,.18),
+    rgba(255,255,255,.06)
+  ),
+
+  radial-gradient(
+    circle at top left,
+    rgba(203,236,245,.22),
+    transparent 40%
+  ),
+
+  radial-gradient(
+    circle at bottom right,
+    rgba(127,135,255,.26),
+    transparent 45%
+  ),
+
+  rgba(12,16,35,.45);
+
+  border: 1px solid rgba(203,236,245,.28);
+
+  box-shadow:
+    0 0 28px rgba(0,169,186,.22),
+    inset 0 0 12px rgba(203,236,245,.06);
+}
 
   .topline {
     display: flex;

@@ -256,24 +256,57 @@ body {
 
 <script>
 async function loadStats() {
+  const dataUrl = "/data/aurora-moon-data.json";
+
   try {
-    const response = await fetch("/data/aurora-moon-data.json");
+    console.log("🌙 Loading Pokémon data from:", dataUrl);
+
+    const response = await fetch(dataUrl, {
+      cache: "no-store"
+    });
+
+    console.log("🌙 Response status:", response.status);
+    console.log("🌙 Response URL:", response.url);
+
+    if (!response.ok) {
+      throw new Error(
+        `Could not load ${dataUrl} — HTTP ${response.status}`
+      );
+    }
+
     const data = await response.json();
 
-    document.getElementById("caught").textContent = data.pokemon_caught ?? 0;
-    document.getElementById("stops").textContent = data.pokestops_spun ?? 0;
-    document.getElementById("raids").textContent = data.raids_won ?? 0;
-    document.getElementById("eggs").textContent = data.eggs_hatched ?? 0;
+    console.log("🌙 Pokémon data loaded:", data);
 
-    document.getElementById("packs").textContent = data.packs_opened ?? 0;
-    document.getElementById("rare").textContent = data.rare_cards ?? 0;
-    document.getElementById("excards").textContent = data.ex_cards ?? 0;
+    // Pokémon GO
+    document.getElementById("caught").textContent =
+      data.pokemon_caught ?? 0;
 
+    document.getElementById("stops").textContent =
+      data.pokestops_spun ?? 0;
+
+    document.getElementById("raids").textContent =
+      data.raids_won ?? 0;
+
+    document.getElementById("eggs").textContent =
+      data.eggs_hatched ?? 0;
+
+    // Pokémon TCG
+    document.getElementById("packs").textContent =
+      data.packs_opened ?? 0;
+
+    document.getElementById("rare").textContent =
+      data.rare_cards ?? 0;
+
+    document.getElementById("excards").textContent =
+      data.ex_cards ?? 0;
+
+    // Mission
     const missions = [
       "Shiny Hunt",
       "Moonbeam Research",
       "Pack Magic",
-      " Stardust Run",
+      "Stardust Run",
       "Cozy Catching"
     ];
 
@@ -281,13 +314,26 @@ async function loadStats() {
       missions[Math.floor(Math.random() * missions.length)];
 
   } catch (err) {
-    console.error("Failed to load Pokémon stats:", err);
+    console.error("🌙 Failed to load Pokémon stats:", err);
+
+    // Make the problem visible in the overlay instead of silently
+    // showing a bunch of zeros.
+    document.getElementById("caught").textContent = "—";
+    document.getElementById("stops").textContent = "—";
+    document.getElementById("raids").textContent = "—";
+    document.getElementById("eggs").textContent = "—";
+    document.getElementById("packs").textContent = "—";
+    document.getElementById("rare").textContent = "—";
+    document.getElementById("excards").textContent = "—";
+    document.getElementById("mission").textContent = "Data offline";
   }
 }
 
+// Initial load
 loadStats();
+
+// Refresh every minute
 setInterval(loadStats, 60000);
 </script>
-
 </body>
 </html>

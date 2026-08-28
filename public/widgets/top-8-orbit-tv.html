@@ -14,6 +14,11 @@
     --ice:#cbecf5;
     --soft:#c6c7f8;
     --deep:#2b2772;
+    --cafe-top: 10px;
+    --cafe-left: 0px;
+    --cafe-width: 500px;
+    --cafe-height: 320px;
+    --cafe-rotation: 2.8deg;
   }
 
   * { box-sizing:border-box; }
@@ -27,20 +32,32 @@
   }
 
   .tv-screen {
-  width:100vw;
-  height:100vh;
-  padding:18px;
-  padding-top:22px;
-    background:
-      radial-gradient(circle at 20% 15%, rgba(127,135,255,0.34), transparent 32%),
-      radial-gradient(circle at 85% 20%, rgba(0,169,186,0.26), transparent 34%),
-      linear-gradient(145deg, rgba(18,24,48,0.96), rgba(43,39,114,0.94));
-    border:3px double rgba(203,236,245,0.55);
-    box-shadow:
-      inset 0 0 28px rgba(203,236,245,0.13),
-      0 0 20px rgba(0,169,186,0.38);
-    position:relative;
-  }
+  position:absolute;
+  top:10px;
+  left:0px;
+
+  width:500px;
+  height:320px;
+
+  transform:rotate(2.8deg);
+  transform-origin:center center;
+
+  overflow:hidden;
+
+  padding:10px;
+  padding-top:10px;
+
+  background:
+    radial-gradient(circle at 20% 15%, rgba(127,135,255,0.34), transparent 32%),
+    radial-gradient(circle at 85% 20%, rgba(0,169,186,0.26), transparent 34%),
+    linear-gradient(145deg, rgba(18,24,48,0.96), rgba(43,39,114,0.94));
+
+  border:3px double rgba(203,236,245,0.55);
+
+  box-shadow:
+    inset 0 0 28px rgba(203,236,245,0.13),
+    0 0 20px rgba(0,169,186,0.38);
+}
 
   .tv-screen::before {
     content:"";
@@ -62,13 +79,13 @@
   .header {
     position:relative;
     text-align:center;
-    margin-bottom:10px;
+    margin-bottom:7px;
   }
 
 .moonspace-logo {
-  width: 380px;
+  width: 180px;
   max-width: 82%;
-  margin: 0 auto 10px;
+  margin: 0 auto 3px;
   display: block;
   margin-top:1px;
   margin-bottom:1px;
@@ -81,14 +98,14 @@
 }
 
   .kicker {
-    font-size:12px;
-    letter-spacing:2px;
+    font-size:9px;
+    letter-spacing:1px;
     text-transform:uppercase;
     color:var(--soft);
   }
 
   .title {
-    font-size:24px;
+    font-size:12px;
     font-weight:700;
     color:white;
     text-shadow:
@@ -101,13 +118,13 @@
     position:relative;
     display:grid;
     grid-template-columns:repeat(4, 1fr);
-    gap:8px;
-    margin-top:12px;
+    gap:4px;
+    margin-top:5px;
   }
 
   .orbiter {
-    min-height:78px;
-    padding:8px 6px;
+    min-height:52px;
+    padding:3px 2px;
     border:2px ridge rgba(198,199,248,0.75);
     background:rgba(0,0,0,0.24);
     text-align:center;
@@ -115,13 +132,13 @@
   }
 
   .icon {
-    font-size:22px;
+    font-size:13px;
     line-height:1;
     margin-bottom:3px;
   }
 
   .name {
-    font-size:14px;
+    font-size:11px;
     font-weight:700;
     color:white;
     line-height:1.1;

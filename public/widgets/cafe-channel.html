@@ -17,6 +17,9 @@
       --screen-top:#232846;
       --screen-bottom:#121529;
       --danger:#ff6b8f;
+      --cafe-top: 10px;
+      --cafe-left: 0px;
+      --cafe-rotation: 2.8deg;
     }
 
     *{ box-sizing:border-box; }
@@ -47,13 +50,12 @@
 
     .screen{
       position:absolute;
-      top:46px;
-      left:34px;
+      top:var(--cafe-top);
+      left:var(--cafe-left);
       width:500px;
       height:320px;
-      transform:rotate(1.4deg);
-      transform-origin:center center;
-      background:
+      transform:rotate(var(--cafe-rotation));
+        background:
         radial-gradient(circle at 20% 10%, rgba(127,135,255,0.10), transparent 26%),
         radial-gradient(circle at 80% 12%, rgba(0,169,186,0.10), transparent 26%),
         linear-gradient(180deg, var(--screen-top) 0%, var(--screen-bottom) 100%);
@@ -121,9 +123,9 @@
     }
 
     @keyframes channelSwitch{
-      0%   { filter: brightness(1.08); transform:rotate(1.4deg) scale(1.002); }
-      40%  { filter: brightness(0.92); transform:rotate(1.4deg) scale(.998); }
-      100% { filter: brightness(1.02); transform:rotate(1.4deg) scale(1); }
+      0%   { filter: brightness(1.08); transform:rotate(2.8deg) scale(1.002); }
+      40%  { filter: brightness(0.92); transform:rotate(2.8deg) scale(.998); }
+      100% { filter: brightness(1.02); transform:rotate(2.8deg) scale(1); }
     }
 
     .channel-id{
@@ -390,7 +392,7 @@
       white-space:nowrap;
       font-size:11px;
       color:var(--text);
-      animation:tickerScroll 42s linear infinite;
+      animation:tickerScroll 70s linear infinite;
     }
 
     @keyframes tickerScroll{
@@ -1287,44 +1289,171 @@ const featureModes = [
       return res.json();
     }
 
-    async function fetchWeather() {
-      const data = await fetchJson(`${API_BASE}/weather`);
-      const obs = data?.observations?.[0];
-      const imperial = obs?.imperial || {};
+async function fetchWeather() {
 
-      const tempVal = Number.isFinite(imperial.temp) ? imperial.temp : null;
-      const dewptVal = Number.isFinite(imperial.dewpt) ? imperial.dewpt : null;
-      const humidityVal = obs?.humidity ?? null;
-      const windVal = Number.isFinite(imperial.windSpeed) ? imperial.windSpeed : null;
-      const pressureVal = Number.isFinite(imperial.pressure) ? imperial.pressure : null;
+  const data = await fetchJson(`${API_BASE}/weather`);
 
-      const feelsVal =
-        Number.isFinite(imperial.heatIndex) ? imperial.heatIndex :
-        Number.isFinite(imperial.windChill) ? imperial.windChill :
-        tempVal;
+  /*
+    ============================================
+    LIVE WEATHER UNDERGROUND PWS
+    ============================================
+  */
 
-      const temp = tempVal !== null ? `${Math.round(tempVal)}°` : "--°";
-      const wind = windVal !== null ? `${Math.round(windVal)} mph` : "--";
-      const humidity = humidityVal !== null ? `${humidityVal}%` : "--";
-      const feels = feelsVal !== null && feelsVal !== undefined ? `${Math.round(feelsVal)}°` : "--";
-      const pressure = pressureVal !== null ? `${pressureVal.toFixed(2)} in` : "--";
+  if (data?.observations?.[0]) {
 
-      return {
-        temp,
-        desc: dewptVal !== null
+    const obs = data.observations[0];
+    const imperial = obs?.imperial || {};
+
+    const tempVal =
+      Number.isFinite(imperial.temp)
+        ? imperial.temp
+        : null;
+
+    const dewptVal =
+      Number.isFinite(imperial.dewpt)
+        ? imperial.dewpt
+        : null;
+
+    const humidityVal =
+      obs?.humidity ?? null;
+
+    const windVal =
+      Number.isFinite(imperial.windSpeed)
+        ? imperial.windSpeed
+        : null;
+
+    const pressureVal =
+      Number.isFinite(imperial.pressure)
+        ? imperial.pressure
+        : null;
+
+    const feelsVal =
+      Number.isFinite(imperial.heatIndex)
+        ? imperial.heatIndex
+        : Number.isFinite(imperial.windChill)
+          ? imperial.windChill
+          : tempVal;
+
+    return {
+
+      temp:
+        tempVal !== null
+          ? `${Math.round(tempVal)}°`
+          : "--°",
+
+      desc:
+        dewptVal !== null
           ? `Aurora Moon Haven • Dew ${Math.round(dewptVal)}°`
           : "Aurora Moon Haven",
-        meta: "KMNSTLOU35 / GW6813",
-        wind,
-        humidity,
-        feels,
-        pressure,
-        tempValue: tempVal,
-        humidityValue: humidityVal,
-        windValue: windVal,
-        pressureValue: pressureVal
-      };
-    }
+
+      meta:
+        "KMNSTLOU35 / Personal Weather Station",
+
+      wind:
+        windVal !== null
+          ? `${Math.round(windVal)} mph`
+          : "--",
+
+      humidity:
+        humidityVal !== null
+          ? `${humidityVal}%`
+          : "--",
+
+      feels:
+        feelsVal !== null &&
+        feelsVal !== undefined
+          ? `${Math.round(feelsVal)}°`
+          : "--",
+
+      pressure:
+        pressureVal !== null
+          ? `${pressureVal.toFixed(2)} in`
+          : "--",
+
+      tempValue: tempVal,
+      humidityValue: humidityVal,
+      windValue: windVal,
+      pressureValue: pressureVal
+    };
+  }
+
+  /*
+    ============================================
+    NWS FALLBACK FORMAT
+    ============================================
+  */
+
+  if (data?.current) {
+
+    const current = data.current;
+
+    const tempVal =
+      Number(current.temp);
+
+    const humidityVal =
+      Number(current.humidity);
+
+    const windRaw =
+      current.windSpeed;
+
+    const pressureRaw =
+      current.pressure;
+
+    const feelsRaw =
+      current.feelsLike;
+
+    return {
+
+      temp:
+        Number.isFinite(tempVal)
+          ? `${Math.round(tempVal)}°`
+          : "--°",
+
+      desc:
+        current.description ||
+        "Neighborhood weather",
+
+      meta:
+        "Neighborhood Weather Fallback",
+
+      wind:
+        windRaw !== null &&
+        windRaw !== undefined
+          ? `${windRaw} mph`
+          : "--",
+
+      humidity:
+        humidityVal
+          ? `${Math.round(humidityVal)}%`
+          : "--",
+
+      feels:
+        feelsRaw !== null &&
+        feelsRaw !== undefined
+          ? `${Math.round(feelsRaw)}°`
+          : "--",
+
+      pressure:
+        pressureRaw !== null &&
+        pressureRaw !== undefined
+          ? `${pressureRaw} in`
+          : "--",
+
+      tempValue: tempVal,
+      humidityValue: humidityVal,
+      windValue: Number(windRaw),
+      pressureValue: Number(pressureRaw)
+    };
+  }
+
+  /*
+    ============================================
+    FINAL FALLBACK
+    ============================================
+  */
+
+  return fallbackData.weather;
+}
 
     async function fetchSchedule() {
       const data = await fetchJson(`${API_BASE}/calendar`);

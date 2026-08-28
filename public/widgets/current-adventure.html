@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>Aurora's Current Adventure</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+html, body {
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  background:transparent;
+  overflow:hidden;
+  font-family:"Quicksand", sans-serif;
+  color:#cbecf5;
+}
+
+
+/* =========================
+   ADVENTURE HUD
+========================= */
+
+#adventureHUD {
+
+  position:absolute;
+
+  bottom:22px;
+  left:22px;
+
+  width:340px;
+
+  padding:8px;
+
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  width:100%;
+
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+
+  color:rgba(203,236,245,.65);
+
+  margin-bottom:8px;
+
+}
+
+
+.sparkle {
+
+  animation:twinkle 2.6s ease-in-out infinite;
+
+}
+
+
+
+/* =========================
+   CONTENT
+========================= */
+
+.content {
+
+  display:flex;
+  flex-direction:column;
+
+  gap:5px;
+
+}
+
+
+
+/* small label */
+
+.label {
+
+  font-size:15px;
+
+  color:#cbecf5;
+
+}
+
+
+
+/* game title */
+
+.title {
+
+  font-size:18px;
+
+  font-weight:700;
+
+  line-height:1.2;
+
+  color:#ffffff;
+
+
+  text-shadow:
+
+    0 0 10px rgba(203,236,245,.35),
+    0 0 18px rgba(0,169,186,.18);
+
+}
+
+
+
+/* platform pill */
+
+.badge {
+
+  display:inline-flex;
+
+  align-self:flex-start;
+
+  width:fit-content;
+
+  max-width:100%;
+
+  padding:3px 9px;
+
+  border-radius:999px;
+
+
+  background:rgba(127,135,255,.12);
+
+  border:
+
+    1px solid rgba(203,236,245,.16);
+
+
+  font-size:13px;
+
+  color:rgba(203,236,245,.85);
+
+}
+
+
+
+/* status */
+
+.status {
+
+  font-size:15px;
+
+  color:#cbecf5;
+
+}
+
+
+
+/* friend */
+
+.friend {
+
+  margin-top:5px;
+
+  font-size:15px;
+
+  color:#cbecf5;
+
+}
+
+
+.friend strong {
+
+  color:#ffffff;
+
+}
+
+
+
+/* =========================
+   ANIMATION
+========================= */
+
+@keyframes twinkle {
+
+  0%,100% {
+
+    opacity:.5;
+
+    transform:scale(1);
+
+  }
+
+
+  50% {
+
+    opacity:1;
+
+    transform:scale(1.15);
+
+  }
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="adventureHUD">
+
+
+  <div class="header">
+
+
+    <div class="sparkle">
+      ✨
+    </div>
+
+
+  </div>
+
+
+
+  <div class="content">
+
+
+    <div class="label">
+      🎮 Currently Playing
+    </div>
+
+
+    <div class="title" id="gameTitle">
+      Loading...
+    </div>
+
+
+
+    <div class="badge" id="platform">
+    </div>
+
+
+    <div class="friend">
+
+      ✨ Streaming With<br>
+
+      <strong id="friend">
+        Solo Adventure
+      </strong>
+
+    </div>
+<br>
+    <div class="label">
+      🔭 Telescope
+    </div>
+
+    <strong><div class="status" id="status">
+    </div></strong>
+
+
+  </div>
+
+
+</div>
+
+
+
+
+<script>
+
+
+async function loadAdventure(){
+
+
+  try {
+
+
+    const res = await fetch(
+      "http://localhost:3000/adventure-log?nocache=" + Date.now()
+    );
+
+
+    const data = await res.json();
+
+
+
+    document.getElementById("gameTitle").textContent =
+      data.title || "Exploring Worlds";
+
+
+
+    document.getElementById("platform").textContent =
+      data.friendPlatform || "";
+
+
+
+    document.getElementById("status").textContent =
+  data.status ? "" + data.status : "";
+
+
+
+    document.getElementById("friend").textContent =
+      data.friendName || "Solo Adventure";
+
+
+
+  }
+
+  catch(err) {
+
+    console.error(
+      "Adventure load failed:",
+      err
+    );
+
+
+    document.getElementById("gameTitle").textContent =
+      "Adventure Offline";
+
+
+  }
+
+
+}
+
+
+
+loadAdventure();
+
+
+
+setInterval(
+  loadAdventure,
+  10000
+);
+
+
+
+</script>
+
+
+</body>
+</html>

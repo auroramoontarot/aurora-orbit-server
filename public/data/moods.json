@@ -1,8 +1,19 @@
 {
-  "statuses":[
+  "statuses": [
     {
-      "user":"✨ AuroraMoon",
-      "message":"testing cosmic moods"
+      "user": "AuroraMoonTarot",
+      "message": "refreshed",
+      "createdAt": 1787923167388
+    },
+    {
+      "user": "rednyx11",
+      "message": "cozy studying",
+      "createdAt": 1787758995406
+    },
+    {
+      "user": "4footdragonlord",
+      "message": "rest and recover",
+      "createdAt": 1786502536043
     }
   ]
 }

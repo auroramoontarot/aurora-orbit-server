@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+.aurora-pinterest{
+
+    max-width:460px;
+    margin:auto;
+    padding:22px;
+
+    font-family:'Quicksand',sans-serif;
+}
+
+.pins-header{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+
+    margin-bottom:18px;
+}
+
+.pins-header h2{
+
+    margin:0;
+
+    color:#cbecf5;
+
+    font-size:1.6rem;
+    font-weight:700;
+    letter-spacing:.08em;
+
+    text-shadow:
+        0 0 10px rgba(127,135,255,.5),
+        0 0 25px rgba(0,169,186,.35);
+}
+
+.moon,
+.sparkle{
+
+    font-size:1.4rem;
+
+    color:#7f87ff;
+
+    animation:twinkle 4s ease-in-out infinite;
+}
+
+.sparkle{
+    animation-delay:2s;
+}
+
+.pins-glass{
+
+    padding:18px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,.08);
+
+    border:1px solid rgba(255,255,255,.18);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    box-shadow:
+
+        0 0 35px rgba(127,135,255,.20),
+
+        inset 0 0 20px rgba(255,255,255,.08),
+
+        0 8px 30px rgba(0,0,0,.25);
+
+    overflow:hidden;
+
+    position:relative;
+}
+
+.pins-glass::before{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(203,236,245,.10),
+            transparent 40%,
+            rgba(127,135,255,.08)
+        );
+
+    pointer-events:none;
+}
+
+.pins-glass iframe{
+
+    border-radius:18px;
+
+    overflow:hidden;
+}
+
+@keyframes twinkle{
+
+    0%,100%{
+
+        transform:scale(1) rotate(0deg);
+        opacity:.75;
+    }
+
+    50%{
+
+        transform:scale(1.2) rotate(8deg);
+        opacity:1;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<section class="aurora-pinterest">
+
+    <div class="pins-glass">
+
+        <a
+            data-pin-do="embedBoard"
+            data-pin-board-width="380"
+            data-pin-scale-height="260"
+            data-pin-scale-width="90"
+            href="https://www.pinterest.com/auroramoontarot/moonbeam-vision-board/">
+        </a>
+
+    </div>
+
+</section>
+
+<script async defer src="https://assets.pinterest.com/js/pinit.js"></script>
+
+</body>
+</html>
