@@ -168,7 +168,6 @@
     "description": "Celebrating imagination, music, moonlight, and wonder.",
     "streamNotes": "Peak Aurora energy."
   },
-{
   "2026-08-16": {
     "hashtag": "#NationalTellAJokeDay",
     "title": "National Tell a Joke Day",
@@ -296,5 +295,274 @@
     "category": "Fun",
     "description": "A playful celebration of snacks, adventures, and little joys.",
     "streamNotes": "Fun cozy end-of-month option."
+  },
+  "2026-09-01": {
+    "hashtag": "#NationalForgivenessDay",
+    "title": "National Forgiveness Day",
+    "emoji": "💜",
+    "category": "Kindness",
+    "description": "A day for releasing old hurts, making space for healing, and offering ourselves and others a little grace.",
+    "streamNotes": "Gentle community theme with room for boundaries and self-compassion."
+  },
+
+  "2026-09-02": {
+    "hashtag": "#BlueberryPopsicleDay",
+    "title": "National Blueberry Popsicle Day",
+    "emoji": "🫐",
+    "category": "Fun",
+    "description": "A tiny late-summer celebration of sweet treats and simple joys.",
+    "streamNotes": "Lighthearted filler day with cozy snack energy."
+  },
+
+  "2026-09-03": {
+    "hashtag": "#BowlingLeagueDay",
+    "title": "U.S. Bowling League Day",
+    "emoji": "🎳",
+    "category": "Fun",
+    "description": "Celebrating bowling leagues, friendly competition, and gathering together for a little play.",
+    "streamNotes": "Cute gaming/community conversation option."
+  },
+
+  "2026-09-04": {
+    "hashtag": "#NationalWildlifeDay",
+    "title": "National Wildlife Day",
+    "emoji": "🦊",
+    "category": "Animals",
+    "description": "Celebrating wildlife while encouraging appreciation, conservation, and protection of the creatures who share our planet.",
+    "streamNotes": "Excellent fit for animal, nature, birding, and cozy-game conversations."
+  },
+
+  "2026-09-05": {
+    "hashtag": "#NationalHummingbirdDay",
+    "title": "National Hummingbird Day",
+    "emoji": "🐦",
+    "category": "Animals",
+    "description": "Celebrating tiny, dazzling hummingbirds and the habitats that help them thrive.",
+    "streamNotes": "Peak Aurora nature and birding energy."
+  },
+
+  "2026-09-06": {
+    "hashtag": "#NationalReadABookDay",
+    "title": "National Read a Book Day",
+    "emoji": "📚",
+    "category": "Cozy",
+    "description": "An invitation to slow down, find a comfortable corner, and spend a little time inside a good story.",
+    "streamNotes": "Perfect Moonbeam Book Club and cozy-reading spotlight."
+  },
+
+  "2026-09-07": {
+    "hashtag": "#CleanAirForBlueSkies",
+    "title": "International Day of Clean Air for Blue Skies",
+    "emoji": "🌤️",
+    "category": "Nature",
+    "description": "A day highlighting the importance of clean air, healthy communities, and protecting our shared atmosphere.",
+    "streamNotes": "UN observance; fits weather, nature, and environmental themes."
+  },
+
+  "2026-09-08": {
+    "hashtag": "#InternationalLiteracyDay",
+    "title": "International Literacy Day",
+    "emoji": "📖",
+    "category": "Awareness",
+    "description": "Celebrating literacy, learning, and the power of reading and writing to connect people with opportunity and one another.",
+    "streamNotes": "UNESCO observance and another wonderful bookish Moonbeam day."
+  },
+
+  "2026-09-09": {
+    "hashtag": "#NationalTeddyBearDay",
+    "title": "National Teddy Bear Day",
+    "emoji": "🧸",
+    "category": "Cozy",
+    "description": "Celebrating teddy bears, comfort objects, childhood memories, and the small things that help us feel safe and cozy.",
+    "streamNotes": "Extremely cozy and sensory-friendly."
+  },
+
+  "2026-09-10": {
+    "hashtag": "#NationalSwapIdeasDay",
+    "title": "National Swap Ideas Day",
+    "emoji": "💡",
+    "category": "Community",
+    "description": "Celebrating curiosity, collaboration, and the magic that happens when people share ideas with one another.",
+    "streamNotes": "Absolutely perfect for a co-working community."
+  },
+
+  "2026-09-11": {
+    "hashtag": "#September11",
+    "title": "Patriot Day and National Day of Service and Remembrance",
+    "emoji": "🕯️",
+    "category": "Remembrance",
+    "description": "A day of remembrance for those lost on September 11 and recognition of service, compassion, and community.",
+    "streamNotes": "Keep the spotlight quiet, respectful, and non-partisan."
+  },
+
+  "2026-09-12": {
+    "hashtag": "#DayOfEncouragement",
+    "title": "National Day of Encouragement",
+    "emoji": "✨",
+    "category": "Kindness",
+    "description": "A day for offering someone a little encouragement, recognizing their effort, and reminding one another that small steps still matter.",
+    "streamNotes": "Possibly the most Moonbeam-coded observance of the month."
+  },
+
+  "2026-09-13": {
+    "hashtag": "#NationalHugYourHoundDay",
+    "title": "National Hug Your Hound Day",
+    "emoji": "🐶",
+    "category": "Animals",
+    "description": "Celebrating the bond we share with our dogs and the comfort, companionship, and joy they bring.",
+    "streamNotes": "Obvious Koda-adjacent spotlight."
+  },
+
+  "2026-09-14": {
+    "hashtag": "#NationalLiveCreativeDay",
+    "title": "National Live Creative Day",
+    "emoji": "🎨",
+    "category": "Creative",
+    "description": "A reminder to make room for imagination, creativity, experimentation, and making things simply because they bring us joy.",
+    "streamNotes": "Excellent fit for art, coding, writing, tarot, and creative co-work."
+  },
+
+  "2026-09-15": {
+    "hashtag": "#InternationalDayOfDemocracy",
+    "title": "International Day of Democracy",
+    "emoji": "🗳️",
+    "category": "Awareness",
+    "description": "Recognizing the importance of participation, representation, human rights, and democratic institutions.",
+    "streamNotes": "UN observance; informational and neutral framing works best."
+  },
+
+  "2026-09-16": {
+    "hashtag": "#OzoneDay",
+    "title": "International Day for the Preservation of the Ozone Layer",
+    "emoji": "🌎",
+    "category": "Nature",
+    "description": "Celebrating global efforts to protect the ozone layer and care for the atmosphere surrounding our planet.",
+    "streamNotes": "UN observance with lovely sky and observatory crossover."
+  },
+
+  "2026-09-17": {
+    "hashtag": "#WorldPatientSafetyDay",
+    "title": "World Patient Safety Day",
+    "emoji": "💛",
+    "category": "Awareness",
+    "description": "A day focused on safer health care, listening to patients, and improving care experiences around the world.",
+    "streamNotes": "WHO observance; gentle accessibility and community-care framing."
+  },
+
+  "2026-09-18": {
+    "hashtag": "#InternationalEqualPayDay",
+    "title": "International Equal Pay Day",
+    "emoji": "⚖️",
+    "category": "Awareness",
+    "description": "Highlighting the importance of equal pay for work of equal value and greater fairness in workplaces around the world.",
+    "streamNotes": "UN observance; especially relevant to the coworking environment."
+  },
+
+  "2026-09-19": {
+    "hashtag": "#TalkLikeAPirateDay",
+    "title": "Talk Like a Pirate Day",
+    "emoji": "🏴‍☠️",
+    "category": "Fun",
+    "description": "A gloriously silly excuse to add a few arrrs, adventures, and questionable nautical vocabulary to the day.",
+    "streamNotes": "Moonbeam chaos goblin day. No further justification required."
+  },
+
+  "2026-09-20": {
+    "hashtag": "#WorldCleanupDay",
+    "title": "World Cleanup Day",
+    "emoji": "🌿",
+    "category": "Nature",
+    "description": "A global day encouraging people to care for shared spaces by reducing litter and helping clean up our communities.",
+    "streamNotes": "UN observance; works with nature, community, or gentle reset themes."
+  },
+
+  "2026-09-21": {
+    "hashtag": "#InternationalDayOfPeace",
+    "title": "International Day of Peace",
+    "emoji": "🕊️",
+    "category": "Kindness",
+    "description": "A global day devoted to peace, compassion, understanding, and imagining gentler ways of sharing our world.",
+    "streamNotes": "UN observance and beautifully aligned with Moonbeam community values."
+  },
+
+  "2026-09-22": {
+    "hashtag": "#AutumnalEquinox",
+    "title": "Autumnal Equinox",
+    "emoji": "🍂",
+    "category": "Cosmic",
+    "description": "Welcoming the turning of the season as daylight and darkness move through their autumn balance.",
+    "streamNotes": "Extremely Aurora-coded. Also Hobbit Day, so this day is basically showing off."
+  },
+
+  "2026-09-23": {
+    "hashtag": "#InternationalDayOfSignLanguages",
+    "title": "International Day of Sign Languages",
+    "emoji": "🤟",
+    "category": "Accessibility",
+    "description": "Celebrating sign languages and recognizing their importance to Deaf communities, culture, communication, and inclusion.",
+    "streamNotes": "UN observance and an excellent accessibility spotlight."
+  },
+
+  "2026-09-24": {
+    "hashtag": "#NationalPunctuationDay",
+    "title": "National Punctuation Day",
+    "emoji": "✍️",
+    "category": "Creative",
+    "description": "A playful celebration of commas, periods, question marks, semicolons, and all the tiny symbols keeping our sentences from becoming complete chaos.",
+    "streamNotes": "Writing, book club, podcast, and chaos-goblin grammar day."
+  },
+
+  "2026-09-25": {
+    "hashtag": "#NationalComicBookDay",
+    "title": "National Comic Book Day",
+    "emoji": "💥",
+    "category": "Creative",
+    "description": "Celebrating illustrated stories, superheroes, graphic novels, artists, writers, and all the worlds waiting between the panels.",
+    "streamNotes": "Great crossover for books, art, fandom, and storytelling."
+  },
+
+  "2026-09-26": {
+    "hashtag": "#NationalGhostHuntingDay",
+    "title": "National Ghost Hunting Day",
+    "emoji": "👻",
+    "category": "Cosmic",
+    "description": "A delightfully spooky day for ghost stories, paranormal curiosity, mysterious places, and things that go bump in the night.",
+    "streamNotes": "Cosmo would like it formally noted that this is his holiday."
+  },
+
+  "2026-09-27": {
+    "hashtag": "#NationalDayOfForgiveness",
+    "title": "National Day of Forgiveness",
+    "emoji": "🤍",
+    "category": "Kindness",
+    "description": "A gentle reminder that forgiveness, when it feels safe and appropriate, can sometimes be part of healing and moving forward.",
+    "streamNotes": "Keep boundary-friendly: forgiveness is never framed as an obligation."
+  },
+
+  "2026-09-28": {
+    "hashtag": "#NationalGoodNeighborDay",
+    "title": "National Good Neighbor Day",
+    "emoji": "🏡",
+    "category": "Community",
+    "description": "Celebrating kindness, connection, and the little ways we can make the communities around us feel more welcoming.",
+    "streamNotes": "Lovely community and connection spotlight."
+  },
+
+  "2026-09-29": {
+    "hashtag": "#NationalCoffeeDay",
+    "title": "National Coffee Day",
+    "emoji": "☕",
+    "category": "Cozy",
+    "description": "Celebrating warm mugs, favorite brews, comforting rituals, and the magic of spending a little time together over coffee.",
+    "streamNotes": "This may actually be an official Aurora Moon high holy day."
+  },
+
+  "2026-09-30": {
+    "hashtag": "#InternationalTranslationDay",
+    "title": "International Translation Day",
+    "emoji": "🌍",
+    "category": "Community",
+    "description": "Celebrating the people who help language, stories, ideas, and understanding travel across cultures and communities.",
+    "streamNotes": "UN observance; especially fitting for an international Moonbeam community."
   }
 }
