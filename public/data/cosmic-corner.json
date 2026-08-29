@@ -12,11 +12,10 @@
   "end": 21,
   "fallback": true,
 
- "top8": true,
   "top8Order": 1,
   "emoji": "🌌",
   "deskLabel": "☀️ Day Shift Desk",
-  "description": "misfit energy, night owl orbit, cozy chaos, and companionable late-night vibes"
+  "description": ""description": "cozy spoonie coworking, tarot vibes, admin chaos, and stardust scattering""
 },
 
   {
@@ -31,7 +30,6 @@
   "start": 21,
   "end": 2,
 
- "top8": true,
   "top8Order": 2,
   "emoji": "🌌",
   "deskLabel": "🌙 Night Shift Desk",
@@ -50,7 +48,6 @@
   "start": 7,
   "end": 22,
 
- "top8": true,
   "top8Order": 3,
   "emoji": "💤",
   "deskLabel": "🥄 Low-Spoon Orbit",
