@@ -14,7 +14,7 @@
 
   "top8": true,
   "top8Order": 1,
-  "emoji": "🌌",
+  "emoji": "🌙",
   "deskLabel": "☀️ Day Shift Desk",
   "description": "cozy spoonie coworking, tarot vibes, admin chaos, and stardust scattering"
 },
@@ -43,7 +43,7 @@
   "url": "https://twitch.tv/seaturtlelove",
   "twitch": "seaturtlelove",
   "shift": "Low Spoon Orbit",
-  "vibe": "reef relaxation +spoon conservation",
+  "vibe": "reef relaxation + spoon conservation",
   "statusText": "🥄 low spoon orbit co-work currently active",
   "command": "!orbit",
   "timezone": "America/Chicago",

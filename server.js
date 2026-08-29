@@ -27,10 +27,12 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 3000;
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.json());
+/* CORS needs to come before static files */
 app.use(cors());
 
+app.use(express.json());
+
+app.use(express.static(path.join(__dirname, "public")));
 // ==========================
 // RSS SINGLE-FEED ROUTE
 // ==========================
