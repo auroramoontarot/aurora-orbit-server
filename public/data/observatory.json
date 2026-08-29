@@ -1,15 +1,15 @@
 {
-  "updated": "2026-08-29T16:31:50.395Z",
+  "updated": "2026-08-29T16:40:50.492Z",
   "calendar": {
     "current": {
       "emoji": "✨",
       "title": "Spirit Saturday",
-      "subtitle": "Ends in 12h 28m"
+      "subtitle": "Ends in 12h 19m"
     },
     "next": {
       "emoji": "🌙",
       "title": "Spoonbeam Self-Care",
-      "subtitle": "Begins in 3h 58m"
+      "subtitle": "Begins in 3h 49m"
     }
   },
   "sky": {
@@ -29,9 +29,9 @@
   },
   "moon": {
     "phase": "Waning Gibbous",
-    "illumination": 98,
+    "illumination": 97,
     "visible": false,
-    "altitude": -32.46523046751133,
+    "altitude": -33.61396335166982,
     "rise": "2026-08-29T01:07:56.648Z",
     "set": "2026-08-29T13:07:00.655Z"
   },
