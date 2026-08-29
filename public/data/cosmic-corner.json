@@ -4,13 +4,19 @@
   "url": "https://twitch.tv/auroramoontarot",
   "twitch": "auroramoontarot",
   "shift": "Day Shift",
-  "vibe": "spoonie cowork + stardust",
+  "vibe": "spoonie co-work + stardust",
   "statusText": "☕ spoonie co-work in progress",
   "command": "!orbit",
   "timezone": "America/Chicago",
   "start": 9,
   "end": 21,
-  "fallback": true
+  "fallback": true,
+
+ "top8": true,
+  "top8Order": 1,
+  "emoji": "🌌",
+  "deskLabel": "☀️ Day Shift Desk",
+  "description": "misfit energy, night owl orbit, cozy chaos, and companionable late-night vibes"
 },
 
   {
@@ -23,6 +29,31 @@
   "command": "!orbit",
   "timezone": "America/Chicago",
   "start": 21,
-  "end": 2
+  "end": 2,
+
+ "top8": true,
+  "top8Order": 2,
+  "emoji": "🌌",
+  "deskLabel": "🌙 Night Shift Desk",
+  "description": "misfit energy, night owl orbit, cozy chaos, and companionable late-night vibes"
+},
+
+  {
+  "name": "Seaturtlelove",
+  "url": "https://twitch.tv/seaturtlelove",
+  "twitch": "seaturtlelove",
+  "shift": "Low Spoon Orbit",
+  "vibe": "reef relaxation +spoon conservation",
+  "statusText": "🥄 low spoon orbit co-work currently active",
+  "command": "!orbit",
+  "timezone": "America/Chicago",
+  "start": 7,
+  "end": 22,
+
+ "top8": true,
+  "top8Order": 2,
+  "emoji": "💤",
+  "deskLabel": "🥄 Low-Spoon Orbit",
+  "description": "gentle spaces for soft productivity, rest-friendly streams, and no-pressure company"
 }
 ]

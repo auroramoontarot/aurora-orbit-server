@@ -46,65 +46,60 @@
     color:var(--soft);
   }
 
-  .corner-widget{
+.corner-widget{
+  width:340px;
+  height:225px;
 
-    width:340px;
-    height:275px;
-   
-    padding:7px;
+  padding:0;
 
-    border:2px solid var(--line);
+  border:2px solid var(--line);
+  border-radius:20px;
 
-    border-radius:12px;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(127,135,255,.26),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(0,169,186,.22),
+      transparent 32%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(43,39,114,.96),
+      var(--panel)
+    );
 
-    background:
-      radial-gradient(
-        circle at 20% 20%,
-        rgba(127,135,255,.26),
-        transparent 30%
-      ),
+  backdrop-filter:blur(10px);
 
-      radial-gradient(
-        circle at 80% 10%,
-        rgba(0,169,186,.22),
-        transparent 32%
-      ),
+  box-shadow:
+    0 0 18px rgba(0,169,186,.22),
+    inset 0 0 14px rgba(203,236,245,.08);
 
-      linear-gradient(
-        145deg,
-        rgba(43,39,114,.96),
-        var(--panel)
-      );
+  position:relative;
+  overflow:hidden;
+}
 
-    backdrop-filter:blur(10px);
+.orbit-card{
+  position:relative;
+  z-index:2;
 
-    box-shadow:
-      0 0 18px rgba(0,169,186,.22),
-      inset 0 0 14px rgba(203,236,245,.08);
+  width:100%;
+  height:100%;
 
-    position:relative;
+  padding:7px;
 
-    overflow:hidden;
-  }
+  /* Let the OUTER widget make the corners */
+  border-radius:12px;
 
-  .corner-widget::before{
-    content:"";
+  background:rgba(255,255,255,.05);
 
-    position:absolute;
-    inset:0;
+  border:none;
 
-    background-image:
-      radial-gradient(
-        rgba(255,255,255,.65) 1px,
-        transparent 1px
-      );
-
-    background-size:34px 34px;
-
-    opacity:.08;
-
-    pointer-events:none;
-  }
+  text-align:center;
+}
 
   .top-row{
     display:flex;
@@ -114,7 +109,7 @@
     position:relative;
     z-index:2;
 
-    margin-bottom:12px;
+    margin-bottom:10px;
   }
 
   .title{
@@ -146,21 +141,6 @@
     letter-spacing:.08em;
 
     font-weight:700;
-  }
-
-  .orbit-card{
-    position:relative;
-    z-index:2;
-
-    padding:7px;
-
-    border-radius:14px;
-
-    background:rgba(255,255,255,.05);
-
-    border:1px solid rgba(203,236,245,.14);
-
-    text-align:center;
   }
 
   .current-label{
@@ -245,22 +225,10 @@
 
 <div class="corner-widget">
 
-  <div class="top-row">
-
-    <div class="title">
-      ☄ Cosmic Co-Work Corner
-    </div>
-
-    <div class="badge">
-      !ORBIT
-    </div>
-
-  </div>
-
   <div class="orbit-card">
 
     <div class="current-label">
-      COSMIC CORNER ORBIT
+      COSMIC CO-WORK CORNER
     </div>
 
     <div class="creator-name" id="creatorName">

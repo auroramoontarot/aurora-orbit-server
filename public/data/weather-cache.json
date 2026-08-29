@@ -1,34 +1,34 @@
 {
   "source": "wu-live",
-  "fetchedAt": "2026-08-28T14:23:11.219Z",
+  "fetchedAt": "2026-08-29T16:27:47.814Z",
   "data": {
     "observations": [
       {
         "stationID": "KMNSTLOU35",
-        "obsTimeUtc": "2026-08-28T14:24:01Z",
-        "obsTimeLocal": "2026-08-28 09:24:01",
+        "obsTimeUtc": "2026-08-29T16:29:00Z",
+        "obsTimeLocal": "2026-08-29 11:29:00",
         "neighborhood": "Meadowbrook",
         "softwareType": "myAcuRite",
         "country": "US",
         "solarRadiation": null,
         "lon": -93.369,
         "realtimeFrequency": null,
-        "epoch": 1787927041,
+        "epoch": 1788020940,
         "lat": 44.929,
         "uv": null,
-        "winddir": 270,
-        "humidity": 63,
+        "winddir": 90,
+        "humidity": 72,
         "qcStatus": 1,
         "imperial": {
-          "temp": 73,
-          "heatIndex": 72,
-          "dewpt": 60,
-          "windChill": 73,
-          "windSpeed": 1,
-          "windGust": 2,
-          "pressure": 30.1,
+          "temp": 78,
+          "heatIndex": 79,
+          "dewpt": 68,
+          "windChill": 78,
+          "windSpeed": 2,
+          "windGust": 7,
+          "pressure": 29.85,
           "precipRate": 0,
-          "precipTotal": 0,
+          "precipTotal": 0.3,
           "elev": 889
         }
       }

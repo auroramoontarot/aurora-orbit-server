@@ -1,17 +1,77 @@
 {
-  "updatedAt": "2026-08-21T19:15:52.780Z",
+  "updatedAt": "2026-08-28T19:41:00.589Z",
   "draws": [
     {
-      "id": "1787339752780-7vwha0",
-      "deck": "Tarot",
-      "title": "Eight of Wands",
-      "keyword": "Momentum • Spark • Purpose • Creative Fire",
-      "message": "Progress is happening. Stay present with the rhythm instead of rushing the result. In the realm of wands, your fire medicine is asking to be honored.",
-      "action": "Scatter stardust: move one spark from idea into action.",
-      "symbol": "🔥",
+      "id": "1787946060589-7xrs26",
+      "deck": "Oracle",
+      "title": "Water the Human",
+      "keyword": "Care",
+      "message": "Your body is not a machine for producing worth. It is a living altar.",
+      "action": "Scatter stardust: drink water, eat something, or unclench your jaw.",
+      "symbol": "💧",
       "position": "",
       "spread": "",
-      "time": "2026-08-21T19:15:52.780Z"
+      "time": "2026-08-28T19:41:00.589Z"
+    },
+    {
+      "id": "1787945907930-93xixy",
+      "deck": "Oracle",
+      "title": "Justice Star",
+      "keyword": "Advocacy",
+      "message": "Care becomes power when it reaches beyond the self.",
+      "action": "Scatter stardust: amplify a voice, cause, or community that needs support.",
+      "symbol": "⚖️",
+      "position": "",
+      "spread": "",
+      "time": "2026-08-28T19:38:27.930Z"
+    },
+    {
+      "id": "1787945822806-sk5s94",
+      "deck": "Oracle",
+      "title": "Gentle Mirror",
+      "keyword": "Self-Compassion",
+      "message": "Speak to yourself like someone you are trying to keep alive and loved.",
+      "action": "Scatter stardust: replace one harsh thought with a kinder truth.",
+      "symbol": "🪞",
+      "position": "",
+      "spread": "",
+      "time": "2026-08-28T19:37:02.806Z"
+    },
+    {
+      "id": "1787945739851-fragq7",
+      "deck": "Oracle",
+      "title": "Wish With Feet",
+      "keyword": "Action",
+      "message": "A wish becomes magic when it grows legs.",
+      "action": "Scatter stardust: turn one hope into one doable action.",
+      "symbol": "🌠",
+      "position": "",
+      "spread": "",
+      "time": "2026-08-28T19:35:39.851Z"
+    },
+    {
+      "id": "1787945728819-gbants",
+      "deck": "Oracle",
+      "title": "Cosmic Detour",
+      "keyword": "Play",
+      "message": "The scenic route may reveal the medicine you missed while rushing.",
+      "action": "Scatter stardust: let yourself be playful for five minutes.",
+      "symbol": "🛸",
+      "position": "",
+      "spread": "",
+      "time": "2026-08-28T19:35:28.819Z"
+    },
+    {
+      "id": "1787945599247-i24nel",
+      "deck": "Oracle",
+      "title": "Moonbeam Ripple",
+      "keyword": "Impact",
+      "message": "You may never see every ripple your kindness creates. Create it anyway.",
+      "action": "Scatter stardust: do one good thing without needing credit.",
+      "symbol": "💫",
+      "position": "",
+      "spread": "",
+      "time": "2026-08-28T19:33:19.247Z"
     }
   ]
 }

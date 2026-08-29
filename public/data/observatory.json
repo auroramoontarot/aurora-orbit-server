@@ -1,15 +1,15 @@
 {
-  "updated": "2026-08-28T14:26:19.576Z",
+  "updated": "2026-08-29T16:31:50.395Z",
   "calendar": {
     "current": {
-      "emoji": "🌿",
-      "title": "Morning Ritual Hour",
-      "subtitle": "Ends in 33m"
+      "emoji": "✨",
+      "title": "Spirit Saturday",
+      "subtitle": "Ends in 12h 28m"
     },
     "next": {
       "emoji": "🌙",
       "title": "Spoonbeam Self-Care",
-      "subtitle": "Begins in 3m"
+      "subtitle": "Begins in 3h 58m"
     }
   },
   "sky": {
@@ -19,21 +19,21 @@
     "isTwilight": true
   },
   "sun": {
-    "sunrise": "2026-08-28T11:30:53.226Z",
-    "sunset": "2026-08-29T00:57:24.825Z",
-    "solarNoon": "2026-08-28T18:14:34.004Z",
-    "dawn": "2026-08-28T11:00:16.379Z",
-    "dusk": "2026-08-29T01:27:54.810Z",
-    "goldenHour": "2026-08-29T00:18:07.700Z",
-    "goldenHourEnd": "2026-08-28T12:10:17.253Z"
+    "sunrise": "2026-08-29T11:32:04.549Z",
+    "sunset": "2026-08-30T00:55:37.380Z",
+    "solarNoon": "2026-08-29T18:14:15.939Z",
+    "dawn": "2026-08-29T11:01:32.787Z",
+    "dusk": "2026-08-30T01:26:02.380Z",
+    "goldenHour": "2026-08-30T00:16:24.142Z",
+    "goldenHourEnd": "2026-08-29T12:11:24.604Z"
   },
   "moon": {
-    "phase": "Full Moon",
-    "illumination": 100,
+    "phase": "Waning Gibbous",
+    "illumination": 98,
     "visible": false,
-    "altitude": -25.21180505697513,
-    "rise": "2026-08-28T00:49:29.559Z",
-    "set": "2026-08-28T11:57:02.127Z"
+    "altitude": -32.46523046751133,
+    "rise": "2026-08-29T01:07:56.648Z",
+    "set": "2026-08-29T13:07:00.655Z"
   },
   "magic": {
     "auroraChance": 0,
