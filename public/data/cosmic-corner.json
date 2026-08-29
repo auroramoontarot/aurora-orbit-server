@@ -12,6 +12,7 @@
   "end": 21,
   "fallback": true,
 
+  "top8": true,
   "top8Order": 1,
   "emoji": "🌌",
   "deskLabel": "☀️ Day Shift Desk",
@@ -30,6 +31,7 @@
   "start": 21,
   "end": 2,
 
+  "top8": true,  
   "top8Order": 2,
   "emoji": "🌌",
   "deskLabel": "🌙 Night Shift Desk",
@@ -48,6 +50,7 @@
   "start": 7,
   "end": 22,
 
+  "top8": true,
   "top8Order": 3,
   "emoji": "💤",
   "deskLabel": "🥄 Low-Spoon Orbit",
