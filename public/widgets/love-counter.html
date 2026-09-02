@@ -6,64 +6,103 @@
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+:root{
+  --lavender:#7f87ff;
+  --teal:#00a9ba;
+  --ice:#cbecf5;
+  --soft:#c6c7f8;
+  --deep:#2b2772;
+  --gold:#f6b437;
+}
+
+html,
 body{
   margin:0;
+  width:100%;
+  height:100%;
   background:transparent;
   font-family:'Quicksand', sans-serif;
   overflow:hidden;
 }
 
-/* CONTAINER — MATCHES MAIN PANEL SYSTEM */
+/* ============================================================
+   MAIN CONTAINER
+   ============================================================ */
+
 #loveCounter{
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
 
-  padding:12px 12px;
+  min-width:250px;
+
+  padding:12px 18px;
+
   border-radius:14px;
+
   font-weight:700;
-  color:#cbecf5;
+  color:var(--ice);
 
-  /* GLASS BASE */
   background:rgba(30,40,75,.35);
-  border: 1px solid rgba(255,255,255,.14);
 
-  backdrop-filter: blur(18px) saturate(1.25);
-  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  border:1px solid rgba(255,255,255,.14);
+
+  backdrop-filter:blur(18px) saturate(1.25);
+  -webkit-backdrop-filter:blur(18px) saturate(1.25);
 
   box-shadow:
     0 8px 22px rgba(0,0,0,.18),
     0 0 10px rgba(127,135,255,.12);
 
   text-align:center;
+
   overflow:hidden;
   isolation:isolate;
+
+  transition:
+    border-color 1s ease,
+    box-shadow 1s ease,
+    background 1s ease;
 }
 
-/* GLASS SHINE (TOP LIGHT) */
+
+/* ============================================================
+   GLASS SHINE
+   ============================================================ */
+
 #loveCounter::after{
   content:"";
+
   position:absolute;
   inset:0;
+
   border-radius:14px;
 
-  background: linear-gradient(
+  background:linear-gradient(
     to bottom,
     rgba(255,255,255,.22),
     rgba(255,255,255,.05) 35%,
     transparent 65%
   );
+
+  pointer-events:none;
 }
 
-/* GLASS EDGE LIGHT */
+
+/* ============================================================
+   GLASS EDGE LIGHT
+   ============================================================ */
+
 #loveCounter::before{
   content:"";
+
   position:absolute;
   inset:0;
+
   border-radius:14px;
 
-  background: linear-gradient(
+  background:linear-gradient(
     120deg,
     rgba(255,255,255,.14),
     rgba(255,255,255,.04),
@@ -71,12 +110,19 @@ body{
   );
 
   opacity:.45;
+
+  pointer-events:none;
 }
 
-/* TWINKLE LAYER */
+
+/* ============================================================
+   NORMAL TWINKLES
+   ============================================================ */
+
 .twinkle{
   position:absolute;
   inset:0;
+
   pointer-events:none;
 
   background:
@@ -86,89 +132,612 @@ body{
     radial-gradient(circle at 28% 78%, rgba(203,236,245,.7) 0 1px, transparent 2px);
 
   opacity:.25;
+
   animation:twinkle 9s ease-in-out infinite;
+
   z-index:1;
 }
 
+
 @keyframes twinkle{
-  0%,100%{opacity:.18}
-  50%{opacity:.45}
+
+  0%,
+  100%{
+    opacity:.18;
+  }
+
+  50%{
+    opacity:.45;
+  }
 }
 
-/* TEXT ABOVE EFFECTS */
+
+/* ============================================================
+   FLOATING ANNIVERSARY STARS
+   ============================================================ */
+
+.starfield{
+  position:absolute;
+  inset:0;
+
+  pointer-events:none;
+
+  overflow:hidden;
+
+  z-index:1;
+
+  opacity:0;
+
+  transition:opacity 1s ease;
+}
+
+
+.star{
+  position:absolute;
+
+  bottom:-18px;
+
+  font-size:11px;
+
+  opacity:0;
+
+  color:var(--ice);
+
+  text-shadow:
+    0 0 6px var(--teal),
+    0 0 12px var(--lavender);
+
+  animation:floatStar 7s linear infinite;
+}
+
+
+.star:nth-child(1){
+  left:8%;
+  animation-delay:0s;
+}
+
+.star:nth-child(2){
+  left:22%;
+  animation-delay:2.4s;
+}
+
+.star:nth-child(3){
+  left:38%;
+  animation-delay:4.8s;
+}
+
+.star:nth-child(4){
+  left:57%;
+  animation-delay:1.3s;
+}
+
+.star:nth-child(5){
+  left:73%;
+  animation-delay:3.6s;
+}
+
+.star:nth-child(6){
+  left:90%;
+  animation-delay:5.5s;
+}
+
+
+@keyframes floatStar{
+
+  0%{
+    transform:translateY(0) scale(.6);
+    opacity:0;
+  }
+
+  15%{
+    opacity:.65;
+  }
+
+  70%{
+    opacity:.35;
+  }
+
+  100%{
+    transform:translateY(-210px) scale(1.1);
+    opacity:0;
+  }
+}
+
+
+/* ============================================================
+   TEXT ABOVE EFFECTS
+   ============================================================ */
+
 #loveCounter > *{
   position:relative;
   z-index:2;
 }
 
-/* TEXT STYLING */
+
+/* ============================================================
+   TEXT
+   ============================================================ */
+
 .names{
   font-size:28px;
+
   letter-spacing:1.5px;
-  opacity:.8;
+
+  opacity:.82;
+
   margin-bottom:5px;
 }
 
+
 .days{
   font-size:40px;
+
   font-weight:600;
-  text-shadow:0 0 20px #00a9ba;
+
+  text-shadow:
+    0 0 20px var(--teal);
 }
+
 
 .label{
   font-size:22px;
+
   opacity:.75;
+
   margin-top:5px;
 }
 
+
 .since{
   margin-top:1px;
+
   font-size:18px;
+
   opacity:.6;
 }
+
+
+.special{
+  display:none;
+
+  margin-top:7px;
+
+  font-size:18px;
+
+  color:var(--soft);
+
+  letter-spacing:.5px;
+
+  text-shadow:
+    0 0 8px rgba(127,135,255,.6);
+}
+
+
+/* ============================================================
+   ANNIVERSARY MODE
+   ============================================================ */
+
+#loveCounter.anniversary{
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43,39,114,.5),
+      rgba(0,169,186,.18),
+      rgba(127,135,255,.32)
+    );
+
+  border-color:rgba(203,236,245,.45);
+
+  animation:anniversaryGlow 4s ease-in-out infinite;
+}
+
+
+@keyframes anniversaryGlow{
+
+  0%,
+  100%{
+    box-shadow:
+      0 8px 22px rgba(0,0,0,.18),
+      0 0 12px rgba(127,135,255,.3),
+      0 0 22px rgba(0,169,186,.12);
+  }
+
+  50%{
+    box-shadow:
+      0 8px 22px rgba(0,0,0,.18),
+      0 0 20px rgba(127,135,255,.55),
+      0 0 35px rgba(0,169,186,.28);
+  }
+}
+
+
+#loveCounter.anniversary .starfield{
+  opacity:1;
+}
+
+
+#loveCounter.anniversary .twinkle{
+  animation-duration:4s;
+  opacity:.5;
+}
+
+
+#loveCounter.anniversary .names{
+  animation:nameShimmer 4s ease-in-out infinite;
+}
+
+
+@keyframes nameShimmer{
+
+  0%,
+  100%{
+    text-shadow:
+      0 0 4px rgba(203,236,245,.2);
+  }
+
+  50%{
+    text-shadow:
+      0 0 8px rgba(203,236,245,.6),
+      0 0 14px rgba(127,135,255,.45);
+  }
+}
+
+
+#loveCounter.anniversary .special{
+  display:block;
+
+  animation:specialGlow 3s ease-in-out infinite;
+}
+
+
+@keyframes specialGlow{
+
+  0%,
+  100%{
+    opacity:.7;
+  }
+
+  50%{
+    opacity:1;
+  }
+}
+
+
+/* ============================================================
+   MILESTONE MODE
+   ============================================================ */
+
+#loveCounter.milestone{
+  border-color:rgba(246,180,55,.32);
+
+  box-shadow:
+    0 8px 22px rgba(0,0,0,.18),
+    0 0 15px rgba(246,180,55,.17),
+    0 0 20px rgba(127,135,255,.12);
+}
+
+
+#loveCounter.milestone .special{
+  display:block;
+
+  color:#f7db9d;
+}
+
+
+/* ============================================================
+   MONTHIVERSARY — SUBTLE
+   ============================================================ */
+
+#loveCounter.monthiversary .twinkle{
+  opacity:.42;
+}
+
 </style>
 </head>
 
+
 <body>
 
+
 <div id="loveCounter">
-  <div class="names">Aurora ✨ Jacob</div>
+
+  <!-- standard subtle star layer -->
+  <div class="twinkle"></div>
+
+
+  <!-- anniversary floating stars -->
+  <div class="starfield">
+
+    <span class="star">✦</span>
+    <span class="star">✧</span>
+    <span class="star">✦</span>
+    <span class="star">⋆</span>
+    <span class="star">✧</span>
+    <span class="star">✦</span>
+
+  </div>
+
+
+  <div class="names">
+    Aurora ✨ Jacob
+  </div>
+
 
   <div class="days">
     <span id="days">0</span>
   </div>
 
-  <div class="label">days together</div>
-<div class="since">Prairie Fyre</div>
+
+  <div class="label" id="mainLabel">
+    days together
+  </div>
+
+
+  <div class="since" id="placeText">
+    Prairie Fyre
+  </div>
+
+
   <div class="since" id="sinceText"></div>
+
+
+  <div class="special" id="specialText"></div>
+
 </div>
 
+
+
 <script>
+
+/* ============================================================
+   🌙 AURORA + JACOB RELATIONSHIP COUNTER
+   ============================================================ */
+
 const anniversary = "2022-09-02";
 
+const counter = document.getElementById("loveCounter");
+
+const daysElement =
+  document.getElementById("days");
+
+const mainLabel =
+  document.getElementById("mainLabel");
+
+const placeText =
+  document.getElementById("placeText");
+
+const sinceText =
+  document.getElementById("sinceText");
+
+const specialText =
+  document.getElementById("specialText");
+
+
+
+/* ============================================================
+   DATE FORMATTING
+   ============================================================ */
+
 function formatDate(dateStr){
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString(undefined, {
-    year:'numeric',
-    month:'long',
-    day:'numeric'
-  });
+
+  const d =
+    new Date(dateStr + "T00:00:00");
+
+  return d.toLocaleDateString(
+    undefined,
+    {
+      year:"numeric",
+      month:"long",
+      day:"numeric"
+    }
+  );
 }
+
+
+
+/* ============================================================
+   CALCULATE DAY DIFFERENCE
+   Uses local calendar dates so DST doesn't mess with the count
+   ============================================================ */
+
+function getDaysTogether(startDate, currentDate){
+
+  const startUTC =
+    Date.UTC(
+      startDate.getFullYear(),
+      startDate.getMonth(),
+      startDate.getDate()
+    );
+
+  const nowUTC =
+    Date.UTC(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate()
+    );
+
+  return Math.floor(
+    (nowUTC - startUTC) /
+    (1000 * 60 * 60 * 24)
+  );
+}
+
+
+
+/* ============================================================
+   UPDATE WIDGET
+   ============================================================ */
 
 function update(){
-  const start = new Date(anniversary + "T00:00:00");
-  const now = new Date();
 
-  const diff = now - start;
-  const days = Math.floor(diff / (1000*60*60*24));
+  const start =
+    new Date(anniversary + "T00:00:00");
 
-  document.getElementById("days").textContent = days >= 0 ? days : 0;
-  document.getElementById("sinceText").textContent = "" + formatDate(anniversary);
+  const now =
+    new Date();
+
+
+  const days =
+    getDaysTogether(start, now);
+
+
+  const anniversaryMonth =
+    start.getMonth();
+
+  const anniversaryDay =
+    start.getDate();
+
+
+  const currentMonth =
+    now.getMonth();
+
+  const currentDay =
+    now.getDate();
+
+
+  const yearsTogether =
+    now.getFullYear() -
+    start.getFullYear();
+
+
+  /* ----------------------------------------
+     Reset modes first
+     ---------------------------------------- */
+
+  counter.classList.remove(
+    "anniversary",
+    "milestone",
+    "monthiversary"
+  );
+
+
+  daysElement.textContent =
+    days >= 0 ? days : 0;
+
+
+  mainLabel.textContent =
+    "days together";
+
+
+  placeText.textContent =
+    "Prairie Fyre";
+
+
+  sinceText.textContent =
+    formatDate(anniversary);
+
+
+  specialText.textContent =
+    "";
+
+
+  /* ========================================================
+     ✨ ANNIVERSARY MODE
+     ======================================================== */
+
+  if(
+    currentMonth === anniversaryMonth &&
+    currentDay === anniversaryDay &&
+    yearsTogether > 0
+  ){
+
+    counter.classList.add(
+      "anniversary"
+    );
+
+
+    daysElement.textContent =
+      yearsTogether;
+
+
+    mainLabel.textContent =
+      yearsTogether === 1
+        ? "year in orbit"
+        : "years in orbit";
+
+
+    placeText.textContent =
+      days + " days together";
+
+
+    sinceText.textContent =
+      "Prairie Fyre • " +
+      formatDate(anniversary);
+
+
+    specialText.textContent =
+      "✨ Happy Anniversary ✨";
+
+
+    return;
+  }
+
+
+
+  /* ========================================================
+     🌙 MONTHIVERSARY
+     Every 2nd of the month
+     ======================================================== */
+
+  if(
+    currentDay === anniversaryDay
+  ){
+
+    counter.classList.add(
+      "monthiversary"
+    );
+  }
+
+
+
+  /* ========================================================
+     🌟 MAJOR DAY MILESTONES
+     500, 1000, 1500, 2000, etc.
+     ======================================================== */
+
+  if(
+    days > 0 &&
+    days % 500 === 0
+  ){
+
+    counter.classList.add(
+      "milestone"
+    );
+
+
+    specialText.textContent =
+      "✨ " +
+      days +
+      " days in orbit ✨";
+  }
+
 }
 
+
+
+/* ============================================================
+   INITIALIZE
+   ============================================================ */
+
 update();
-setInterval(update, 60*60*1000);
+
+
+
+/* ============================================================
+   CHECK EVERY 15 MINUTES
+
+   This means it automatically changes shortly after midnight
+   without needing OBS/browser source refresh.
+   ============================================================ */
+
+setInterval(
+  update,
+  15 * 60 * 1000
+);
+
 </script>
+
 
 </body>
 </html>

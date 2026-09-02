@@ -1,17 +1,18 @@
 {
   "users": {
     "AuroraMoonTarot": {
-      "booksCollected": 5,
+      "booksCollected": 6,
       "collection": [
         "love-hypothesis",
         "emily-wilde-1",
         "prayer-crown-shy",
         "wintering",
-        "coraline"
+        "coraline",
+        "vacation"
       ]
     },
     "AstreaStardust": {
-      "booksCollected": 34,
+      "booksCollected": 37,
       "collection": [
         "prayer-crown-shy",
         "long-way-angry-planet",
@@ -46,7 +47,10 @@
         "midnight-library",
         "atomic-habits",
         "coraline",
-        "nettle-bone"
+        "nettle-bone",
+        "spellshop",
+        "enchanted-april",
+        "vacation"
       ]
     },
     "Sailor_Moon_Kitty": {

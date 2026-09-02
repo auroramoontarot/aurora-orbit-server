@@ -1,15 +1,15 @@
 {
-  "updated": "2026-08-29T17:26:54.327Z",
+  "updated": "2026-09-02T16:36:56.447Z",
   "calendar": {
     "current": {
-      "emoji": "✨",
-      "title": "Spirit Saturday",
-      "subtitle": "Ends in 11h 33m"
+      "emoji": "💻",
+      "title": "Cosmic Co-Work Corner",
+      "subtitle": "Ends in 2h 23m"
     },
     "next": {
-      "emoji": "🌙",
-      "title": "Spoonbeam Self-Care",
-      "subtitle": "Begins in 3h 3m"
+      "emoji": "⚡",
+      "title": "Wander Wednesday",
+      "subtitle": "Begins in 2h 23m"
     }
   },
   "sky": {
@@ -19,21 +19,21 @@
     "isTwilight": true
   },
   "sun": {
-    "sunrise": "2026-08-29T11:32:04.549Z",
-    "sunset": "2026-08-30T00:55:37.380Z",
-    "solarNoon": "2026-08-29T18:14:15.939Z",
-    "dawn": "2026-08-29T11:01:32.787Z",
-    "dusk": "2026-08-30T01:26:02.380Z",
-    "goldenHour": "2026-08-30T00:16:24.142Z",
-    "goldenHourEnd": "2026-08-29T12:11:24.604Z"
+    "sunrise": "2026-09-02T11:36:49.567Z",
+    "sunset": "2026-09-03T00:48:21.537Z",
+    "solarNoon": "2026-09-02T18:13:00.457Z",
+    "dawn": "2026-09-02T11:06:36.601Z",
+    "dusk": "2026-09-03T01:18:28.146Z",
+    "goldenHour": "2026-09-03T00:09:22.060Z",
+    "goldenHourEnd": "2026-09-02T12:15:55.504Z"
   },
   "moon": {
     "phase": "Waning Gibbous",
-    "illumination": 97,
-    "visible": false,
-    "altitude": -38.81086975984322,
-    "rise": "2026-08-29T01:07:56.648Z",
-    "set": "2026-08-29T13:07:00.655Z"
+    "illumination": 68,
+    "visible": true,
+    "altitude": 12.755559565463786,
+    "rise": "2026-09-02T02:31:30.928Z",
+    "set": "2026-09-02T18:06:04.068Z"
   },
   "magic": {
     "auroraChance": 0,

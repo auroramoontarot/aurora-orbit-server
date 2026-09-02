@@ -88,28 +88,100 @@ setInterval(loadObservatory,60000);
 
 async function updateObservatoryTemp() {
   try {
-    const weather = await fetch("/weather?nocache=" + Date.now()).then(r => r.json());
 
-    let temp = null;
+    const weather = await fetch(
+      "/weather?nocache=" + Date.now()
+    ).then(r => r.json());
+
+    let tempF = null;
+    let tempC = null;
+
+
+    // ------------------------------------------------------------
+    // 🌡️ WEATHER UNDERGROUND / OBSERVATION FORMAT
+    // ------------------------------------------------------------
 
     if (weather?.observations?.[0]) {
+
       const obs = weather.observations[0];
-      temp = obs?.imperial?.temp ?? null;
+
+      tempF = obs?.imperial?.temp ?? null;
+
+      // Use metric value if the API already provides it
+      tempC = obs?.metric?.temp ?? null;
+
+
+    // ------------------------------------------------------------
+    // 🌡️ FALLBACK WEATHER FORMAT
+    // ------------------------------------------------------------
 
     } else if (weather?.current) {
-      temp = weather.current.temp ?? null;
+
+      tempF = weather.current.temp ?? null;
+
     }
 
-    console.log("Observatory temp:", temp);
 
-    document.getElementById("observatoryTemp").textContent =
-      `${temp ?? "--"}°`;
+    // ------------------------------------------------------------
+    // 🌍 CALCULATE CELSIUS IF NEEDED
+    // ------------------------------------------------------------
+
+    if (tempF !== null && tempC === null) {
+
+      tempC = Math.round(
+        (tempF - 32) * 5 / 9
+      );
+
+    }
+
+
+    console.log(
+      "Observatory temp:",
+      tempF,
+      tempC
+    );
+
+
+    // ------------------------------------------------------------
+    // ✨ DISPLAY
+    // ------------------------------------------------------------
+
+    const tempElement =
+      document.getElementById("observatoryTemp");
+
+
+    if (tempF !== null) {
+
+      tempElement.textContent =
+        `${Math.round(tempF)}°F • ${Math.round(tempC)}°C`;
+
+    } else {
+
+      tempElement.textContent =
+        "--°F • --°C";
+
+    }
+
 
   } catch (error) {
-    console.error("Observatory temp error:", error);
-    document.getElementById("observatoryTemp").textContent = "--°";
+
+    console.error(
+      "Observatory temp error:",
+      error
+    );
+
+    document.getElementById(
+      "observatoryTemp"
+    ).textContent =
+      "--°F • --°C";
+
   }
 }
 
+
 updateObservatoryTemp();
-setInterval(updateObservatoryTemp, 300000);
+
+setInterval(
+  updateObservatoryTemp,
+  300000
+);
