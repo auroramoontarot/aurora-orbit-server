@@ -3934,12 +3934,14 @@ app.get("/dailybook", (req, res) => {
 
     res.json({
       date: result.date,
-      ...result.book
+      book: result.book
     });
 
   } catch (err) {
     console.error("Daily book error:", err);
-    res.status(500).json({ error: "Failed to load daily book" });
+    res.status(500).json({
+      error: "Failed to load daily book"
+    });
   }
 });
 
