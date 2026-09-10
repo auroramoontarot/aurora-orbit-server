@@ -714,56 +714,120 @@ select:focus{
 
 
 <div class="cosmic-controls">
-  <div class="section-title">🌌 Constellation Log</div>
+  <div class="section-title">🌌 Weekly Constellation</div>
+
+  <div class="small-note">
+    Add little pieces throughout the week. Nothing clears automatically.
+    Close the constellation whenever your work week feels finished.
+  </div>
 
   <div class="media-fields">
 
     <div class="current-media" id="constellationGames">
-  No games logged yet ✦
-</div>
+      No games logged yet ✦
+    </div>
 
-<select id="streamerProfile" onchange="selectStreamerProfile()">
-  <option value="">Select Streamer...</option>
-</select>
+    <select id="streamerProfile" onchange="selectStreamerProfile()">
+      <option value="">Select Streamer...</option>
+    </select>
 
-<input
-  id="streamerSighting"
-  placeholder="Streamer visited..."
->
+    <input
+      id="streamerSighting"
+      placeholder="Streamer or orbit visited..."
+    >
 
-<div class="media-row">
-  <button onclick="addStreamerSighting()">
-    ✨ Add Sighting
-  </button>
-</div>
+    <div class="media-row">
+      <button onclick="addStreamerSighting()">
+        💫 Add Orbit
+      </button>
+    </div>
 
-<div class="current-media" id="constellationStreamers">
-  No Moonbeam sightings yet ✦
-</div>
+    <div class="current-media" id="constellationStreamers">
+      No Moonbeam sightings yet ✦
+    </div>
+
+    <input
+      id="constellationWatchedInput"
+      placeholder="Watched... documentary, show, movie, stream..."
+    >
+
+    <div class="media-row">
+      <button onclick="addConstellationItem('watched','constellationWatchedInput')">
+        📺 Add Watched
+      </button>
+    </div>
+
+    <div class="current-media" id="constellationWatched">
+      Nothing watched yet ✦
+    </div>
+
+    <input
+      id="constellationReadInput"
+      placeholder="Read... book, article, comic..."
+    >
+
+    <div class="media-row">
+      <button onclick="addConstellationItem('read','constellationReadInput')">
+        📚 Add Read
+      </button>
+    </div>
+
+    <div class="current-media" id="constellationRead">
+      Nothing read yet ✦
+    </div>
+
+    <input
+      id="constellationListenedInput"
+      placeholder="Listened to... podcast, audiobook, music..."
+    >
+
+    <div class="media-row">
+      <button onclick="addConstellationItem('listened','constellationListenedInput')">
+        🎧 Add Listening
+      </button>
+    </div>
+
+    <div class="current-media" id="constellationListened">
+      Nothing heard on the airwaves yet ✦
+    </div>
 
     <input
       id="collectedStardust"
-      placeholder="Favorite moment from today..."
+      placeholder="A moment worth scattering into this week's constellation..."
     >
+
+    <div class="media-row">
+      <button onclick="addCollectedStardust()">
+        ✨ Add Stardust
+      </button>
+    </div>
+
+    <div class="current-media" id="constellationStardust">
+      No stardust collected yet ✦
+    </div>
 
   </div>
 
   <div class="media-row">
-  <button onclick="generateConstellationLog()">
-    ✨ Generate Story
-  </button>
+    <button onclick="generateConstellationLog()">
+      ✨ Generate Story
+    </button>
 
-  <button onclick="copyConstellationLog()">
-    📋 Copy
-  </button>
+    <button onclick="copyConstellationLog()">
+      📋 Copy
+    </button>
 
-  <button onclick="clearConstellationLog()">
-    🧹 Clear
-  </button>
-</div>
+    <button onclick="openConstellationStory()">
+      🌌 Open Story
+    </button>
+
+    <button onclick="clearConstellationLog()">
+      🌙 Close Constellation
+    </button>
+  </div>
 
   <div class="current-media" id="constellationPreview">
-    Today's discoveries await...
+    This week's discoveries await...
   </div>
 </div>
 
@@ -1040,15 +1104,23 @@ let spotifyAutoMode = false;
 let lastAutoModeApplied = "";
 let gameProfiles = [];
 let streamerProfiles = [];
+
 let constellationGames = [];
 let constellationStreamers = [];
+let constellationWatched = [];
+let constellationRead = [];
+let constellationListened = [];
+let constellationStardust = [];
+
+function cleanConstellationArray(value){
+  if(!Array.isArray(value)) return [];
+
+  return value
+    .map(item => String(item || "").trim())
+    .filter(Boolean);
+}
 
 async function saveConstellationData(){
-
-  const stardust =
-    document.getElementById(
-      "collectedStardust"
-    )?.value || "";
 
   localStorage.setItem(
     "auroraConstellationGames",
@@ -1061,13 +1133,28 @@ async function saveConstellationData(){
   );
 
   localStorage.setItem(
+    "auroraConstellationWatched",
+    JSON.stringify(constellationWatched)
+  );
+
+  localStorage.setItem(
+    "auroraConstellationRead",
+    JSON.stringify(constellationRead)
+  );
+
+  localStorage.setItem(
+    "auroraConstellationListened",
+    JSON.stringify(constellationListened)
+  );
+
+  localStorage.setItem(
     "auroraConstellationStardust",
-    stardust
+    JSON.stringify(constellationStardust)
   );
 
   try{
 
-    await fetch(
+    const res = await fetch(
       `${API_BASE}/api/constellation`,
       {
         method:"POST",
@@ -1077,10 +1164,19 @@ async function saveConstellationData(){
         body:JSON.stringify({
           games: constellationGames,
           streamers: constellationStreamers,
-          stardust: stardust
+          watched: constellationWatched,
+          read: constellationRead,
+          listened: constellationListened,
+          stardust: constellationStardust
         })
       }
     );
+
+    if(!res.ok){
+      throw new Error(
+        `Constellation save failed with status ${res.status}`
+      );
+    }
 
   }catch(err){
 
@@ -1101,27 +1197,54 @@ async function loadConstellationData(){
         `${API_BASE}/api/constellation?nocache=${Date.now()}`
       );
 
+    if(!res.ok){
+      throw new Error(
+        `Constellation load failed with status ${res.status}`
+      );
+    }
+
     const data =
       await res.json();
 
     constellationGames =
-      data.games || [];
+      cleanConstellationArray(data.games);
 
     constellationStreamers =
-      data.streamers || [];
+      cleanConstellationArray(data.streamers);
 
-    const stardustBox =
-      document.getElementById(
-        "collectedStardust"
-      );
+    constellationWatched =
+      cleanConstellationArray(data.watched);
 
-    if(stardustBox){
-      stardustBox.value =
-        data.stardust || "";
+    constellationRead =
+      cleanConstellationArray(data.read);
+
+    constellationListened =
+      cleanConstellationArray(data.listened);
+
+    /*
+      Backward compatibility:
+      old constellation data stored stardust as one string.
+    */
+    if(Array.isArray(data.stardust)){
+      constellationStardust =
+        cleanConstellationArray(data.stardust);
+    }else if(
+      typeof data.stardust === "string" &&
+      data.stardust.trim()
+    ){
+      constellationStardust =
+        [data.stardust.trim()];
+    }else{
+      constellationStardust = [];
     }
 
-    constellationGames.sort();
-    constellationStreamers.sort();
+    constellationGames.sort((a,b) =>
+      a.localeCompare(b)
+    );
+
+    constellationStreamers.sort((a,b) =>
+      a.localeCompare(b)
+    );
 
     renderConstellationLists();
 
@@ -1131,6 +1254,7 @@ async function loadConstellationData(){
       "Constellation load failed:",
       err
     );
+
   }
 }
 
@@ -1906,27 +2030,17 @@ async function resetDay() {
 
   if(
     !confirm(
-      "Reset all habits, energy, and constellation data for the day?"
+      "Reset today's habits and energy? Your weekly constellation will stay intact."
     )
   ) return;
 
+  /*
+    Preserve the weekly constellation even if /resetday
+    still clears constellation data on the server.
+  */
   await fetch(`${API_BASE}/resetday`);
 
-  localStorage.removeItem(
-    "auroraConstellationGames"
-  );
-
-  localStorage.removeItem(
-    "auroraConstellationStreamers"
-  );
-
-  localStorage.removeItem(
-    "auroraConstellationStardust"
-  );
-
-  localStorage.removeItem(
-    "auroraConstellationDate"
-  );
+  await saveConstellationData();
 
   location.reload();
 }
@@ -2321,45 +2435,75 @@ async function clearReadingBoard(){
 
 function generateConstellationLog(){
 
-  const games =
-    constellationGames.join("\n");
-
-  const streamers =
-    constellationStreamers.join("\n");
-
-  const stardust =
-    document.getElementById(
-      "collectedStardust"
-    ).value.trim();
-
-  const today =
+  const month =
     new Date().toLocaleDateString(
       "en-US",
       {
         month:"long",
-        day:"numeric",
         year:"numeric"
       }
     );
 
-  const output =
-`🌌 Constellation Log — ${today}
+  const lines = [
+    `🌌 This Week's Constellation — ${month}`,
+    ""
+  ];
 
-⭐ Stars Explored
-${games || "None recorded"}
+  lines.push("⭐ Stars Explored");
+  lines.push(
+    constellationGames.length
+      ? constellationGames.map(item => `✦ ${item}`).join("\n")
+      : "None recorded"
+  );
 
-✨ Constellations Visited
-${streamers || "None recorded"}
+  lines.push("");
+  lines.push("💫 Orbits Visited");
+  lines.push(
+    constellationStreamers.length
+      ? constellationStreamers.map(item => `✦ ${item}`).join("\n")
+      : "None recorded"
+  );
 
-🌙 Collected Stardust
-${stardust || "A quiet evening beneath the stars."}
+  lines.push("");
+  lines.push("📺 Through the Telescope");
+  lines.push(
+    constellationWatched.length
+      ? constellationWatched.map(item => `✦ ${item}`).join("\n")
+      : "Nothing spotted yet"
+  );
 
-Until tomorrow, Moonbeams.`;
+  lines.push("");
+  lines.push("📚 Pages Among the Stars");
+  lines.push(
+    constellationRead.length
+      ? constellationRead.map(item => `✦ ${item}`).join("\n")
+      : "No pages discovered yet"
+  );
+
+  lines.push("");
+  lines.push("🎧 Signals Received");
+  lines.push(
+    constellationListened.length
+      ? constellationListened.map(item => `✦ ${item}`).join("\n")
+      : "The airwaves were quiet"
+  );
+
+  lines.push("");
+  lines.push("🌙 Collected Stardust");
+  lines.push(
+    constellationStardust.length
+      ? constellationStardust.map(item => `✨ ${item}`).join("\n")
+      : "A quiet constellation beneath the stars."
+  );
+
+  lines.push("");
+  lines.push("Until the next orbit, Moonbeams. ✨");
 
   document.getElementById(
     "constellationPreview"
-  ).innerText = output;
+  ).innerText = lines.join("\n");
 }
+
 
 function addCurrentGameToConstellation(){
 
@@ -2376,18 +2520,24 @@ function addCurrentGameToConstellation(){
     constellationGames.push(title);
   }
 
-  constellationGames.sort();
+  constellationGames.sort((a,b) =>
+    a.localeCompare(b)
+  );
 
-renderConstellationLists();
-saveConstellationData();
+  renderConstellationLists();
+  saveConstellationData();
 }
+
 
 function addStreamerSighting(){
 
-  const name =
+  const input =
     document.getElementById(
       "streamerSighting"
-    ).value.trim();
+    );
+
+  const name =
+    input.value.trim();
 
   if(!name) return;
 
@@ -2397,24 +2547,83 @@ function addStreamerSighting(){
     constellationStreamers.push(name);
   }
 
-document.getElementById(
-  "streamerSighting"
-).value = "";
+  input.value = "";
+  input.focus();
 
-document.getElementById(
-  "streamerSighting"
-).focus();
+  constellationStreamers.sort((a,b) =>
+    a.localeCompare(b)
+  );
 
-constellationStreamers.sort((a, b) => {
-  const an = (typeof a === "string" ? a : a.displayName).toLowerCase();
-  const bn = (typeof b === "string" ? b : b.displayName).toLowerCase();
-  return an.localeCompare(bn);
-});
-
-renderConstellationLists();
-saveConstellationData();
-
+  renderConstellationLists();
+  saveConstellationData();
 }
+
+
+function addConstellationItem(type,inputId){
+
+  const input =
+    document.getElementById(inputId);
+
+  if(!input) return;
+
+  const value =
+    input.value.trim();
+
+  if(!value) return;
+
+  let targetArray = null;
+
+  if(type === "watched"){
+    targetArray = constellationWatched;
+  }
+
+  if(type === "read"){
+    targetArray = constellationRead;
+  }
+
+  if(type === "listened"){
+    targetArray = constellationListened;
+  }
+
+  if(!targetArray) return;
+
+  if(!targetArray.includes(value)){
+    targetArray.push(value);
+  }
+
+  input.value = "";
+  input.focus();
+
+  renderConstellationLists();
+  saveConstellationData();
+}
+
+
+function addCollectedStardust(){
+
+  const input =
+    document.getElementById(
+      "collectedStardust"
+    );
+
+  if(!input) return;
+
+  const value =
+    input.value.trim();
+
+  if(!value) return;
+
+  if(!constellationStardust.includes(value)){
+    constellationStardust.push(value);
+  }
+
+  input.value = "";
+  input.focus();
+
+  renderConstellationLists();
+  saveConstellationData();
+}
+
 
 function renderStreamerMenu() {
   const select = document.getElementById("streamerProfile");
@@ -2433,102 +2642,179 @@ function renderStreamerMenu() {
   });
 }
 
+
 function renderConstellationLists(){
 
-  document.getElementById(
-    "constellationGames"
-  ).innerHTML =
-    constellationGames.length
-      ? constellationGames.map(
-          g => `⭐ ${g}`
-        ).join("<br>")
-      : "No games logged yet ✦";
-
-  document.getElementById(
-    "constellationStreamers"
-  ).innerHTML =
-    constellationStreamers.length
-      ? constellationStreamers.map(s => {
-  const profile = streamerProfiles.find(p =>
-    p.displayName === s || p.id === s
-  );
-
-  const name = profile?.displayName || s;
-  const twitch = profile?.twitch;
-
-  return twitch
-    ? `✨ <a href="https://twitch.tv/${twitch}" target="_blank">${name}</a>`
-    : `✨ ${name}`;
-}).join("<br>")
-      : "No Moonbeam sightings yet ✦";
-}
-
-function checkConstellationDay(){
-
-  const today =
-    new Date().toISOString().slice(0,10);
-
-  const lastDay =
-    localStorage.getItem(
-      "auroraConstellationDate"
+  const gamesEl =
+    document.getElementById(
+      "constellationGames"
     );
 
-  if(lastDay && lastDay !== today){
+  if(gamesEl){
+    gamesEl.innerHTML =
+      constellationGames.length
+        ? constellationGames
+            .map(g => `⭐ ${g}`)
+            .join("<br>")
+        : "No games logged yet ✦";
+  }
 
-    localStorage.removeItem(
-      "auroraConstellationGames"
+
+  const streamersEl =
+    document.getElementById(
+      "constellationStreamers"
     );
 
-    localStorage.removeItem(
-      "auroraConstellationStreamers"
+  if(streamersEl){
+
+    streamersEl.innerHTML =
+      constellationStreamers.length
+        ? constellationStreamers.map(s => {
+
+            const profile =
+              streamerProfiles.find(p =>
+                p.displayName === s ||
+                p.id === s
+              );
+
+            const name =
+              profile?.displayName || s;
+
+            const twitch =
+              profile?.twitch;
+
+            return twitch
+              ? `💫 <a href="https://twitch.tv/${twitch}" target="_blank">${name}</a>`
+              : `💫 ${name}`;
+
+          }).join("<br>")
+        : "No Moonbeam sightings yet ✦";
+  }
+
+
+  const watchedEl =
+    document.getElementById(
+      "constellationWatched"
     );
 
-    localStorage.removeItem(
-      "auroraConstellationStardust"
+  if(watchedEl){
+    watchedEl.innerHTML =
+      constellationWatched.length
+        ? constellationWatched
+            .map(item => `📺 ${item}`)
+            .join("<br>")
+        : "Nothing watched yet ✦";
+  }
+
+
+  const readEl =
+    document.getElementById(
+      "constellationRead"
     );
 
-    const stardustBox =
-      document.getElementById(
-        "collectedStardust"
-      );
-if(stardustBox){
-  stardustBox.value = "";
+  if(readEl){
+    readEl.innerHTML =
+      constellationRead.length
+        ? constellationRead
+            .map(item => `📚 ${item}`)
+            .join("<br>")
+        : "Nothing read yet ✦";
+  }
+
+
+  const listenedEl =
+    document.getElementById(
+      "constellationListened"
+    );
+
+  if(listenedEl){
+    listenedEl.innerHTML =
+      constellationListened.length
+        ? constellationListened
+            .map(item => `🎧 ${item}`)
+            .join("<br>")
+        : "Nothing heard on the airwaves yet ✦";
+  }
+
+
+  const stardustEl =
+    document.getElementById(
+      "constellationStardust"
+    );
+
+  if(stardustEl){
+    stardustEl.innerHTML =
+      constellationStardust.length
+        ? constellationStardust
+            .map(item => `✨ ${item}`)
+            .join("<br>")
+        : "No stardust collected yet ✦";
+  }
 }
 
-renderConstellationLists();
 
-  localStorage.setItem(
-    "auroraConstellationDate",
-    today
-  );
-}
-
-}
-
-function clearConstellationLog(){
+async function clearConstellationLog(){
 
   if(
     !confirm(
-      "Clear today's constellation log?"
+      "Close this constellation? This will clear the week's games, orbits, media, and collected stardust so a new constellation can begin."
     )
   ) return;
 
   constellationGames = [];
   constellationStreamers = [];
+  constellationWatched = [];
+  constellationRead = [];
+  constellationListened = [];
+  constellationStardust = [];
 
-  document.getElementById(
+  const inputIds = [
+    "streamerSighting",
+    "constellationWatchedInput",
+    "constellationReadInput",
+    "constellationListenedInput",
     "collectedStardust"
-  ).value = "";
+  ];
+
+  inputIds.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.value = "";
+  });
+
+  localStorage.removeItem(
+    "auroraConstellationGames"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationStreamers"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationWatched"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationRead"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationListened"
+  );
+
+  localStorage.removeItem(
+    "auroraConstellationStardust"
+  );
 
   renderConstellationLists();
 
   document.getElementById(
     "constellationPreview"
   ).innerText =
-    "Today's discoveries await...";
+    "A new constellation is ready to begin...";
 
-  saveConstellationData();
+  await saveConstellationData();
 }
+
 
 function copyConstellationLog(){
 
@@ -2557,7 +2843,6 @@ loadSpotifyDevices();
 loadSpotifyNowPlaying();
 loadSpotifyAutoState();
 loadReadingBoardStatus();
-checkConstellationDay();
 loadAdventureLog();
 loadStreamerProfiles();
 loadGameProfiles();
@@ -2569,17 +2854,6 @@ loadConstellationData();
 setInterval(runSpotifyAutoCheck, 5 * 60 * 1000);
 setInterval(loadWorldStatsMini, 30000);
 setInterval(loadReadingBoardStatus, 10000);
-setInterval(
-  checkConstellationDay,
-  60000
-);
-
-document
-  .getElementById("collectedStardust")
-  .addEventListener(
-    "input",
-    saveConstellationData
-  );
 
 /* -------------------------
    ENTER KEYS
@@ -2635,6 +2909,59 @@ document
     function(e){
       if(e.key === "Enter"){
         addStreamerSighting();
+      }
+    }
+  );
+
+document
+  .getElementById("constellationWatchedInput")
+  .addEventListener(
+    "keypress",
+    function(e){
+      if(e.key === "Enter"){
+        addConstellationItem(
+          "watched",
+          "constellationWatchedInput"
+        );
+      }
+    }
+  );
+
+document
+  .getElementById("constellationReadInput")
+  .addEventListener(
+    "keypress",
+    function(e){
+      if(e.key === "Enter"){
+        addConstellationItem(
+          "read",
+          "constellationReadInput"
+        );
+      }
+    }
+  );
+
+document
+  .getElementById("constellationListenedInput")
+  .addEventListener(
+    "keypress",
+    function(e){
+      if(e.key === "Enter"){
+        addConstellationItem(
+          "listened",
+          "constellationListenedInput"
+        );
+      }
+    }
+  );
+
+document
+  .getElementById("collectedStardust")
+  .addEventListener(
+    "keypress",
+    function(e){
+      if(e.key === "Enter"){
+        addCollectedStardust();
       }
     }
   );

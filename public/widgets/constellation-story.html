@@ -12,44 +12,59 @@
   --teal:#00a9ba;
   --ice:#cbecf5;
   --soft:#c6c7f8;
+  --deep:#2b2772;
 }
 
 html,
 body{
   margin:0;
   width:100%;
-  height:100%;
-  overflow:hidden;
+  min-height:100%;
   font-family:'Quicksand',sans-serif;
 }
 
 body{
   background:
-    radial-gradient(circle at top right,
+    radial-gradient(
+      circle at top right,
       rgba(127,135,255,.45),
-      transparent 35%),
-
-    radial-gradient(circle at bottom left,
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at bottom left,
       rgba(0,169,186,.35),
-      transparent 40%),
-
+      transparent 40%
+    ),
     linear-gradient(
       180deg,
       #101524,
       #0b1020
     );
+
+  color:white;
 }
+
+/* ============================================================
+   🌌 STORY CONTAINER
+   ============================================================ */
 
 .story{
   width:100%;
   min-height:100vh;
 
   display:flex;
-  justify-content:center;
-  align-items:flex-start;
+  flex-direction:column;
+  align-items:center;
 
   position:relative;
+
+  box-sizing:border-box;
+  padding:18px 32px 32px;
 }
+
+/* ============================================================
+   ✨ STARFIELD
+   ============================================================ */
 
 .stars{
   position:absolute;
@@ -59,6 +74,7 @@ body{
 
 .stars::before{
   content:"";
+
   position:absolute;
   inset:0;
 
@@ -69,15 +85,20 @@ body{
     );
 
   background-size:80px 80px;
-
   opacity:.15;
 }
 
-
+/* ============================================================
+   🌙 HEADER
+   ============================================================ */
 
 .header{
+  width:100%;
   text-align:center;
-  margin-bottom:5px;
+  margin-bottom:18px;
+
+  position:relative;
+  z-index:1;
 }
 
 .title{
@@ -85,91 +106,199 @@ body{
   font-weight:700;
   letter-spacing:2px;
   color:white;
+
+  margin-top:6px;
 }
 
-.section{
-  margin-bottom:15px;
-}
+.subtitle{
+  margin-top:4px;
 
-.section-title{
+  font-size:14px;
+  font-weight:600;
+
   color:var(--soft);
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:5px;
-text-align:left;
+
+  letter-spacing:.5px;
 }
 
-.section-content{
-  color:white;
-  font-size:18px;
-font-weight:600;
-  line-height:1.8;
-  white-space:pre-line;
-text-align:left;
-
-}
+/* ============================================================
+   🌙 MOON
+   ============================================================ */
 
 .moon{
   font-size:36px;
-font-weight:600;
-margin-top:15px;
+  font-weight:600;
+  margin-top:8px;
+}
+
+.moon-name{
+  font-size:18px;
+  margin-top:6px;
+  color:var(--ice);
 }
 
 .moon-date{
   margin-top:3px;
-margin-bottom:15px;
+  margin-bottom:8px;
+
   font-size:16px;
-font-weight:600;
+  font-weight:600;
   line-height:1.2;
+
   color:var(--ice);
+
   text-align:center;
 }
 
-/* NEW */
-#games,
-#streamers{
-    column-count:2;
-    column-gap:20px;
-    white-space:pre-line;
-    line-height:1.6;
+/* ============================================================
+   🌌 CONTENT
+   ============================================================ */
+
+.content{
+  width:min(1100px,92vw);
+
+  position:relative;
+  z-index:1;
 }
 
-@media (max-width: 1000px){
+/* ============================================================
+   ✦ SECTION
+   ============================================================ */
+
+.section{
+  margin-bottom:18px;
+
+  padding:12px 16px 14px;
+
+  border-radius:14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(127,135,255,.10),
+      rgba(0,169,186,.06)
+    ),
+    rgba(18,18,48,.36);
+
+  border:1px solid rgba(203,236,245,.15);
+
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+
+  box-shadow:
+    0 5px 18px rgba(0,0,0,.12),
+    inset 0 0 14px rgba(198,199,248,.04);
+}
+
+.section-title{
+  color:var(--soft);
+
+  font-size:20px;
+  font-weight:700;
+
+  margin-bottom:7px;
+
+  text-align:left;
+}
+
+.section-content{
+  color:white;
+
+  font-size:18px;
+  font-weight:600;
+
+  line-height:1.7;
+
+  white-space:pre-line;
+
+  text-align:left;
+}
+
+/* ============================================================
+   ⭐ MULTI-COLUMN LISTS
+   ============================================================ */
+
+.list-columns{
+  column-count:2;
+  column-gap:28px;
+
+  white-space:pre-line;
+
+  line-height:1.6;
+}
+
+/* ============================================================
+   🌙 STARDUST
+   ============================================================ */
+
+#stardust{
+  line-height:1.8;
+}
+
+/* ============================================================
+   🫧 EMPTY SECTION
+   ============================================================ */
+
+.empty{
+  opacity:.55;
+  font-style:italic;
+}
+
+/* ============================================================
+   📱 RESPONSIVE
+   ============================================================ */
+
+@media (max-width:1000px){
 
   .story{
     width:100vw;
     min-height:100vh;
-  }
 
-  .moon{
-    top:15px;
-    right:15px;
-    font-size:36px;
+    padding:14px 20px 28px;
   }
 
   .title{
-    font-size:18px;
+    font-size:15px;
     letter-spacing:1px;
   }
 
+  .subtitle{
+    font-size:11px;
+  }
+
+  .moon{
+    font-size:36px;
+  }
+
+  .moon-name{
+    font-size:13px;
+  }
+
+  .moon-date{
+    font-size:12px;
+  }
+
+  .content{
+    width:92vw;
+  }
+
+  .section{
+    padding:5px 5px 5px;
+    margin-bottom:5px;
+  }
+
   .section-title{
-    font-size:15px;
+    font-size:13px;
   }
 
   .section-content{
-    font-size:13px;
-    width:90vw;
+    font-size:11px;
   }
 
-  /* NEW */
-  #games,
-  #streamers{
+  .list-columns{
     column-count:2;
-    column-gap:20px;
-    white-space:pre-line;
-    line-height:1.6;
+    column-gap:5px;
   }
-
 }
 
 </style>
@@ -181,43 +310,129 @@ font-weight:600;
 
   <div class="stars"></div>
 
+  <!-- ========================================================
+       🌙 HEADER
+       ======================================================== -->
+
   <div class="header">
 
     <div class="moon" id="moonPhase">
       🌙
-      <div class="moon-date" id="moonDate"></div>
+    </div>
 
     <div class="title">
-      🌌 CONSTELLATION LOG
+      🌌 THIS WEEK'S CONSTELLATION
     </div>
 
   </div>
-    <div class="section">
-  <div class="section-title" id="gamesTitle">
-    ⭐ Stars Explored
-  </div>
 
-  <div
-    class="section-content"
-    id="games"
-  ></div>
-</div>
-<div class="section">
-  <div class="section-title" id="streamersTitle">
-    💫 Orbits Visited
-  </div>
 
-  <div
-    class="section-content"
-    id="streamers"
-  ></div>
+  <!-- ========================================================
+       🌌 STORY CONTENT
+       ======================================================== -->
+
+  <div class="content">
+
+
+    <!-- ⭐ GAMES -->
+
+    <div class="section" id="gamesSection">
+
       <div
-        class="section-content"
+        class="section-title"
+        id="gamesTitle"
+      >
+        ⭐ Stars Explored
+      </div>
+
+      <div
+        class="section-content list-columns"
+        id="games"
+      ></div>
+
+    </div>
+
+
+    <!-- 💫 STREAMERS -->
+
+    <div class="section" id="streamersSection">
+
+      <div
+        class="section-title"
+        id="streamersTitle"
+      >
+        💫 Orbits Visited
+      </div>
+
+      <div
+        class="section-content list-columns"
         id="streamers"
       ></div>
+
     </div>
 
-    <div class="section">
+
+    <!-- 📺 WATCHED -->
+
+    <div class="section" id="watchedSection">
+
+      <div
+        class="section-title"
+        id="watchedTitle"
+      >
+        📺 Through the Telescope
+      </div>
+
+      <div
+        class="section-content list-columns"
+        id="watched"
+      ></div>
+
+    </div>
+
+
+    <!-- 📚 READ -->
+
+    <div class="section" id="readSection">
+
+      <div
+        class="section-title"
+        id="readTitle"
+      >
+        📚 Pages Among the Stars
+      </div>
+
+      <div
+        class="section-content list-columns"
+        id="read"
+      ></div>
+
+    </div>
+
+
+    <!-- 🎧 LISTENED -->
+
+    <div class="section" id="listenedSection">
+
+      <div
+        class="section-title"
+        id="listenedTitle"
+      >
+        🎧 Signals Received
+      </div>
+
+      <div
+        class="section-content list-columns"
+        id="listened"
+      ></div>
+
+    </div>
+
+
+    <!-- 🌙 STARDUST -->
+
+    <div class="section" id="stardustSection">
+
       <div class="section-title">
         🌙 Collected Stardust
       </div>
@@ -226,55 +441,348 @@ font-weight:600;
         class="section-content"
         id="stardust"
       ></div>
+
     </div>
+
 
   </div>
 
 </div>
 
+
 <script>
 
-async function loadConstellation() {
+/* ============================================================
+   🌌 HELPERS
+   ============================================================ */
 
-  try {
+function cleanArray(value){
+
+  if (!Array.isArray(value)){
+    return [];
+  }
+
+  return value
+    .map(item => String(item || "").trim())
+    .filter(Boolean);
+}
+
+
+/* ------------------------------------------------------------
+   ✨ FORMAT ARRAY AS LINES
+   ------------------------------------------------------------ */
+
+function formatList(items){
+
+  return items
+    .map(item => `✦ ${item}`)
+    .join("\n");
+
+}
+
+
+/* ------------------------------------------------------------
+   🌙 DISPLAY A SECTION
+   ------------------------------------------------------------ */
+
+function renderSection({
+  sectionId,
+  titleId,
+  contentId,
+  icon,
+  label,
+  items,
+  emptyText
+}){
+
+  const section =
+    document.getElementById(sectionId);
+
+  const title =
+    document.getElementById(titleId);
+
+  const content =
+    document.getElementById(contentId);
+
+
+  if (!section || !content){
+    return;
+  }
+
+
+  if (title){
+
+    title.innerText =
+      `${icon} ${items.length} ${label}`;
+
+  }
+
+
+  if (items.length){
+
+    section.style.display = "";
+
+    content.classList.remove("empty");
+
+    content.innerText =
+      formatList(items);
+
+  } else {
+
+    section.style.display = "";
+
+    content.classList.add("empty");
+
+    content.innerText =
+      emptyText;
+
+  }
+
+}
+
+
+/* ============================================================
+   🌌 LOAD CONSTELLATION
+   ============================================================ */
+
+async function loadConstellation(){
+
+  try{
 
     const response =
       await fetch(
-        "/api/constellation"
+        "/api/constellation?nocache=" +
+        Date.now()
       );
+
+
+    if (!response.ok){
+
+      throw new Error(
+        "Constellation endpoint unavailable"
+      );
+
+    }
+
 
     const data =
       await response.json();
 
-    document.getElementById(
-      "gamesTitle"
-    ).innerText =
-      `⭐ ${data.games.length} Stars Explored`;
 
-    document.getElementById(
-      "streamersTitle"
-    ).innerText =
-      `🌙 ${data.streamers.length} Orbits Visited`;
+    /* --------------------------------------------------------
+       CLEAN DATA
+       -------------------------------------------------------- */
 
-    document.getElementById(
-      "games"
-    ).innerText =
-      data.games.join("\n") ||
-      "No stars explored";
+    const games =
+      cleanArray(data.games);
 
-    document.getElementById(
-      "streamers"
-    ).innerText =
-      data.streamers.join("\n") ||
-      "No orbits visited";
+    const streamers =
+      cleanArray(data.streamers);
 
-    document.getElementById(
-      "stardust"
-    ).innerText =
-      data.stardust ||
-      "A quiet evening beneath the stars.";
+    const watched =
+      cleanArray(data.watched);
 
-  } catch (err) {
+    const read =
+      cleanArray(data.read);
+
+    const listened =
+      cleanArray(data.listened);
+
+
+    /* --------------------------------------------------------
+       STARDUST
+       Supports both:
+       old string format
+       AND new array format
+       -------------------------------------------------------- */
+
+    let stardust = [];
+
+    if (Array.isArray(data.stardust)){
+
+      stardust =
+        cleanArray(data.stardust);
+
+    } else if (
+      typeof data.stardust === "string" &&
+      data.stardust.trim()
+    ){
+
+      stardust =
+        [data.stardust.trim()];
+
+    }
+
+
+    /* ========================================================
+       ⭐ STARS EXPLORED
+       ======================================================== */
+
+    renderSection({
+
+      sectionId:"gamesSection",
+
+      titleId:"gamesTitle",
+
+      contentId:"games",
+
+      icon:"⭐",
+
+      label:
+        games.length === 1
+          ? "Star Explored"
+          : "Stars Explored",
+
+      items:games,
+
+      emptyText:
+        "No stars explored yet ✦"
+
+    });
+
+
+    /* ========================================================
+       💫 ORBITS VISITED
+       ======================================================== */
+
+    renderSection({
+
+      sectionId:"streamersSection",
+
+      titleId:"streamersTitle",
+
+      contentId:"streamers",
+
+      icon:"💫",
+
+      label:
+        streamers.length === 1
+          ? "Orbit Visited"
+          : "Orbits Visited",
+
+      items:streamers,
+
+      emptyText:
+        "No wandering orbits yet ✦"
+
+    });
+
+
+    /* ========================================================
+       📺 WATCHED
+       ======================================================== */
+
+    renderSection({
+
+      sectionId:"watchedSection",
+
+      titleId:"watchedTitle",
+
+      contentId:"watched",
+
+      icon:"📺",
+
+      label:
+        watched.length === 1
+          ? "Thing Watched"
+          : "Things Watched",
+
+      items:watched,
+
+      emptyText:
+        "Nothing spotted through the telescope yet ✦"
+
+    });
+
+
+    /* ========================================================
+       📚 READ
+       ======================================================== */
+
+    renderSection({
+
+      sectionId:"readSection",
+
+      titleId:"readTitle",
+
+      contentId:"read",
+
+      icon:"📚",
+
+      label:
+        read.length === 1
+          ? "Page Among the Stars"
+          : "Pages Among the Stars",
+
+      items:read,
+
+      emptyText:
+        "No pages discovered yet ✦"
+
+    });
+
+
+    /* ========================================================
+       🎧 LISTENED
+       ======================================================== */
+
+    renderSection({
+
+      sectionId:"listenedSection",
+
+      titleId:"listenedTitle",
+
+      contentId:"listened",
+
+      icon:"🎧",
+
+      label:
+        listened.length === 1
+          ? "Signal Received"
+          : "Signals Received",
+
+      items:listened,
+
+      emptyText:
+        "The airwaves are quiet for now ✦"
+
+    });
+
+
+    /* ========================================================
+       🌙 COLLECTED STARDUST
+       ======================================================== */
+
+    const stardustElement =
+      document.getElementById(
+        "stardust"
+      );
+
+
+    if (stardust.length){
+
+      stardustElement.classList.remove(
+        "empty"
+      );
+
+      stardustElement.innerText =
+        stardust
+          .map(item => `✨ ${item}`)
+          .join("\n");
+
+    } else {
+
+      stardustElement.classList.add(
+        "empty"
+      );
+
+      stardustElement.innerText =
+        "A quiet constellation beneath the stars.";
+
+    }
+
+
+  } catch(err){
 
     console.error(
       "Constellation load failed:",
@@ -284,89 +792,141 @@ async function loadConstellation() {
   }
 
 }
-function getMoonPhase() {
 
-  const now = new Date();
 
-  const lp = 2551443;
-  const newMoon = new Date(
-    "2000-01-06T18:14:00Z"
-  );
+/* ============================================================
+   🌙 MOON PHASE
+   ============================================================ */
 
-  const phase =
+function getMoonPhase(){
+
+  const now =
+    new Date();
+
+  const lp =
+    2551443;
+
+  const newMoon =
+    new Date(
+      "2000-01-06T18:14:00Z"
+    );
+
+
+  let phase =
     ((now - newMoon) / 1000) % lp;
+
+
+  if (phase < 0){
+    phase += lp;
+  }
+
 
   const phaseIndex =
     Math.floor(
       (phase / lp) * 8
-    );
+    ) % 8;
+
 
   const phases = [
+
     {
       icon:"🌑",
       name:"New Moon"
     },
+
     {
       icon:"🌒",
       name:"Waxing Crescent"
     },
+
     {
       icon:"🌓",
       name:"First Quarter"
     },
+
     {
       icon:"🌔",
       name:"Waxing Gibbous"
     },
+
     {
       icon:"🌕",
       name:"Full Moon"
     },
+
     {
       icon:"🌖",
       name:"Waning Gibbous"
     },
+
     {
       icon:"🌗",
       name:"Last Quarter"
     },
+
     {
       icon:"🌘",
       name:"Waning Crescent"
     }
+
   ];
 
+
   return phases[phaseIndex];
+
 }
 
-const moon = getMoonPhase();
+
+/* ============================================================
+   🌙 HEADER
+   ============================================================ */
+
+const moon =
+  getMoonPhase();
+
 
 document.getElementById(
   "moonPhase"
-).innerHTML =
-  `${moon.icon}
-   <div style="
-     font-size:18px;
-     margin-top:8px;
-     color:#cbecf5;
-   ">
-     ${moon.name}
-   </div>
-   <div class="moon-date" id="moonDate"></div>`;
+).innerHTML = `
 
-loadConstellation();
+  ${moon.icon}
+
+  <div class="moon-name">
+    ${moon.name}
+  </div>
+
+  <div
+    class="moon-date"
+    id="moonDate"
+  ></div>
+
+`;
+
+
+/* ------------------------------------------------------------
+   📅 CURRENT CONSTELLATION DATE
+   ------------------------------------------------------------ */
 
 document.getElementById(
   "moonDate"
 ).innerText =
+
   new Date().toLocaleDateString(
     "en-US",
     {
       month:"long",
-      day:"numeric",
       year:"numeric"
     }
-  );
+  ) +
+
+  " • Current Constellation";
+
+
+/* ============================================================
+   🚀 START
+   ============================================================ */
+
+loadConstellation();
 
 </script>
 

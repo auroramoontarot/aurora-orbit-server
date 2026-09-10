@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ============================================================
+   🌙 AURORA MOON — STARDUST SPOTLIGHT
+   Reusable photo / WIP display
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  background: transparent;
+
+  font-family: "Quicksand", sans-serif;
+
+  overflow: hidden;
+}
+
+
+/* ============================================================
+   ✨ MAIN GLASS FRAME
+   ============================================================ */
+
+#stardustSpotlight {
+
+  display: inline-flex;
+  flex-direction: column;
+
+  padding: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(127,135,255,.16),
+      rgba(0,169,186,.09)
+    ),
+    rgba(18,18,48,.82);
+
+  border:
+    1px solid rgba(203,236,245,.30);
+
+  border-radius: 14px;
+
+  box-shadow:
+    0 5px 18px rgba(0,0,0,.25),
+    inset 0 0 14px rgba(198,199,248,.06);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  overflow: hidden;
+}
+
+
+/* ============================================================
+   🖼️ IMAGE AREA
+   ============================================================ */
+
+#spotlightImageWrap {
+
+  position: relative;
+
+  width: 420px;
+  height: 260px;
+
+  overflow: hidden;
+
+  border-radius: 8px;
+
+  background:
+    rgba(10,12,35,.45);
+
+  border:
+    1px solid rgba(203,236,245,.16);
+
+  box-shadow:
+    0 3px 9px rgba(0,0,0,.35),
+    0 0 10px rgba(127,135,255,.14);
+}
+
+
+/* ============================================================
+   🌙 SPOTLIGHT IMAGE
+   ============================================================ */
+
+#spotlightImage {
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  object-position: center;
+
+  border-radius: 7px;
+
+  transition:
+    opacity .4s ease,
+    transform .5s ease;
+}
+
+
+/* ============================================================
+   ✨ VERY SUBTLE HOVER MAGIC
+   ============================================================ */
+
+#stardustSpotlight:hover #spotlightImage {
+
+  transform: scale(1.015);
+}
+
+
+/* ============================================================
+   💫 OPTIONAL CAPTION
+   ============================================================ */
+
+#spotlightCaption {
+
+  margin-top: 9px;
+
+  width: 420px;
+
+  text-align: center;
+
+  color: #cbecf5;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  line-height: 1.25;
+
+  text-shadow:
+    0 1px 3px rgba(0,0,0,.55);
+}
+
+
+/* Hide caption entirely when blank */
+
+#spotlightCaption:empty {
+  display: none;
+}
+
+
+/* ============================================================
+   ✦ LITTLE CORNER STARS
+   ============================================================ */
+
+.cornerStar {
+
+  position: absolute;
+
+  color: rgba(203,236,245,.72);
+
+  font-size: 12px;
+
+  text-shadow:
+    0 0 7px rgba(127,135,255,.65);
+
+  pointer-events: none;
+
+  z-index: 5;
+}
+
+
+.cornerStar.topLeft {
+  top: 7px;
+  left: 9px;
+}
+
+
+.cornerStar.topRight {
+  top: 7px;
+  right: 9px;
+}
+
+
+.cornerStar.bottomLeft {
+  bottom: 7px;
+  left: 9px;
+}
+
+
+.cornerStar.bottomRight {
+  bottom: 7px;
+  right: 9px;
+}
+
+
+/* ============================================================
+   🌌 OPTIONAL SOFT AURORA WASH
+   ============================================================ */
+
+#spotlightImageWrap::after {
+
+  content: "";
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(127,135,255,.05),
+      transparent 38%,
+      rgba(0,169,186,.04)
+    );
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ============================================================
+     🌙 STARDUST SPOTLIGHT
+     ============================================================ -->
+
+<div id="stardustSpotlight">
+
+
+  <div id="spotlightImageWrap">
+
+    <img
+      id="spotlightImage"
+      src="spotlight.jpg"
+      alt="Stardust Spotlight"
+    />
+
+
+    <span class="cornerStar topLeft">✦</span>
+
+    <span class="cornerStar topRight">✦</span>
+
+    <span class="cornerStar bottomLeft">✦</span>
+
+    <span class="cornerStar bottomRight">✦</span>
+
+  </div>
+
+
+  <div id="spotlightCaption">
+    ✨ Current WIP
+  </div>
+
+
+</div>
+
+
+</body>
+</html>

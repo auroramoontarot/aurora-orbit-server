@@ -2,24 +2,25 @@
   "goal": 1500,
 
   "platforms": {
-    "bluesky": 54,
-    "campfire": 68,
-    "discord": 27,
-    "facebook": 43,
+    "bluesky": 55,
+    "campfire": 71,
+    "discord": 29,
+    "facebook": 44,
     "instagram": 151,
     "kick": 201,
+    "kofi": 2,
     "lemon8": 6,
     "linkedin": 38,
     "patreon": 1,
     "snapchat": 93,
     "spotify": 9,
-    "steam": 3,
+    "steam": 4,
     "substack": 3,
     "threads": 22,
     "tiktok": 114,
-    "twitch": 105,
+    "twitch": 113,
     "wordpress": 1,
-    "x": 104,
-    "youtube": 255
+    "x": 101,
+    "youtube": 254
   }
 }
