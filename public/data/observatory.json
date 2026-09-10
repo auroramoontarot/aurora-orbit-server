@@ -1,15 +1,15 @@
 {
-  "updated": "2026-09-10T16:46:58.502Z",
+  "updated": "2026-09-10T16:59:20.348Z",
   "calendar": {
     "current": {
       "emoji": "🌑",
       "title": "New Moon",
-      "subtitle": "Ends in 12h 13m"
+      "subtitle": "Ends in 12h"
     },
     "next": {
       "emoji": "🎮",
       "title": "Toasty Thursday",
-      "subtitle": "Begins in 2h 13m"
+      "subtitle": "Begins in 2h"
     }
   },
   "sky": {
@@ -31,7 +31,7 @@
     "phase": "New Moon",
     "illumination": 0,
     "visible": true,
-    "altitude": 48.14667854873429,
+    "altitude": 48.86077194845166,
     "rise": "2026-09-10T11:07:40.515Z",
     "set": null
   },

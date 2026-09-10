@@ -3812,11 +3812,46 @@ app.get("/api/constellation", (req, res) => {
       {
         games: [],
         streamers: [],
-        stardust: ""
+        watched: [],
+        read: [],
+        listened: [],
+        stardust: []
       }
     );
 
-    res.json(data);
+    // Backward compatibility for old constellation data
+    const normalized = {
+      games: Array.isArray(data.games)
+        ? data.games
+        : [],
+
+      streamers: Array.isArray(data.streamers)
+        ? data.streamers
+        : [],
+
+      watched: Array.isArray(data.watched)
+        ? data.watched
+        : [],
+
+      read: Array.isArray(data.read)
+        ? data.read
+        : [],
+
+      listened: Array.isArray(data.listened)
+        ? data.listened
+        : [],
+
+      stardust: Array.isArray(data.stardust)
+        ? data.stardust
+        : (
+            typeof data.stardust === "string" &&
+            data.stardust.trim()
+          )
+            ? [data.stardust.trim()]
+            : []
+    };
+
+    res.json(normalized);
 
   } catch (err) {
 
@@ -3833,21 +3868,58 @@ app.get("/api/constellation", (req, res) => {
 
 });
 
+
 app.post("/api/constellation", (req, res) => {
 
   try {
 
+    const constellation = {
+
+      games:
+        Array.isArray(req.body.games)
+          ? req.body.games
+          : [],
+
+      streamers:
+        Array.isArray(req.body.streamers)
+          ? req.body.streamers
+          : [],
+
+      watched:
+        Array.isArray(req.body.watched)
+          ? req.body.watched
+          : [],
+
+      read:
+        Array.isArray(req.body.read)
+          ? req.body.read
+          : [],
+
+      listened:
+        Array.isArray(req.body.listened)
+          ? req.body.listened
+          : [],
+
+      stardust:
+        Array.isArray(req.body.stardust)
+          ? req.body.stardust
+          : (
+              typeof req.body.stardust === "string" &&
+              req.body.stardust.trim()
+            )
+              ? [req.body.stardust.trim()]
+              : []
+
+    };
+
     writeJsonFile(
       CONSTELLATION_DATA,
-      {
-        games: req.body.games || [],
-        streamers: req.body.streamers || [],
-        stardust: req.body.stardust || ""
-      }
+      constellation
     );
 
     res.json({
-      success: true
+      success: true,
+      constellation
     });
 
   } catch (err) {

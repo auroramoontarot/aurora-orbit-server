@@ -2034,15 +2034,33 @@ async function resetDay() {
     )
   ) return;
 
-  /*
-    Preserve the weekly constellation even if /resetday
-    still clears constellation data on the server.
-  */
-  await fetch(`${API_BASE}/resetday`);
+  try {
 
-  await saveConstellationData();
+    const res = await fetch(
+      `${API_BASE}/resetday`
+    );
 
-  location.reload();
+    if(!res.ok){
+      throw new Error(
+        "Failed to reset day"
+      );
+    }
+
+    location.reload();
+
+  } catch(err) {
+
+    console.error(
+      "Reset day error:",
+      err
+    );
+
+    alert(
+      "Something went wrong while resetting the day."
+    );
+
+  }
+
 }
 
 async function loadHabitState() {
