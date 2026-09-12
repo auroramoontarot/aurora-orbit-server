@@ -139,34 +139,75 @@ async function getCalendarState(){
     );
 
 
+    if(!response.ok){
+
+        throw new Error(
+            `Calendar request failed: ${response.status}`
+        );
+
+    }
+
+
     const events = await response.json();
+
+
+    if(!Array.isArray(events)){
+
+        throw new Error(
+            "Calendar returned invalid event data"
+        );
+
+    }
 
 
     const now = new Date();
 
 
-    const current = events.find(event => {
 
-        const start =
-            new Date(event.start).getTime();
+    /* -------------------------
+       CURRENT EVENTS
 
-        const end =
-            new Date(event.end).getTime();
+       Keep ALL active events so
+       the frontend can rotate them.
+    ------------------------- */
+
+    const currentEvents = events
+        .filter(event => {
+
+            const start =
+                new Date(event.start).getTime();
+
+            const end =
+                new Date(event.end).getTime();
 
 
-        return (
-            now.getTime() >= start &&
-            now.getTime() <= end
-        );
+            return (
+                now.getTime() >= start &&
+                now.getTime() <= end
+            );
 
-    });
+        })
+        .sort((a,b) => {
+
+            return (
+                new Date(a.start) -
+                new Date(b.start)
+            );
+
+        });
 
 
+
+    /* -------------------------
+       NEXT EVENT
+    ------------------------- */
 
     const next = events
         .filter(event => {
 
-            return new Date(event.start) > now;
+            return (
+                new Date(event.start) > now
+            );
 
         })
         .sort((a,b)=>{
@@ -180,28 +221,55 @@ async function getCalendarState(){
 
 
 
+    /* -------------------------
+       FORMAT CURRENT EVENTS
+    ------------------------- */
+
+    const formattedCurrent =
+        currentEvents.length
+            ? currentEvents.map(event => {
+
+                return {
+
+                    emoji:
+                        extractEmoji(event.title),
+
+                    title:
+                        event.title.replace(
+                            /^\S+\s*/,
+                            ""
+                        ),
+
+                    subtitle:
+                        `Ends in ${formatTimeDifference(event.end)}`
+
+                };
+
+            })
+            : [
+
+                {
+
+                    emoji:"🌙",
+
+                    title:"Quiet Orbit",
+
+                    subtitle:"No active event"
+
+                }
+
+            ];
+
+
+
+    /* -------------------------
+       RETURN CALENDAR STATE
+    ------------------------- */
+
     return {
 
-        current: current ? {
-
-            emoji:
-                extractEmoji(current.title),
-
-            title:
-                current.title.replace(/^\S+\s*/, ""),
-
-            subtitle:
-                `Ends in ${formatTimeDifference(current.end)}`
-
-        } : {
-
-            emoji:"🌙",
-
-            title:"Quiet Orbit",
-
-            subtitle:"No active event"
-
-        },
+        current:
+            formattedCurrent,
 
 
         next: next ? {
@@ -210,7 +278,10 @@ async function getCalendarState(){
                 extractEmoji(next.title),
 
             title:
-                next.title.replace(/^\S+\s*/, ""),
+                next.title.replace(
+                    /^\S+\s*/,
+                    ""
+                ),
 
             subtitle:
                 `Begins in ${formatTimeDifference(next.start)}`
@@ -367,35 +438,53 @@ async function getObservatory(){
 
     let calendar;
 
-try {
-    calendar = await getCalendarState();
-} catch (err) {
-    console.error("Calendar Observatory failed:", err.message);
 
-    calendar = {
-        current: {
-            emoji: "🌙",
-            title: "Quiet Orbit",
-            subtitle: "Calendar unavailable"
-        },
-        next: {
-            emoji: "✨",
-            title: "Clear Skies",
-            subtitle: "No upcoming event"
-        }
-    };
-}
+    try {
+
+        calendar =
+            await getCalendarState();
+
+    } catch (err) {
+
+        console.error(
+            "Calendar Observatory failed:",
+            err.message
+        );
+
+
+        calendar = {
+
+            current: [
+
+                {
+                    emoji: "🌙",
+                    title: "Quiet Orbit",
+                    subtitle: "Calendar unavailable"
+                }
+
+            ],
+
+            next: {
+                emoji: "✨",
+                title: "Clear Skies",
+                subtitle: "No upcoming event"
+            }
+
+        };
+
+    }
+
 
 
     const celestial =
         getSkyState();
 
 
+
     const observatory = {
 
         updated:
             new Date().toISOString(),
-
 
         calendar,
 
@@ -406,12 +495,15 @@ try {
 
 
     fs.writeFileSync(
+
         OBSERVATORY_DATA,
+
         JSON.stringify(
             observatory,
             null,
             2
         )
+
     );
 
 

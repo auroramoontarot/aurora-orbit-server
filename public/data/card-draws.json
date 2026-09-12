@@ -1,56 +1,8 @@
 {
-  "updatedAt": "2026-08-28T19:41:00.589Z",
+  "updatedAt": "2026-09-11T19:59:12.921Z",
   "draws": [
     {
-      "id": "1787946060589-7xrs26",
-      "deck": "Oracle",
-      "title": "Water the Human",
-      "keyword": "Care",
-      "message": "Your body is not a machine for producing worth. It is a living altar.",
-      "action": "Scatter stardust: drink water, eat something, or unclench your jaw.",
-      "symbol": "💧",
-      "position": "",
-      "spread": "",
-      "time": "2026-08-28T19:41:00.589Z"
-    },
-    {
-      "id": "1787945907930-93xixy",
-      "deck": "Oracle",
-      "title": "Justice Star",
-      "keyword": "Advocacy",
-      "message": "Care becomes power when it reaches beyond the self.",
-      "action": "Scatter stardust: amplify a voice, cause, or community that needs support.",
-      "symbol": "⚖️",
-      "position": "",
-      "spread": "",
-      "time": "2026-08-28T19:38:27.930Z"
-    },
-    {
-      "id": "1787945822806-sk5s94",
-      "deck": "Oracle",
-      "title": "Gentle Mirror",
-      "keyword": "Self-Compassion",
-      "message": "Speak to yourself like someone you are trying to keep alive and loved.",
-      "action": "Scatter stardust: replace one harsh thought with a kinder truth.",
-      "symbol": "🪞",
-      "position": "",
-      "spread": "",
-      "time": "2026-08-28T19:37:02.806Z"
-    },
-    {
-      "id": "1787945739851-fragq7",
-      "deck": "Oracle",
-      "title": "Wish With Feet",
-      "keyword": "Action",
-      "message": "A wish becomes magic when it grows legs.",
-      "action": "Scatter stardust: turn one hope into one doable action.",
-      "symbol": "🌠",
-      "position": "",
-      "spread": "",
-      "time": "2026-08-28T19:35:39.851Z"
-    },
-    {
-      "id": "1787945728819-gbants",
+      "id": "1789156752921-058zpf",
       "deck": "Oracle",
       "title": "Cosmic Detour",
       "keyword": "Play",
@@ -59,10 +11,82 @@
       "symbol": "🛸",
       "position": "",
       "spread": "",
-      "time": "2026-08-28T19:35:28.819Z"
+      "time": "2026-09-11T19:59:12.921Z"
     },
     {
-      "id": "1787945599247-i24nel",
+      "id": "1789156152995-9jbzbc",
+      "deck": "Oracle",
+      "title": "The Observatory",
+      "keyword": "Awareness",
+      "message": "Zoom out. There is more sky than storm.",
+      "action": "Scatter stardust: look at the bigger pattern before choosing your next move.",
+      "symbol": "🔭",
+      "position": "",
+      "spread": "",
+      "time": "2026-09-11T19:49:12.995Z"
+    },
+    {
+      "id": "1789155552946-zh96rn",
+      "deck": "Oracle",
+      "title": "Moonbeam Signal",
+      "keyword": "Begin Here",
+      "message": "A small light still counts. Let today begin with one honest spark.",
+      "action": "Scatter stardust: send one kind message, even if it is only to yourself.",
+      "symbol": "🌙",
+      "position": "",
+      "spread": "",
+      "time": "2026-09-11T19:39:12.946Z"
+    },
+    {
+      "id": "1789155423947-yy39b2",
+      "deck": "Oracle",
+      "title": "The Open Hand",
+      "keyword": "Mutual Aid",
+      "message": "We survive better when care moves in circles instead of hierarchies.",
+      "action": "Scatter stardust: give, receive, or request support without shame.",
+      "symbol": "🫶",
+      "position": "",
+      "spread": "",
+      "time": "2026-09-11T19:37:03.947Z"
+    },
+    {
+      "id": "1789155371945-tjgeil",
+      "deck": "Oracle",
+      "title": "The Observatory",
+      "keyword": "Awareness",
+      "message": "Zoom out. There is more sky than storm.",
+      "action": "Scatter stardust: look at the bigger pattern before choosing your next move.",
+      "symbol": "🔭",
+      "position": "",
+      "spread": "",
+      "time": "2026-09-11T19:36:11.945Z"
+    },
+    {
+      "id": "1789155275302-ou74ac",
+      "deck": "Oracle",
+      "title": "Aurora Veil",
+      "keyword": "Perspective",
+      "message": "What looks chaotic up close may be beautiful from another angle.",
+      "action": "Scatter stardust: pause before reacting and ask, ‘What else could be true?’",
+      "symbol": "🌌",
+      "position": "",
+      "spread": "",
+      "time": "2026-09-11T19:34:35.302Z"
+    },
+    {
+      "id": "1789155116885-a6dqqx",
+      "deck": "Oracle",
+      "title": "Thread of Care",
+      "keyword": "Community",
+      "message": "Care is a thread. Every time you practice it, the web gets stronger.",
+      "action": "Scatter stardust: check in on someone without needing a perfect reason.",
+      "symbol": "🧵",
+      "position": "",
+      "spread": "",
+      "time": "2026-09-11T19:31:56.885Z"
+    },
+    {
+      "id": "1789154961544-wvbj76",
       "deck": "Oracle",
       "title": "Moonbeam Ripple",
       "keyword": "Impact",
@@ -71,7 +95,7 @@
       "symbol": "💫",
       "position": "",
       "spread": "",
-      "time": "2026-08-28T19:33:19.247Z"
+      "time": "2026-09-11T19:29:21.544Z"
     }
   ]
 }

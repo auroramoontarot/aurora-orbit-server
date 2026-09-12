@@ -150,14 +150,19 @@
     "twitch": "pastel_finalgirl"
   },
   {
+    "id": "pastelpinkgarden",
+    "displayName": "PastelPinkGarden",
+    "twitch": "pastelpinkgarden"
+  },
+  {
     "id": "planmydaywithgrey",
     "displayName": "planmydaywithgrey",
     "twitch": "planmydaywithgrey"
   },
   {
-    "id": "poeyplayz",
-    "displayName": "PoeyPlayz",
-    "twitch": "poeyplayz"
+    "id": "projectpoey",
+    "displayName": "projectpoey",
+    "twitch": "projectpoey"
   },
   {
     "id": "qsnapsidequest",

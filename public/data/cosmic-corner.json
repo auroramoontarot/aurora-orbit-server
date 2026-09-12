@@ -48,12 +48,32 @@
   "command": "!orbit",
   "timezone": "America/Chicago",
   "start": 7,
-  "end": 22,
+  "end": 19,
 
   "top8": true,
   "top8Order": 3,
   "emoji": "💤",
   "deskLabel": "🥄 Low-Spoon Orbit",
   "description": "gentle spaces for soft productivity, rest-friendly streams, and no-pressure company"
+},
+
+
+  {
+  "name": "Eliza Avocado",
+  "url": "https://twitch.tv/elizaavocado",
+  "twitch": "elizaavocado",
+  "shift": "Study Hall",
+  "vibe": "guaccomplishing tasks + quiet focus",
+  "statusText": "✍🏻 cozy studying currently active",
+  "command": "!orbit",
+  "timezone": "America/Chicago",
+  "start": 7,
+  "end": 19,
+
+  "top8": true,
+  "top8Order": 4,
+  "emoji": "📚",
+  "deskLabel": "📖 Study Hall",
+  "description": "study streams, writing sprints, quiet focus, and body doubling energy"
 }
 ]

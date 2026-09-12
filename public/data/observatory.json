@@ -1,15 +1,15 @@
 {
-  "updated": "2026-09-10T16:59:20.348Z",
+  "updated": "2026-09-12T15:13:05.547Z",
   "calendar": {
     "current": {
-      "emoji": "🌑",
-      "title": "New Moon",
-      "subtitle": "Ends in 12h"
+      "emoji": "✨",
+      "title": "Spirit Saturday",
+      "subtitle": "Ends in 13h 46m"
     },
     "next": {
-      "emoji": "🎮",
-      "title": "Toasty Thursday",
-      "subtitle": "Begins in 2h"
+      "emoji": "💜",
+      "title": "Connection Constellation",
+      "subtitle": "Begins in 46m"
     }
   },
   "sky": {
@@ -19,21 +19,21 @@
     "isTwilight": true
   },
   "sun": {
-    "sunrise": "2026-09-10T11:46:18.886Z",
-    "sunset": "2026-09-11T00:33:27.259Z",
-    "solarNoon": "2026-09-10T18:10:17.628Z",
-    "dawn": "2026-09-10T11:16:35.847Z",
-    "dusk": "2026-09-11T01:03:04.758Z",
-    "goldenHour": "2026-09-10T23:54:46.252Z",
-    "goldenHourEnd": "2026-09-10T12:25:05.604Z"
+    "sunrise": "2026-09-12T11:48:41.317Z",
+    "sunset": "2026-09-13T00:29:40.420Z",
+    "solarNoon": "2026-09-12T18:09:35.299Z",
+    "dawn": "2026-09-12T11:19:04.126Z",
+    "dusk": "2026-09-13T00:59:12.274Z",
+    "goldenHour": "2026-09-12T23:51:02.047Z",
+    "goldenHourEnd": "2026-09-12T12:27:25.211Z"
   },
   "moon": {
-    "phase": "New Moon",
-    "illumination": 0,
+    "phase": "Waxing Crescent",
+    "illumination": 3,
     "visible": true,
-    "altitude": 48.86077194845166,
-    "rise": "2026-09-10T11:07:40.515Z",
-    "set": null
+    "altitude": 14.969738915683028,
+    "rise": "2026-09-12T13:34:53.247Z",
+    "set": "2026-09-12T00:35:17.771Z"
   },
   "magic": {
     "auroraChance": 0,

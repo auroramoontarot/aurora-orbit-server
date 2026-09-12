@@ -342,5 +342,26 @@
     "type": "affirmation",
     "date": "2026-08-22",
     "createdAt": "2026-08-22T17:12:36.968Z"
+  },
+  {
+    "text": "survived the week",
+    "type": "moonbeam",
+    "user": "AuroraMoonTarot",
+    "date": "2026-09-11",
+    "createdAt": "2026-09-11T17:13:42.547Z"
+  },
+  {
+    "text": "didn't give up",
+    "type": "moonbeam",
+    "user": "rednyx11",
+    "date": "2026-09-11",
+    "createdAt": "2026-09-11T17:16:23.615Z"
+  },
+  {
+    "text": "in awe of aurora for creating this space",
+    "type": "moonbeam",
+    "user": "rednyx11",
+    "date": "2026-09-11",
+    "createdAt": "2026-09-11T17:32:17.283Z"
   }
 ]
