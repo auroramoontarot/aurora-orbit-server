@@ -25,11 +25,13 @@
   "twitch": "danelah",
   "shift": "Night Shift",
   "vibe": "misfit desk + cozy chaos",
-  "statusText": "🌿 night shift co-work currently active",
+  "statusText": "🌿 night shift co-work activate",
   "command": "!orbit",
   "timezone": "America/Chicago",
   "start": 21,
   "end": 2,
+
+  "liveDays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
 
   "top8": true,  
   "top8Order": 2,
@@ -44,11 +46,13 @@
   "twitch": "seaturtlelove",
   "shift": "Low Spoon Orbit",
   "vibe": "reef relaxation + spoon conservation",
-  "statusText": "🥄 low spoon orbit co-work currently active",
+  "statusText": "🥄 low spoon orbit co-work activate",
   "command": "!orbit",
   "timezone": "America/Chicago",
   "start": 7,
   "end": 19,
+
+  "liveDays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
 
   "top8": true,
   "top8Order": 3,
@@ -64,16 +68,39 @@
   "twitch": "elizaavocado",
   "shift": "Study Hall",
   "vibe": "guaccomplishing tasks + quiet focus",
-  "statusText": "✍🏻 cozy studying currently active",
+  "statusText": "✍🏻 cozy studying activate",
   "command": "!orbit",
   "timezone": "America/Chicago",
-  "start": 7,
-  "end": 19,
+  "start": 11,
+  "end": 17,
+
+  "liveDays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
 
   "top8": true,
   "top8Order": 4,
   "emoji": "📚",
   "deskLabel": "📖 Study Hall",
   "description": "study streams, writing sprints, quiet focus, and body doubling energy"
+},
+
+  {
+  "name": "Q Snap Side Quest",
+  "url": "https://twitch.tv/qsnapsidequest",
+  "twitch": "qsnapsidequest",
+  "shift": "Craft Circle",
+  "vibe": "stitching + hedgie cuddling",
+  "statusText": "🪡 cozy stitching activate",
+  "command": "!orbit",
+  "timezone": "America/Chicago",
+  "start": 8.5,
+  "end": 16.5,
+
+  "liveDays": ["Mon", "Wed", "Fri"],
+
+  "top8": true,
+  "top8Order": 5,
+  "emoji": "🦔",
+  "deskLabel": "🧵 Craft Circle",
+  "description": "makers, artists, stitchers + cozy crafters"
 }
 ]

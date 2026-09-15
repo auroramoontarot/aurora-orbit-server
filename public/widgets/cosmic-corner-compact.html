@@ -304,37 +304,51 @@
     }
   }
 
-  function isCreatorActive(creator) {
+function isCreatorActive(creator) {
 
-    if (
-      creator.twitch &&
-      twitchStatuses[creator.twitch] &&
-      twitchStatuses[creator.twitch].live
-    ) {
-      return true;
-    }
-
-    const currentHour = new Date().toLocaleString("en-US", {
-      hour: "numeric",
-      hour12: false,
-      timeZone: creator.timezone || "America/Chicago"
-    });
-
-    const hour = parseInt(currentHour, 10);
-
-    const start = creator.start;
-    const end = creator.end;
-
-    if (start === undefined || end === undefined) {
-      return false;
-    }
-
-    if (start > end) {
-      return hour >= start || hour < end;
-    }
-
-    return hour >= start && hour < end;
+  // Actual Twitch live status always wins
+  if (
+    creator.twitch &&
+    twitchStatuses[creator.twitch] &&
+    twitchStatuses[creator.twitch].live
+  ) {
+    return true;
   }
+
+  // Get current hour AND minute in creator's timezone
+  const parts = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+    timeZone: creator.timezone || "America/Chicago"
+  }).formatToParts(new Date());
+
+  const hour = Number(
+    parts.find(part => part.type === "hour")?.value || 0
+  );
+
+  const minute = Number(
+    parts.find(part => part.type === "minute")?.value || 0
+  );
+
+  // Convert current time to decimal hours
+  // 8:30 = 8.5, 8:45 = 8.75, etc.
+  const currentTime = hour + (minute / 60);
+
+  const start = Number(creator.start);
+  const end = Number(creator.end);
+
+  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+    return false;
+  }
+
+  // Overnight orbit, e.g. 21 → 2
+  if (start > end) {
+    return currentTime >= start || currentTime < end;
+  }
+
+  return currentTime >= start && currentTime < end;
+}
 
   function getFallbackCreator() {
     return creators.find(c => c.fallback);

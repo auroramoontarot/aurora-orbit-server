@@ -2927,9 +2927,12 @@ async function getTwitchAppToken() {
 app.get("/top8-status", async (req, res) => {
   try {
     const users = [
-      "auroramoontarot",
-      "danelah"
-    ];
+  "auroramoontarot",
+  "danelah",
+  "seaturtlelove",
+  "elizaavocado",
+  "qsnapsidequest"
+];
 
     const token = await getTwitchAppToken();
 

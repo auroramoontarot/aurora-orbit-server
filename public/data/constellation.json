@@ -1,58 +1,40 @@
 {
   "games": [
     "Bongo Cat",
-    "LinkedIn Games",
-    "Mini Cozy Room: Lo-Fi",
-    "My Leisure Time",
+    "Microscape",
+    "On-Together",
     "Pokémon GO!",
+    "Spirit City: Lofi Sessions",
     "Tanggle",
     "Virtual Cottage"
   ],
   "streamers": [
-    "BluLuna52",
     "dakotascozycorner",
-    "Danelah",
     "DBRivera55",
+    "elizaavocado",
     "ItsEnchanterelle",
     "lauraehamstra",
     "Londy",
     "mamalanna_",
-    "OpalSkellington",
-    "pastel_finalgirl",
     "QSnapSideQuest",
     "Seaturtlelove",
-    "SevenDeadlyCinders",
-    "Siren0fGotham",
+    "Shania",
     "Sydney",
     "UpAndAdamLive",
     "Whimsical_Lit",
     "WhiskeyBestie"
   ],
   "watched": [
-    "RHUGT Roaring 20th",
-    "Below Deck Med",
-    "RHONY",
-    "Next Gen NYC",
-    "The Secret Lives of Mormon Wives",
-    "Double Lives of Suburban Wives",
-    "OJ Unseen: Exploitation of Evil",
-    "RHOC"
+    "RHUGT",
+    "WWHL"
   ],
-  "read": [
-    "Suffer a Witch",
-    "The Witches of Cambridge"
-  ],
+  "read": [],
   "listened": [
-    "Hot, Messy Topics - Up and Adam Live",
+    "The Bravo Investigator",
     "So Bad it's Good with Ryan Bailey",
-    "Bravo's Most Wanted",
+    "Up and Adam Live",
     "Humble Brag",
-    "Reality Court"
+    "Virtual Reali-Tea"
   ],
-  "stardust": [
-    "Moonbeam Monday",
-    "Luna-Tics Live Tuesday",
-    "Wander Wednesday",
-    "Bookworm Wednesday"
-  ]
+  "stardust": []
 }
