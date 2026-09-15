@@ -1,22 +1,22 @@
 {
-  "updated": "2026-09-15T14:07:24.733Z",
+  "updated": "2026-09-15T14:24:23.804Z",
   "calendar": {
     "current": [
       {
         "emoji": "✨",
         "title": "Moonbeam Schedule",
-        "subtitle": "Ends in 52m"
+        "subtitle": "Ends in 35m"
       },
       {
         "emoji": "🌿",
         "title": "Morning Ritual Hour",
-        "subtitle": "Ends in 52m"
+        "subtitle": "Ends in 35m"
       }
     ],
     "next": {
       "emoji": "🌙",
       "title": "Spoonbeam Self-Care",
-      "subtitle": "Begins in 22m"
+      "subtitle": "Begins in 5m"
     }
   },
   "sky": {
@@ -38,7 +38,7 @@
     "phase": "Waxing Crescent",
     "illumination": 21,
     "visible": false,
-    "altitude": -28.905196745159124,
+    "altitude": -26.055967550282237,
     "rise": "2026-09-15T17:06:55.324Z",
     "set": "2026-09-15T01:37:31.749Z"
   },
